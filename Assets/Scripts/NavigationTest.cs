@@ -44,9 +44,8 @@ public class NavigationTest : MonoBehaviour
 			{
 				// Save the click / tap position
 				endPoint = hit.point;
-				Debug.Log(endPoint);
-
 				agent.SetDestination(endPoint);
+				//Debug.Log(endPoint);
 			}
 		}
 

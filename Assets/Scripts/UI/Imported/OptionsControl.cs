@@ -2,8 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class OptionsControl : MonoBehaviour {
-
+public class OptionsControl : MonoBehaviour
+{
     public Slider mainSlider;
     public Slider musicSlider;
     public Slider sfxSlider;

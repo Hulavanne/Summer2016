@@ -13,7 +13,7 @@ public class GoToNext : MonoBehaviour
         //loader = GameObject.FindWithTag("statistics").GetComponent<LoadScreen>();
         //sounds = GameObject.FindWithTag("statistics").GetComponent<VolControl>();
     }
-    public void GoToScene()
+	public void GoToScene()
     {
         //loader.showLoader(SceneToGo, levelId);
         //Application.LoadLevel(SceneToGo);

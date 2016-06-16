@@ -38,6 +38,11 @@ public class MenuController : MonoBehaviour
         gamePaused = false;
     }
 
+	public void InspectItem(GameObject item)
+	{
+
+	}
+
 	public void PlaySoundEffect()
 	{
 

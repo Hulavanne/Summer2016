@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
+    public bool canHide = true; // monsters will set this to false
+    public bool isGameOver = false;
+    public GameObject gameOverObj;
+    public Text gameOverImg;
+    public float opacity = 0.0f;
+
     public bool isHidden;
 
     public HideBehaviour selectHide;
@@ -56,10 +62,10 @@ public class PlayerController : MonoBehaviour {
 
 
 
-    Vector3 addXPos = new Vector3(.08f, 0, 0); // Add X position to player (to move < or >)
+    Vector3 addXPos = new Vector3(.04f, 0, 0); // Add X position to player (to move < or >)
 
     //running value
-    Vector3 addXRunPos = new Vector3(.14f, 0, 0); 
+    Vector3 addXRunPos = new Vector3(.08f, 0, 0); 
 
     Vector3 tempVec; // Vector being used to make background follow (slowly)
 
@@ -75,6 +81,14 @@ public class PlayerController : MonoBehaviour {
     #endregion
 
     // Go up or down function (adds Y vector to transform.position)
+
+    void GameOverSplash()
+    {
+        gameOverObj.SetActive(true);
+        opacity += 0.015f;
+        gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
+        // gameOverObj.GetComponent<CanvasRenderer>.
+    }
 
     #region MovePlayer
 
@@ -118,9 +132,31 @@ public class PlayerController : MonoBehaviour {
     }
     #endregion
 
+    public void PlayerHide()
+    {
+        if (!isHidden)
+        {
+            transform.position += tempVec;
+            isHidden = true;
+            canMove = false;
+        }
+    }
+
+    public void PlayerUnhide ()
+    {
+        if (isHidden)
+        {
+            transform.position -= tempVec;
+            isHidden = false;
+            canMove = true;
+        }
+    }
+
     void Awake () {
 
-        Application.targetFrameRate = 30;
+        gameOverObj.SetActive(false);
+
+        // Application.targetFrameRate = 30; --> switch this to a level manager object
 
         staminaBar.value = 100.0f;
 
@@ -169,6 +205,15 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
+
+        if (isGameOver)
+        {
+            GameOverSplash();
+            cameraReference.turnBlack = true;
+            cameraReference.opacity = 1.0f;
+            return;
+        }
+        
         //if (isHidden) cameraReference.opacity = 0.5f;
         //else cameraReference.opacity = 0.0f;
 
@@ -217,20 +262,16 @@ public class PlayerController : MonoBehaviour {
             {
                 if (col.Raycast(ray, out hit, 100.0f) && (isSelectionActive))
                 {
-                    Vector3 tempVec = new Vector3(0, 0, 5);
+                    tempVec = new Vector3(0, 0, 5);
                     if (isHidden)
                     {
-                        transform.position -= tempVec;
-                        isHidden = false;
-                        canMove = true;
+                        PlayerUnhide();
                     }
-                    else
+                    else if (canHide)
                     {
-                        transform.position += tempVec;
-                        isHidden = true;
-                        canMove = false;
+                        PlayerHide();
+                            
                     }
-                    Debug.Log("working");
                 }
             }
         }

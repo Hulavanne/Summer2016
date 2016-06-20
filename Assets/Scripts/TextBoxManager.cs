@@ -10,12 +10,22 @@ public class TextBoxManager : MonoBehaviour {
     public GameObject OptTextBox;
     public ActivateTextAtLine textRef;
 
+    public int[] activateYesNoButtonsAtLines;
+    public int[] activateOptButtonsAtLines;
+
+
     public Button yesButton;
     public Button noButton;
     public GameObject yesButtonG;
     public GameObject noButtonG;
+
+    public GameObject Button1;
+    public GameObject Button2;
+    public GameObject Button3;
+    public GameObject Button4;
+
     public bool showYesNoButtons = true;
-    public bool showOptButtons = false;
+    public bool showOptButtons = true;
 
     public bool hasClickedYesNoButton;
     public bool hasClickedOptButton;
@@ -46,7 +56,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked Opt 1 Button.");
         OptTextBox.SetActive(false);
         hasClickedOptButton = true;
-        showOptButtons = false;
+        // showOptButtons = false;
     }
 
     public void OnOpt2Click()
@@ -54,7 +64,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked Opt 2 Button.");
         OptTextBox.SetActive(false);
         hasClickedOptButton = true;
-        showOptButtons = false;
+        // showOptButtons = false;
     }
 
     public void OnOpt3Click()
@@ -62,7 +72,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked Opt 3 Button.");
         OptTextBox.SetActive(false);
         hasClickedOptButton = true;
-        showOptButtons = false;
+        // showOptButtons = false;
     }
 
     public void OnOpt4Click()
@@ -70,7 +80,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked Opt 4 Button.");
         OptTextBox.SetActive(false);
         hasClickedOptButton = true;
-        showOptButtons = false;
+        // showOptButtons = false;
     }
 
 
@@ -80,7 +90,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked Yes Button.");
         textRef.showYesNoButtons = false;
         hasClickedYesNoButton = true;
-        showYesNoButtons = false;
+        // showYesNoButtons = false;
     }
 
     public void onNoClick()
@@ -88,7 +98,7 @@ public class TextBoxManager : MonoBehaviour {
         Debug.Log("Clicked No Button");
         textRef.showYesNoButtons = false;
         hasClickedYesNoButton = true;
-        showYesNoButtons = false;
+        // showYesNoButtons = false;
     }
 
     public void setYesNoButtons (bool value)
@@ -101,7 +111,7 @@ public class TextBoxManager : MonoBehaviour {
         }
         else
         {
-            textRef.showYesNoButtons = false;
+            // textRef.showYesNoButtons = false; STAMP HERE
         }
     }
 
@@ -162,11 +172,20 @@ public class TextBoxManager : MonoBehaviour {
             noButtonG.SetActive(false);
         }
 
-        if (showOptButtons == false)
+        if (textRef.showOptButtons)
         {
-            OptTextBox.SetActive(false);
+            yesButtonG.SetActive(true);
+            noButtonG.SetActive(true);
         }
-        
+
+        else if (textRef.showOptButtons == false)
+        {
+            yesButtonG.SetActive(false);
+            noButtonG.SetActive(false);
+        }
+
+
+
 
         // theText.text = textLines[currentLine];
 
@@ -218,14 +237,40 @@ public class TextBoxManager : MonoBehaviour {
 
         if (showYesNoButtons)
         {
-            textRef.showYesNoButtons = true; // Activating buttons here
+            foreach (int lineNum in activateYesNoButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    textRef.showYesNoButtons = true;
+                }
+
+            }
+            textRef.showYesNoButtons = true;
+            // Activating buttons here
         }
 
-
-        showOptButtons = true;
         if (showOptButtons)
         {
+            foreach (int lineNum in activateOptButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    Debug.Log("working .");
+                    OptTextBox.SetActive(true);
+                    textRef.showOptButtons = true;
+                    showOptButtons = true; // what's this
+                }
+
+            }
+
             OptTextBox.SetActive(true);
+        }
+        
+        // showOptButtons = true;
+
+        if (showOptButtons)
+        {
+            // OptTextBox.SetActive(true);
         }
 
         theText.text = lineOfText;

@@ -12,7 +12,7 @@ public class TouchInput_Diogo : MonoBehaviour
 {
     public Slider staminaBar;
 
-    public PlayerController Player;
+    public PlayerController player;
 	Vector3 addXPos = new Vector3(.1f, 0, 0);
 
     public int runValue = 0;
@@ -41,6 +41,17 @@ public class TouchInput_Diogo : MonoBehaviour
 
 	void Update ()
 	{
+
+        if (player.isGameOver)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                Application.LoadLevel(Application.loadedLevel);
+            }
+            
+            return;
+        }
+
         if ((staminaBar.value < 100) && (runValue != 2))
         {
             staminaBar.value += Time.deltaTime * 0.02f;
@@ -84,11 +95,11 @@ public class TouchInput_Diogo : MonoBehaviour
         // checks every frame if runValue is 2 and sets isRunning
         if (runValue == 2)
         {
-            Player.isRunning = true;
+            player.isRunning = true;
         }
         else
         {
-            Player.isRunning = false;
+            player.isRunning = false;
         }
 
 // For unity editor
@@ -103,18 +114,18 @@ public class TouchInput_Diogo : MonoBehaviour
 
             // Go Left and Right Input
             
-                if (Player.switchingLevel)
+                if (player.switchingLevel)
                 {
-                    Player.canMove = false;
+                    player.canMove = false;
                 }
             
             if (Input.mousePosition.x >= 0 && Input.mousePosition.x <= Screen.width * 0.5)
             {
-                Player.GoLeft();
+                player.GoLeft();
             }
             else
             {
-                Player.GoRight();
+                player.GoRight();
             }
 
         }

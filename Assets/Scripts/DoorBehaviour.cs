@@ -3,13 +3,6 @@ using System.Collections;
 
 public class DoorBehaviour : MonoBehaviour {
 
-    enum EnemyStance
-    {
-        Patrolling,
-        Suspicious,
-        Chasing
-    }
-
     // This code will activate the question box once it triggers the collider 
     // and de-activate it once it leaves it.
 

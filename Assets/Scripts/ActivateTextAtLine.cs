@@ -1,7 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
+// To comment this properly, I still have to go through this code so I know how it really works
+// ^ I followed a youtube tutorial, so I'm still kind of unsure of what some things do.
 
 public class ActivateTextAtLine : MonoBehaviour {
+
+    public bool showYesNoButtons;
+    public bool showOptButtons;
+
+    public Button yesButton;
+    public Button noButton;
+    public GameObject yesButtonG;
+    public GameObject noButtonG;
 
     public TextAsset theText;
 

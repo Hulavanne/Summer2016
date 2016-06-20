@@ -53,8 +53,9 @@ public class ItemSlideMenu : MonoBehaviour
 					slide.localPosition = new Vector3(slideStartPositionsX[i] - 1 * (cursorStartPositionX - Input.mousePosition.x), slide.localPosition.y, slide.localPosition.z);
 				}
 
-				inventoryManager.fillItemSlots(slidingDirection);
 				slidingDirection = "left";
+				inventoryManager.FillItemSlots(slidingDirection);
+
 				cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - Input.mousePosition.x);
 
 				if (cursorDistanceMoved >= requiredDraggingDistance)
@@ -79,8 +80,9 @@ public class ItemSlideMenu : MonoBehaviour
 					slide.localPosition = new Vector3(slideStartPositionsX[i] - 1 * (cursorStartPositionX - Input.mousePosition.x), slide.localPosition.y, slide.localPosition.z);
 				}
 
-				inventoryManager.fillItemSlots(slidingDirection);
 				slidingDirection = "right";
+				inventoryManager.FillItemSlots(slidingDirection);
+
 				cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - Input.mousePosition.x);
 
 				if (cursorDistanceMoved >= requiredDraggingDistance)
@@ -205,11 +207,11 @@ public class ItemSlideMenu : MonoBehaviour
 			RectTransform lastSlide = itemSlides[2].GetComponent<RectTransform>();
 			lastSlide.localPosition = new Vector3(slideStartPositionsX[2], lastSlide.localPosition.y, lastSlide.localPosition.z);
 
-			++inventoryManager.currentSlideNumber;
+			++inventoryManager.currentSlideIndex;
 
-			if (inventoryManager.currentSlideNumber > inventoryManager.numberOfSlides)
+			if (inventoryManager.currentSlideIndex > inventoryManager.numberOfSlides)
 			{
-				inventoryManager.currentSlideNumber = 1;
+				inventoryManager.currentSlideIndex = 1;
 			}
 		}
 		else
@@ -223,11 +225,11 @@ public class ItemSlideMenu : MonoBehaviour
 			RectTransform lastSlide = itemSlides[0].GetComponent<RectTransform>();
 			lastSlide.localPosition = new Vector3(slideStartPositionsX[0], lastSlide.localPosition.y, lastSlide.localPosition.z);
 
-			--inventoryManager.currentSlideNumber;
+			--inventoryManager.currentSlideIndex;
 
-			if (inventoryManager.currentSlideNumber < inventoryManager.numberOfSlides)
+			if (inventoryManager.currentSlideIndex < inventoryManager.numberOfSlides)
 			{
-				inventoryManager.currentSlideNumber = inventoryManager.numberOfSlides;
+				inventoryManager.currentSlideIndex = inventoryManager.numberOfSlides;
 			}
 		}
 	}

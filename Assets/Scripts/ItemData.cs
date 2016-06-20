@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ItemData : MonoBehaviour
 {
-	public Texture2D itemImage;
+	public Sprite itemImage;
 	public string description;
 
 	void Awake()

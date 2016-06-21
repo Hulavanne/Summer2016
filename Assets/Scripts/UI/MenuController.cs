@@ -48,7 +48,6 @@ public class MenuController : MonoBehaviour
 
 	public void GoToScene(string sceneName)
 	{
-		//loader.showLoader(SceneToGo, levelId);
 		SceneManager.LoadScene(sceneName);
 	}
 

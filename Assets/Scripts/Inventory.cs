@@ -24,10 +24,8 @@ public class Inventory : MonoBehaviour
 	{
 		if (other.gameObject.tag == "Item")
 		{
-			GameObject objectPrefab = (GameObject)PrefabUtility.GetPrefabParent(other.gameObject);
-
-			addItemToInventory (objectPrefab);
-			Destroy(other.gameObject);
+			addItemToInventory(other.gameObject);
+			other.gameObject.SetActive(false);
 		}
 	}
 

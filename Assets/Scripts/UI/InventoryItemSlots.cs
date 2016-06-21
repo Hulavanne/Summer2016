@@ -8,11 +8,13 @@ public class InventoryItemSlots : MonoBehaviour
 	public List<GameObject> itemSlots = new List<GameObject>();
 	public List<GameObject> itemsInSlots = new List<GameObject>();
 	public GameObject itemDescription;
-	public bool inspectingItem = false;
-	public int inspectedItemIndex = -1;
+
+	static public bool inspectingItem = false;
+	static public int inspectedItemIndex = -1;
 
 	List<bool> itemSlotOccupied = new List<bool>();
 	List<Vector3> itemSlotPositions = new List<Vector3>();
+	ItemSlideMenu itemSlideMenu;
 
 	void Awake()
 	{
@@ -27,33 +29,23 @@ public class InventoryItemSlots : MonoBehaviour
 			else
 			{
 				itemDescription = child.gameObject;
+				itemDescription.SetActive(false);
 			}
 		}
+
+		for (int i = 0; i < itemSlots.Count; ++i)
+		{
+			DeactivateItemSlot(i);
+		}
+
+		itemSlideMenu = transform.GetComponentInParent<ItemSlideMenu>();
 	}
 
 	void Update()
 	{
-		for (int i = 0; i < itemSlots.Count; ++i)
+		if (inspectingItem)
 		{
-			if (itemSlotOccupied[i])
-			{
-				foreach (Transform child in itemSlots[i].transform)
-				{
-					child.gameObject.SetActive(true);
-				}
-				itemSlots[i].GetComponent<Button>().interactable = true;
-			}
-			else
-			{
-				foreach (Transform child in itemSlots[i].transform)
-				{
-					child.GetComponent<Image>().sprite = null;
-					child.GetComponent<Text>().text = "";
-
-					child.gameObject.SetActive(false);
-				}
-				itemSlots[i].GetComponent<Button>().interactable = false;
-			}
+			itemSlideMenu.canSlide = false;
 		}
 	}
 
@@ -62,23 +54,24 @@ public class InventoryItemSlots : MonoBehaviour
 		for (int i = 0; i < itemsInSlots.Count; ++i)
 		{
 			GameObject item = itemsInSlots[i];
-			itemSlotOccupied [i] = true;
 
 			if (item.GetComponent<ItemData>() != null)
 			{
 				ItemData itemData;
 				itemData = item.GetComponent<ItemData>();
 
+				itemSlotOccupied[i] = true;
+				ActivateItemSlot(i);
+
 				foreach (Transform child in itemSlots[i].transform)
 				{
 					if (child.name == "ItemImage")
 					{
-						child.GetComponent<Image>().sprite = itemData.itemImage;
+						child.GetComponent<Image>().sprite = itemData.icon;
 					}
 					else if (child.name == "ItemNameText")
 					{
-						GameObject objectPrefab = (GameObject)PrefabUtility.GetPrefabParent(item.gameObject);
-						child.GetComponent<Text>().text = item.name;
+						child.GetComponent<Text>().text = itemData.displayName;
 					}
 				}
 			}
@@ -87,6 +80,13 @@ public class InventoryItemSlots : MonoBehaviour
 				Debug.LogError("InventoryItemSlots -> AssignItemToSlots : ItemData not found in object '" + item.name + "'");
 			}
 		}
+
+		for (int i = 0; i < itemSlots.Count; ++i)
+		{
+			DeactivateItemSlot(i);
+			Debug.Log(i);
+		}
+		itemDescription.SetActive(false);
 	}
 
 	public void ClearItemSlots()
@@ -94,6 +94,39 @@ public class InventoryItemSlots : MonoBehaviour
 		for (int i = 0; i < itemsInSlots.Count; ++i)
 		{
 			itemSlotOccupied[i] = false;
+			DeactivateItemSlot(i);
+		}
+	}
+
+	public void ActivateItemSlot(int index)
+	{
+		if (itemSlotOccupied[index])
+		{
+			foreach (Transform child in itemSlots[index].transform)
+			{
+				child.gameObject.SetActive(true);
+			}
+			itemSlots[index].GetComponent<Button>().interactable = true;
+		}
+	}
+
+	public void DeactivateItemSlot(int index)
+	{
+		if (!itemSlotOccupied[index])
+		{
+			foreach (Transform child in itemSlots[index].transform)
+			{
+				if (child.name == "ItemImage")
+				{
+					child.GetComponent<Image>().sprite = null;
+				}
+				else if (child.name == "ItemNameText")
+				{
+					child.GetComponent<Text>().text = "";
+				}
+				child.gameObject.SetActive(false);
+			}
+			itemSlots[index].GetComponent<Button>().interactable = false;
 		}
 	}
 

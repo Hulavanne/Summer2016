@@ -19,10 +19,15 @@ public class TextBoxManager : MonoBehaviour {
     public GameObject yesButtonG;
     public GameObject noButtonG;
 
-    public GameObject Button1;
-    public GameObject Button2;
-    public GameObject Button3;
-    public GameObject Button4;
+    public Button Button1;
+    public Button Button2;
+    public Button Button3;
+    public Button Button4;
+
+    public GameObject Button1G;
+    public GameObject Button2G;
+    public GameObject Button3G;
+    public GameObject Button4G;
 
     public bool showYesNoButtons = true;
     public bool showOptButtons = true;
@@ -55,6 +60,7 @@ public class TextBoxManager : MonoBehaviour {
     {
         Debug.Log("Clicked Opt 1 Button.");
         OptTextBox.SetActive(false);
+        textRef.showOptButtons = false;
         hasClickedOptButton = true;
         // showOptButtons = false;
     }
@@ -63,6 +69,7 @@ public class TextBoxManager : MonoBehaviour {
     {
         Debug.Log("Clicked Opt 2 Button.");
         OptTextBox.SetActive(false);
+        textRef.showOptButtons = false;
         hasClickedOptButton = true;
         // showOptButtons = false;
     }
@@ -71,6 +78,7 @@ public class TextBoxManager : MonoBehaviour {
     {
         Debug.Log("Clicked Opt 3 Button.");
         OptTextBox.SetActive(false);
+        textRef.showOptButtons = false;
         hasClickedOptButton = true;
         // showOptButtons = false;
     }
@@ -79,6 +87,7 @@ public class TextBoxManager : MonoBehaviour {
     {
         Debug.Log("Clicked Opt 4 Button.");
         OptTextBox.SetActive(false);
+        textRef.showOptButtons = false;
         hasClickedOptButton = true;
         // showOptButtons = false;
     }
@@ -109,9 +118,38 @@ public class TextBoxManager : MonoBehaviour {
         {
             textRef.showYesNoButtons = true;
         }
-        else
+    }
+
+    public void getYesNoButtonLines()
+    {
+        if (showYesNoButtons)
         {
-            // textRef.showYesNoButtons = false; STAMP HERE
+            foreach (int lineNum in activateYesNoButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    textRef.showYesNoButtons = true;
+                }
+
+            }
+        }
+    }
+
+    public void getOptButtonLines()
+    {
+        if (showOptButtons)
+        {
+            foreach (int lineNum in activateOptButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    OptTextBox.SetActive(true);
+                    textRef.showOptButtons = true;
+                }
+
+            }
+
+            OptTextBox.SetActive(true);
         }
     }
 
@@ -130,7 +168,7 @@ public class TextBoxManager : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Text not found.");
+            // Debug.Log("Text not found.");
         }
 
         if (endAtLine == 0)
@@ -162,6 +200,7 @@ public class TextBoxManager : MonoBehaviour {
 
         if (textRef.showYesNoButtons)
         {
+            // Debug.Log("workenggg");
             yesButtonG.SetActive(true);
             noButtonG.SetActive(true);
         }
@@ -174,34 +213,38 @@ public class TextBoxManager : MonoBehaviour {
 
         if (textRef.showOptButtons)
         {
-            yesButtonG.SetActive(true);
-            noButtonG.SetActive(true);
+            Button1G.SetActive(true);
+            Button2G.SetActive(true);
+            Button3G.SetActive(true);
+            Button4G.SetActive(true);
         }
 
         else if (textRef.showOptButtons == false)
         {
-            yesButtonG.SetActive(false);
-            noButtonG.SetActive(false);
+            Button1G.SetActive(false);
+            Button2G.SetActive(false);
+            Button3G.SetActive(false);
+            Button4G.SetActive(false);
         }
 
-
-
-
         // theText.text = textLines[currentLine];
-
-        if ((Input.GetMouseButtonDown(0))||(hasClickedYesNoButton)||(hasClickedOptButton))
+        
+        if ((((Input.GetMouseButtonDown(0)) && (!textRef.showYesNoButtons)) // disable click if there are yes/no buttons
+            && ((Input.GetMouseButtonDown(0)) && (!textRef.showOptButtons))) // disable click if there are option buttons
+            || (hasClickedYesNoButton) || (hasClickedOptButton)) // proceed if the player clicked a button
         {
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 
-           if ((textRef.showYesNoButtons == false)||(showOptButtons == false)) {
+            if ((textRef.showYesNoButtons == false) || (showOptButtons == false))
+            {
 
                 if (!isTyping)
                 {
 
                     currentLine++;
 
-                    // textRef.showYesNoButtons = true;
+                    // textRef.showYesNoButtons = true; // ACTIVATING HERE
 
                     if (currentLine > endAtLine)
                     {
@@ -218,6 +261,10 @@ public class TextBoxManager : MonoBehaviour {
                 }
             }
         }
+
+
+
+
     }
 
     private IEnumerator TextScroll (string lineOfText)
@@ -235,36 +282,13 @@ public class TextBoxManager : MonoBehaviour {
             yield return new WaitForSeconds(typeSpeed);
         }
 
-        if (showYesNoButtons)
-        {
-            foreach (int lineNum in activateYesNoButtonsAtLines)
-            {
-                if (lineNum == currentLine)
-                {
-                    textRef.showYesNoButtons = true;
-                }
+        // textRef.showYesNoButtons = true;
 
-            }
-            textRef.showYesNoButtons = true;
-            // Activating buttons here
-        }
+        getYesNoButtonLines();
 
-        if (showOptButtons)
-        {
-            foreach (int lineNum in activateOptButtonsAtLines)
-            {
-                if (lineNum == currentLine)
-                {
-                    Debug.Log("working .");
-                    OptTextBox.SetActive(true);
-                    textRef.showOptButtons = true;
-                    showOptButtons = true; // what's this
-                }
+        getOptButtonLines();
 
-            }
-
-            OptTextBox.SetActive(true);
-        }
+        
         
         // showOptButtons = true;
 
@@ -310,7 +334,7 @@ public class TextBoxManager : MonoBehaviour {
 
     public void DisableTextBox()
     {
-        showOptButtons = false;
+        // showOptButtons = false;
         OptTextBox.SetActive(false);
 
         textBox.SetActive(false);
@@ -319,12 +343,26 @@ public class TextBoxManager : MonoBehaviour {
         player.canMove = true;
     }
 
-    public void ReloadScript(TextAsset theText)
+    public void ReloadScript(TextAsset theText, int[] a, int[] b)
     {
         if (theText != null)
         {
             textLines = new string[1];
-            textLines = (textFile.text.Split('\n'));
+            textLines = (theText.text.Split('\n'));
+
+            int x = 0;
+            foreach (int num in a)
+            {
+                activateYesNoButtonsAtLines[x] = num;
+                x++;
+            }
+            x = 0;
+            foreach (int num in b)
+            {
+                activateOptButtonsAtLines[x] = num;
+                x++;
+            }
+            x = 0;
         }
     }
 }

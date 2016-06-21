@@ -54,6 +54,20 @@ public class LevelManager : MonoBehaviour {
                 ChangePlayerPosition();
             }
         }
+
+        else if (currentLevel == 3)
+        {
+            if (goNextLevel)
+            {
+                currentLevel++;
+                ChangePlayerPosition();
+            }
+            else
+            {
+                currentLevel--;
+                ChangePlayerPosition();
+            }
+        }
     }
 
     void Awake () {

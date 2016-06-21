@@ -7,14 +7,20 @@ public class DoorBehaviour : MonoBehaviour {
     // and de-activate it once it leaves it.
 
     public bool goesDown = true;
+    public bool AutomaticDoor;
 
     public LevelManager manageLevel;
 
-    public PlayerController Player;
+    public PlayerController player;
     public GameObject QuestionMark;
 
     void OnTriggerEnter (Collider other)
     {
+        if (AutomaticDoor)
+        {
+            player.switchingLevel = true;
+        }
+
         if (other.gameObject.tag == "Player")
         {
             if (goesDown)
@@ -26,7 +32,7 @@ public class DoorBehaviour : MonoBehaviour {
                 manageLevel.goNextLevel = false;
             }
 
-            Player.isSelectionActive = true;
+            player.isSelectionActive = true;
             QuestionMark.SetActive(true);
         }
     }
@@ -35,7 +41,7 @@ public class DoorBehaviour : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            Player.isSelectionActive = false;
+            player.isSelectionActive = false;
             QuestionMark.SetActive(false);
         }
     }

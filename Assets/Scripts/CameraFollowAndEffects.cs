@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class CameraFollowAndEffects : MonoBehaviour {
 
     public GameObject darkScreen; // reference for the actual black plane
-    public Renderer darkScreenRenderer; // reference for its renderer
+    public CanvasRenderer darkScreenRenderer; // reference for its renderer
     public Color opacityManager; // a color for (0 > red, 0 > green, 0 > blue, 0~1 > opacity)
     public float opacity = 0.0f; // the changeable opacity variable
     public bool turnBlack; // once this is true, the plane gradually turns black
@@ -14,10 +15,11 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
     void Awake()
     {
-        opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // sets opacity to 0
-        darkScreenRenderer.material.color = opacityManager;
+        // opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // sets opacity to 0
 
-        darkScreen.GetComponent<Renderer>().material.color = opacityManager;
+        // darkScreenRenderer.SetAlpha(opacity);
+
+        // darkScreen.GetComponent<Renderer>().material.color = opacityManager;
 
         turnBlack = false;
         opacity = 1.0f;
@@ -41,8 +43,10 @@ public class CameraFollowAndEffects : MonoBehaviour {
             }
         }
 
+        darkScreenRenderer.SetAlpha(opacity);
+
         opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
-        darkScreenRenderer.material.color = opacityManager; // and puts it in the material
+        // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
         
         transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + 2, transform.position.z);
         // ^ this makes the camera follow the player in x axis, and specific y+2 axis

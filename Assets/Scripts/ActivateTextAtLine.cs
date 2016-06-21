@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class ActivateTextAtLine : MonoBehaviour {
 
+    public int[] activateYesNoButtonsAtLines;
+    public int[] activateOptButtonsAtLines;
+
     public bool showYesNoButtons;
     public bool showOptButtons;
 
@@ -14,6 +17,16 @@ public class ActivateTextAtLine : MonoBehaviour {
     public Button noButton;
     public GameObject yesButtonG;
     public GameObject noButtonG;
+
+    public Button Button1;
+    public Button Button2;
+    public Button Button3;
+    public Button Button4;
+
+    public GameObject Button1G;
+    public GameObject Button2G;
+    public GameObject Button3G;
+    public GameObject Button4G;
 
     public TextAsset theText;
 
@@ -28,16 +41,18 @@ public class ActivateTextAtLine : MonoBehaviour {
     public bool destroyWhenActivated;
 
 	// Use this for initialization
-	void Awake () {
+	void Awake ()
+    {
         theTextBox = FindObjectOfType<TextBoxManager>();
-
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 	    if (waitForPress && Input.GetKeyDown(KeyCode.J))
         {
-            theTextBox.ReloadScript(theText);
+            
+            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines);
             theTextBox.currentLine = startLine;
             theTextBox.endAtLine = endLine;
             theTextBox.EnableTextBox();
@@ -59,7 +74,7 @@ public class ActivateTextAtLine : MonoBehaviour {
                 return;
             }
 
-            theTextBox.ReloadScript(theText);
+            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines);
             theTextBox.currentLine = startLine;
             theTextBox.endAtLine = endLine;
             theTextBox.EnableTextBox();

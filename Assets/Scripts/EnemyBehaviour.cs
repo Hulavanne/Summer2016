@@ -36,23 +36,28 @@ public class EnemyBehaviour : MonoBehaviour {
 
     enum EnemyBehav
     {
-        Patrolling,
-        Suspicious,
-        Chasing,
+        PATROLLING,
+        SUSPICIOUS,
+        CHASING,
+        REMOVING_PLAYER,
     };
 
     EnemyBehav currentEnemy;
 
     void UnhidePlayer()
     {
-        if (((currentEnemy == EnemyBehav.Suspicious) || (currentEnemy == EnemyBehav.Chasing)) && (!goToPlayerPos)) // if everything is right, the enemy won't be needing to follow the player by this time
+        if (((currentEnemy == EnemyBehav.SUSPICIOUS) || (currentEnemy == EnemyBehav.CHASING)) && (!goToPlayerPos))
+            // if everything is right, the enemy won't be needing to follow the player by this time
         {
+
+
             unhidePlayerTime += Time.deltaTime;
             if (unhidePlayerTime > 1.0f)
             {
                 player.PlayerUnhide();
                 player.canHide = false;
             }
+            
         }
     }
 
@@ -84,34 +89,34 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void EnemyMove()
     {
-        Vector3 tempVecX = new Vector3(movementSpeed, 0, 0); // normal movement
-        Vector3 tempVecRunX = new Vector3(chaseSpeed, 0, 0); // chasing movement
+        Vector3 tempVecX = new Vector3 (movementSpeed, 0, 0); // normal movement
+        Vector3 tempVecRunX = new Vector3 (chaseSpeed, 0, 0); // chasing movement
 
         
 
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.Patrolling))
+        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.PATROLLING))
         {
             transform.position += tempVecX * Time.deltaTime;
         }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.Patrolling))
+        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.PATROLLING))
         {
             transform.position -= tempVecX * Time.deltaTime;
         }
 
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.Chasing))
+        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.CHASING))
         {
             transform.position += tempVecRunX * Time.deltaTime;
         }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.Chasing))
+        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.CHASING))
         {
             transform.position -= tempVecRunX * Time.deltaTime;
         }
 
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.Suspicious))
+        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.SUSPICIOUS))
         {
             transform.position += tempVecRunX * Time.deltaTime;
         }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.Suspicious))
+        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.SUSPICIOUS))
         {
             transform.position -= tempVecRunX * Time.deltaTime;
         }
@@ -126,12 +131,15 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (goToPlayerPos)
         {
+            currentEnemy = EnemyBehav.SUSPICIOUS;
             EnemyMove();
             if ((transform.position.x > player.transform.position.x - 0.05) && (transform.position.x < player.transform.position.x + 0.05))
             {
                 Debug.Log("working!");
                 goToPlayerPos = false;
-                currentEnemy = EnemyBehav.Suspicious;
+                currentEnemy = EnemyBehav.SUSPICIOUS;
+
+                return;
             }
         }
         else
@@ -146,12 +154,12 @@ public class EnemyBehaviour : MonoBehaviour {
             }
         }
 
-        if (currentEnemy == EnemyBehav.Patrolling)
+        if (currentEnemy == EnemyBehav.PATROLLING)
         {
             turningTime += 0.1f * Time.deltaTime;
         }
         
-        else if (currentEnemy == EnemyBehav.Suspicious)
+        else if (currentEnemy == EnemyBehav.SUSPICIOUS)
         {
             turningTime += 0.3f * Time.deltaTime;
         }
@@ -168,7 +176,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if ((distanceBetweenPlayer > areaOfVision) || (distanceBetweenPlayer < -areaOfVision))
         {
-            currentEnemy = EnemyBehav.Patrolling;
+            currentEnemy = EnemyBehav.PATROLLING;
         }
         else
         {
@@ -177,7 +185,8 @@ public class EnemyBehaviour : MonoBehaviour {
                 startChaseTime += Time.deltaTime;
                 if (startChaseTime > 0.5)
                 {
-                    currentEnemy = EnemyBehav.Chasing;
+                    currentEnemy = EnemyBehav.CHASING;
+
                     startChaseTime = 0;
                 }
             }
@@ -186,12 +195,12 @@ public class EnemyBehaviour : MonoBehaviour {
                
                 if (suspicionTime > 0)
                 {
-                    currentEnemy = EnemyBehav.Suspicious;
+                    currentEnemy = EnemyBehav.SUSPICIOUS;
                     suspicionTime -= (Time.deltaTime);
                 }
                 else if (suspicionTime <= 0)
                 {
-                    currentEnemy = EnemyBehav.Patrolling;
+                    currentEnemy = EnemyBehav.PATROLLING;
                 }
             }
         }
@@ -210,48 +219,48 @@ public class EnemyBehaviour : MonoBehaviour {
     }
 
 	void Awake () {
-        currentEnemy = EnemyBehav.Patrolling;
+        currentEnemy = EnemyBehav.PATROLLING;
 	}
 	
 	void Update () {
 
         switch (currentEnemy)
         {
-            case EnemyBehav.Patrolling:
+            case EnemyBehav.PATROLLING:
                 {
                     areaOfVision = 6.0f;
-                    Debug.Log("Patrolling state!");
+                    // Debug.Log("Patrolling state!");
                     break;
                 }
-            case EnemyBehav.Suspicious:
+            case EnemyBehav.SUSPICIOUS:
                 {
                     areaOfVision = 8.0f;
-                    Debug.Log("Suspicious state!");
+                    // Debug.Log("Suspicious state!");
                     break;
                 }
-            case EnemyBehav.Chasing:
+            case EnemyBehav.CHASING:
                 {
                     areaOfVision = 12.0f; // this is probably too much?
-                    Debug.Log("Chasing state!");
+                    // Debug.Log("Chasing state!");
                     break;
                 }
         }
 
 
-        if ((currentEnemy == EnemyBehav.Chasing) && (player.isHidden))
+        if ((currentEnemy == EnemyBehav.CHASING) && (player.isHidden))
         {
             goToPlayerPos = true;
-            currentEnemy = EnemyBehav.Suspicious;
+            currentEnemy = EnemyBehav.SUSPICIOUS;
         }
 
         // currentEnemy = EnemyBehav.defaultCase; //checking that this gets reset in the beggining of every frame
 
         if ((distanceBetweenPlayer > areaOfVision) || (distanceBetweenPlayer < -areaOfVision))
         {
-            currentEnemy = EnemyBehav.Suspicious;
+            currentEnemy = EnemyBehav.SUSPICIOUS;
         }
         
-        if (currentEnemy == EnemyBehav.Suspicious)
+        if (currentEnemy == EnemyBehav.SUSPICIOUS)
         {
 
         }
@@ -260,18 +269,27 @@ public class EnemyBehaviour : MonoBehaviour {
         GetDistanceBetweenObjects();
         CheckDistance();
         
-        if (currentEnemy == EnemyBehav.Suspicious)
+        if ((transform.position.y > player.transform.position.y - 0.2) && (transform.position.y > player.transform.position.y + 0.2))
+        {
+            currentEnemy = EnemyBehav.PATROLLING;
+        }
+
+        if (currentEnemy == EnemyBehav.SUSPICIOUS)
         {
             UnhidePlayer();
         }
 
-        if (currentEnemy == EnemyBehav.Patrolling || (currentEnemy == EnemyBehav.Suspicious))
+        if (currentEnemy == EnemyBehav.PATROLLING || (currentEnemy == EnemyBehav.SUSPICIOUS))
         {
             EnemyPatrol();
         }
-        else if ((currentEnemy == EnemyBehav.Chasing))
+        else if ((currentEnemy == EnemyBehav.CHASING))
         {
             EnemyMove();
+        }
+        else if (currentEnemy == EnemyBehav.REMOVING_PLAYER)
+        {
+            // play some animation
         }
         
     }

@@ -64,7 +64,7 @@ public class ActivateTextAtLine : MonoBehaviour {
         }
 	}
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.name == "Player")
         {
@@ -87,7 +87,7 @@ public class ActivateTextAtLine : MonoBehaviour {
         }
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit2D(Collider2D other)
     {
         if (other.name == "Player")
         {

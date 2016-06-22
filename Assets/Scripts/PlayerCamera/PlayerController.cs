@@ -23,10 +23,12 @@ public class PlayerController : MonoBehaviour {
     public Button noButton;
     public GameObject yesButtonG;
     public GameObject noButtonG;
-    
+
+    public bool isOverlappingDoor;
     public bool isClickingButton;
+
     public GameObject[] buttons; // am I using this?
-    public Collider[] collidedButtons;
+    public Collider2D[] collidedButtons; // or this?
 
     public LevelManager manageLevel;
 
@@ -41,10 +43,10 @@ public class PlayerController : MonoBehaviour {
 
     // Selecting Declaration
     public GameObject[] doors;
-    public Collider[] collidedDoors;
+    public Collider2D[] collidedDoors;
 
     public GameObject[] hideObjects;
-    public Collider[] collidedHideObjects;
+    public Collider2D[] collidedHideObjects;
 
     public bool canMove = true;
     public bool isRunning;
@@ -172,7 +174,7 @@ public class PlayerController : MonoBehaviour {
 
         foreach (GameObject doorNum in doors)
         {
-            collidedDoors[b] = doorNum.GetComponent<Collider>();
+            collidedDoors[b] = doorNum.GetComponent<Collider2D>();
             b++;
         }
 
@@ -196,7 +198,7 @@ public class PlayerController : MonoBehaviour {
 
         foreach(GameObject hideObjectNum in hideObjects)
         {
-            collidedHideObjects[b] = hideObjectNum.GetComponent<Collider>();
+            collidedHideObjects[b] = hideObjectNum.GetComponent<Collider2D>();
             b++;
         }
 
@@ -231,6 +233,7 @@ public class PlayerController : MonoBehaviour {
         }
         if (switchingLevelTime >= 1) // note that this 1 is a timer
         {
+            cameraReference.JoinPlayer();
             canMove = true;
 
             manageLevel.ChangeLevel();
@@ -248,19 +251,29 @@ public class PlayerController : MonoBehaviour {
             // _collided is a collider reference for the Door Object
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            foreach (Collider col in collidedDoors)
+            Vector2 test = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            RaycastHit2D hit = Physics2D.Raycast(test, Input.mousePosition);
+
+            foreach (Collider2D col in collidedDoors)
             {
-                if (col.Raycast(ray, out hit, 100.0f) && (isSelectionActive))
+
+                if ((hit.collider && hit.collider.tag == "Door") && (isSelectionActive))
+                {
+                    switchingLevel = true;
+                }
+                else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive))
+                    && isOverlappingDoor)
                 {
                     switchingLevel = true;
                 }
             }
 
-            foreach (Collider col in collidedHideObjects)
+            foreach (Collider2D col in collidedHideObjects)
             {
-                if (col.Raycast(ray, out hit, 100.0f) && (isSelectionActive))
+
+                if ((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive))
                 {
                     tempVec = new Vector3(0, 0, 5);
                     if (isHidden)

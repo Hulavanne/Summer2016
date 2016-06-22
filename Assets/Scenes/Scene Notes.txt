@@ -1,0 +1,19 @@
+Notes about Scenery Drawing Order:
+
+Higher Numbers are drawn last (therefore appear after others)
+Lower Numbers are drawn first (therefore appear before others)
+
+How Scenery is sorted:
+
+   Layer Order :
+
+> Layer 10: Backgrounds
+> Layer 9: Objects
+> Layer 8: Enemies
+> Layer 7: NPCs
+> Layer 6: Player
+> Layer 5: Foregrounds
+> Layer 4: (empty)
+> Layer 3: (empty)
+> Layer 2: (empty)
+> Layer 1: (empty)

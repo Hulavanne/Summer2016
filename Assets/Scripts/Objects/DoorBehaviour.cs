@@ -14,7 +14,7 @@ public class DoorBehaviour : MonoBehaviour {
     public PlayerController player;
     public GameObject QuestionMark;
 
-    void OnTriggerEnter (Collider other)
+    void OnTriggerEnter2D (Collider2D other)
     {
         if (AutomaticDoor)
         {
@@ -34,15 +34,18 @@ public class DoorBehaviour : MonoBehaviour {
 
             player.isSelectionActive = true;
             QuestionMark.SetActive(true);
+
+            player.isOverlappingDoor = true;
         }
     }
     
-    void OnTriggerExit (Collider other)
+    void OnTriggerExit2D (Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
             player.isSelectionActive = false;
             QuestionMark.SetActive(false);
+            player.isOverlappingDoor = true;
         }
     }
     

@@ -61,7 +61,7 @@ public class EnemyBehaviour : MonoBehaviour {
         }
     }
 
-    void OnTriggerStay(Collider col) // touching player
+    void OnTriggerStay2D(Collider2D col) // touching player
     {
         if (col.gameObject.tag == "Player")
         {
@@ -74,7 +74,7 @@ public class EnemyBehaviour : MonoBehaviour {
         }
     }
 
-    void OnTriggetExit(Collider col)
+    void OnTriggetExit2D(Collider2D col)
     {
         if (col.gameObject.tag == "Player")
         {

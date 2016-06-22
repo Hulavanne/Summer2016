@@ -7,7 +7,7 @@ public class HideBehaviour : MonoBehaviour {
     public GameObject QuestionMark;
     public bool isHiding;
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
@@ -16,7 +16,7 @@ public class HideBehaviour : MonoBehaviour {
         }
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit2D(Collider2D other)
     {
             Player.isSelectionActive = false;
             QuestionMark.SetActive(false);

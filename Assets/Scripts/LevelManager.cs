@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour {
     public PlayerController player;
     public GameObject playerG;
 
-    public int currentLevel = 1; // begins at level 1
+    // public int currentLevel = 1; // begins at level 1
     public bool goNextLevel = true; // goes up one level if true, goes down one level if false
 
     public void SetLighting()
@@ -78,6 +78,8 @@ public class LevelManager : MonoBehaviour {
 
     public void ChangeLevel()
     {
+        // Debug.Log("previous level > " + thisLevel);
+
         switch (thisLevel)
         {
             case Level.LEVEL1:
@@ -97,13 +99,13 @@ public class LevelManager : MonoBehaviour {
             case Level.LEVEL2:
                 if (goNextLevel)
                 {
-                    thisLevel = Level.LEVEL1;
+                    thisLevel = Level.LEVEL3;
                     ChangePlayerPosition();
                     LightAmount = lightLevel3;
                 }
                 else
                 {
-                    thisLevel = Level.LEVEL3;
+                    thisLevel = Level.LEVEL1;
                     ChangePlayerPosition();
                     LightAmount = lightLevel1;
                 }
@@ -123,6 +125,10 @@ public class LevelManager : MonoBehaviour {
                 }
                 break;
         }
+
+
+        // Debug.Log("this level > " + thisLevel);
+
     }
 
     

@@ -16,7 +16,7 @@ public class DoorBehaviour : MonoBehaviour {
 
     void OnTriggerEnter2D (Collider2D other)
     {
-        if (AutomaticDoor)
+        if ((AutomaticDoor)&&(other.gameObject.tag == "Player"))
         {
             player.switchingLevel = true;
         }

@@ -18,6 +18,6 @@ public class ForegroundBehaviour : MonoBehaviour {
 
     void Update()
     {
-        transform.position = new Vector3(mainCamera.transform.position.x * 5.0f, transform.position.y, transform.position.z);
+        transform.position = new Vector3(mainCamera.transform.position.x * -5.0f, transform.position.y, transform.position.z);
     }
 }

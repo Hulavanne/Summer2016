@@ -6,7 +6,6 @@ using System.IO;
 
 public static class SavingAndLoading
 {
-	public static int saveSlotIndex = 0;
 	public static List<Game> savedGames = new List<Game>();
 	public const string SAVE_PATH = "/SavedGames.memories";
 

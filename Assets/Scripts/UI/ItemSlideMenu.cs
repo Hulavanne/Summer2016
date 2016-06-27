@@ -6,7 +6,7 @@ public class ItemSlideMenu : MonoBehaviour
 {
 	public bool canSlide = true;
 	public float slideSpeed = 10.0f;
-	public float requiredDraggingDistance = 200.0f;
+	public float draggingThreshold = 75.0f;
 	public float slideSlidingDistance = 900.0f;
 	public List<GameObject> itemSlides = new List<GameObject>();
 
@@ -149,7 +149,7 @@ public class ItemSlideMenu : MonoBehaviour
 			cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
 
 			// If the distance moved is long enough:
-			if (cursorDistanceMoved >= requiredDraggingDistance)
+			if (cursorDistanceMoved >= draggingThreshold)
 			{
 				// If the slides can be moved:
 				if (canSlide)

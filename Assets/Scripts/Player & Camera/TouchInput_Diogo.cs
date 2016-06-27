@@ -12,6 +12,7 @@ public class TouchInput_Diogo : MonoBehaviour
 {
     public Slider staminaBar;
     public Camera mainCamera;
+    public Animator playerAnim;
 
     public PlayerController player;
     Vector3 addXPos = new Vector3(.1f, 0, 0);
@@ -19,6 +20,7 @@ public class TouchInput_Diogo : MonoBehaviour
     public int runValue = 0;
     public float runTouchDelay = 0;
     float runTouchDelayMax = 2;
+    public bool isTouchingRight;
 
     bool isTouching;
     /*
@@ -145,11 +147,15 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
+                playerAnim.SetBool("isFacingRight", false);
+                playerAnim.SetBool("isWalking", true);
                 player.GoLeft();
             }
 
             else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
             {
+                playerAnim.SetBool("isFacingRight", true);
+                playerAnim.SetBool("isWalking", true);
                 player.GoRight();
             }
 
@@ -166,14 +172,37 @@ public class TouchInput_Diogo : MonoBehaviour
             if (runValue == 0)
             {
                 runValue++;
+
+                if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
+                {
+                    isTouchingRight = false;
+                }
+                else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
+                {
+                    isTouchingRight = true;
+                }
             }
             else if (runValue == 1)
             {
                 if (runTouchDelay > 0)
                 {
-                    // this will check runValue value, and add 1 if its value is either 0, or 1
-                    // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
-                    runValue++;
+                        // this will check runValue value, and add 1 if its value is either 0, or 1
+                        // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
+                    if (isTouchingRight)
+                    {
+                        if (!((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                        {
+                            runValue++;
+                        }
+                    }
+                    else
+                    {
+                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                        {
+                            runValue++;
+                        }
+                    }
+                            
                 }
             }
 
@@ -184,31 +213,21 @@ public class TouchInput_Diogo : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            playerAnim.SetBool("isRunning", false);
+            playerAnim.SetBool("isWalking", false);
+            playerAnim.SetBool("isIdle", true);
             // Running Input
-
             if (runValue == 2)
             {
+                
                 // if at any point the player releases the touch while the value is 2, it resets to 0
                 runValue = 0;
             }
-
-
-            float swipeDistVertical = (new Vector3(0, Input.mousePosition.y, 0) - new Vector3(0, startPos.y, 0)).magnitude;
-            // gets a single value to see if a minimum swipe distance is bigger than the vector created
-            // ^ this way little swipes won't be considered by the program
-
-            if (swipeDistVertical > minSwipeDistY)
-            {
-                float swipeValue = Mathf.Sign(Input.mousePosition.y - startPos.y);
-                // creates a value by subtracting both positions
-            }
-
         }
 
 
         // For touch device
-
-        // Still have to implement the running system for touch (takes about 20~30 minutes)
+        
 
 #elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
         // If user is touching the screen

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HideBehaviour : MonoBehaviour {
 
-    public PlayerController Player;
+    public PlayerController player;
     public GameObject QuestionMark;
     public bool isHiding;
 
@@ -11,15 +11,26 @@ public class HideBehaviour : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            Player.isSelectionActive = true;
+            player.isSelectionActive = true;
             QuestionMark.SetActive(true);
+            player.selection = PlayerController.Selection.HIDEOBJECT;
         }
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player") {
+
+            player.selection = PlayerController.Selection.HIDEOBJECT;
+
+            }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-            Player.isSelectionActive = false;
+            player.isSelectionActive = false;
             QuestionMark.SetActive(false);
+            player.selection = PlayerController.Selection.DEFAULT;
     }
 
 	void Awake () {

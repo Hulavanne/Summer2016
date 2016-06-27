@@ -27,6 +27,7 @@ public class LevelManager : MonoBehaviour {
 
     public PlayerController player;
     public GameObject playerG;
+    public GameObject QuestionMark;
 
     // public int currentLevel = 1; // begins at level 1
     public bool goNextLevel = true; // goes up one level if true, goes down one level if false
@@ -124,6 +125,11 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel2;
                 }
                 break;
+
+
+                player.isSelectionActive = true;
+                QuestionMark.SetActive(true);
+                player.isOverlappingDoor = true;
         }
 
 

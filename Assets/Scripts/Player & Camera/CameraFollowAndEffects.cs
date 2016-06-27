@@ -19,9 +19,28 @@ public class CameraFollowAndEffects : MonoBehaviour {
     public PlayerController controlPlayer;
     public TouchInput_Diogo playerMotion;
 
-    public void JoinPlayer()
+    public void StartJoinPlayer()
     {
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
+    }
+
+    public void JumpToPlayer()
+    {
+        if ((xDistanceToPlayer >= 2.0f) || (xDistanceToPlayer <= -2.0f))
+        {
+            if (playerPos > cameraPos)
+            {
+                // transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x - 2.0f, transform.position.y, transform.position.z);
+            }
+
+            if (playerPos < cameraPos)
+            {
+                // transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x + 2.0f, transform.position.y, transform.position.z);
+            }
+
+        }
     }
 
     void GetDistance()
@@ -39,7 +58,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
     void Awake()
     {
-        JoinPlayer();
+        StartJoinPlayer();
         turnBlack = false;
         opacity = 1.0f;
     }
@@ -75,23 +94,10 @@ public class CameraFollowAndEffects : MonoBehaviour {
         {
             return;
         }
-        
 
-        if ((xDistanceToPlayer >= 2.0f) || (xDistanceToPlayer <= -2.0f))
-        {
-            if (playerPos > cameraPos)
-            {
-                // transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x - 2.0f, transform.position.y, transform.position.z);
-            }
+        // JumpToPlayer();
 
-            if (playerPos < cameraPos)
-            {
-                // transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x + 2.0f, transform.position.y, transform.position.z);
-            }
-
-        }
+       
 
         // transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
 

@@ -6,6 +6,22 @@ public class PlayerController : MonoBehaviour {
 
     #region declarations
 
+    public enum Selection
+    {
+        DOOR,
+        HIDEOBJECT,
+        DEFAULT,
+    };
+
+    public Selection selection = Selection.DEFAULT;
+
+    public Animator playerAnim;
+
+    public Sprite sprite1;
+    public Sprite sprite2;
+
+    public SpriteRenderer spriteRenderer;
+
     public GameObject rightBoundary;
     public GameObject leftBoundary;
     public float boundaryScale;
@@ -46,8 +62,7 @@ public class PlayerController : MonoBehaviour {
     public float switchingLevelTime; // ^
 
     public bool isSelectionActive; // using this to know if it's colliding with RayCastHit
-
-    public GameObject SelectDoor;
+    
     public GameObject QuestionMark;
 
     // Selecting Declaration
@@ -65,18 +80,11 @@ public class PlayerController : MonoBehaviour {
     public GameObject bckgPlane;
     // public float bckgSpeed = 2.0f;
     // ^ using this to set background speed (to follow player)
-
-    
-
-    Vector3 addZPos = new Vector3(0, 0, 0); // Add Y position to player (to change lane)
-    // laning system disabled - add 1.5f to Z value to switch back on
-
-
-
-    Vector3 addXPos = new Vector3(.04f, 0, 0); // Add X position to player (to move < or >)
+ 
+    Vector3 addXPos = new Vector3(2f, 0, 0); // Add X position to player (to move < or >)
 
     //running value
-    Vector3 addXRunPos = new Vector3(.08f, 0, 0); 
+    Vector3 addXRunPos = new Vector3(4f, 0, 0); 
 
     Vector3 tempVec; // Vector being used to make background follow (slowly)
 
@@ -141,6 +149,11 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
+        playerAnim.SetBool("isFacingRight", false);
+        playerAnim.SetBool("isWalking", true);
+        playerAnim.SetBool("isIdle", false);
+
+        cameraReference.JumpToPlayer();
 
         if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -149,16 +162,24 @@ public class PlayerController : MonoBehaviour {
 
         if (isRunning) // reference for this in TouchInput
         {
+            playerAnim.SetBool("isRunning", true);
+            //playeranim is running left
             transform.position -= addXRunPos * Time.deltaTime;
         }
         else
         {
+            //playeranim is walking right
             transform.position -= addXPos * Time.deltaTime;
         }
     }
 
     public void GoRight()
     {
+        playerAnim.SetBool("isFacingRight", true);
+        playerAnim.SetBool("isWalking", true);
+        playerAnim.SetBool("isIdle", false);
+
+        cameraReference.JumpToPlayer();
 
         if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -167,10 +188,13 @@ public class PlayerController : MonoBehaviour {
 
         if (isRunning) // reference for this in TouchInput
         {
+            playerAnim.SetBool("isRunning", true);
+            //playeranim is running right
             transform.position += addXRunPos * Time.deltaTime;
         }
         else
         {
+            //playeranim is walking right
             transform.position += addXPos * Time.deltaTime;
         }
     }
@@ -179,6 +203,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (!isHidden)
         {
+            playerAnim.SetBool("isHidden", true);
             transform.position += tempVec;
             isHidden = true;
             canMove = false;
@@ -189,6 +214,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (isHidden)
         {
+            playerAnim.SetBool("isHidden", false);
             transform.position -= tempVec;
             isHidden = false;
             canMove = true;
@@ -196,7 +222,12 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Awake () {
-       
+        
+        if(spriteRenderer.sprite == null)
+        {
+            spriteRenderer.sprite = sprite1;
+        }
+
         screenWidth = Screen.width;
         screenHeight = Screen.height;
 
@@ -275,11 +306,11 @@ public class PlayerController : MonoBehaviour {
         foreach (Collider2D col in collidedDoors)
         {
 
-            if ((hit.collider && hit.collider.tag == "Door") && (isSelectionActive))
+            if ((hit.collider && hit.collider.tag == "Door") && (isSelectionActive) && (selection == Selection.DOOR))
             {
                 switchingLevel = true;
             }
-            else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive))
+            else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.DOOR))
                 && isOverlappingDoor)
             {
                 switchingLevel = true;
@@ -289,16 +320,18 @@ public class PlayerController : MonoBehaviour {
         foreach (Collider2D col in collidedHideObjects)
         {
 
-            if ((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive))
+            if ((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
             {
                 tempVec = new Vector3(0, 0, 5);
                 if (isHidden)
                 {
                     PlayerUnhide();
+                    spriteRenderer.sprite = sprite1;
                 }
                 else if (canHide)
                 {
                     PlayerHide();
+                    spriteRenderer.sprite = sprite2;
                 }
             }
         }
@@ -334,7 +367,7 @@ public class PlayerController : MonoBehaviour {
         }
         if (switchingLevelTime >= 1) // note that this 1 is a timer
         {
-            cameraReference.JoinPlayer();
+            cameraReference.StartJoinPlayer();
             canMove = true;
 
             manageLevel.ChangeLevel();

@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
 	//public int levelId;
 
 	public InventoryManager inventoryManager;
+    public GameObject GUI;
 	public GameObject pauseOverlay;
 	public GameObject optionsOverlay;
 	public GameObject loadMenu;
@@ -25,7 +26,12 @@ public class MenuController : MonoBehaviour
 			inventoryManager = transform.GetComponentInChildren<InventoryManager>();
 		}
 
-		if (transform.FindChild("PauseScreen") != null)
+        if (transform.FindChild("GUI") != null)
+        {
+            GUI = transform.FindChild("GUI").gameObject;
+        }
+
+        if (transform.FindChild("PauseScreen") != null)
 		{
 			pauseOverlay = transform.FindChild("PauseScreen").gameObject;
 			pauseOverlay.SetActive(false);
@@ -64,7 +70,9 @@ public class MenuController : MonoBehaviour
 
 	public void PauseGame()
 	{
-		gamePaused = true;
+        GUI.SetActive(false);
+
+        gamePaused = true;
 		pauseOverlay.SetActive(true);
 		Time.timeScale = 0;
 
@@ -73,6 +81,8 @@ public class MenuController : MonoBehaviour
 
     public void ResumeGame()
     {
+        GUI.SetActive(true);
+
         Time.timeScale = 1;
         pauseOverlay.SetActive(false);
         gamePaused = false;

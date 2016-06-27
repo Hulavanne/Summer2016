@@ -39,20 +39,23 @@ public class MenuController : MonoBehaviour
 			{
 				optionsOverlay = GameObject.Find("OptionsOverlay");
 				optionsOverlay.GetComponent<MenuController>().menu = menu;
-				optionsOverlay.SetActive(false);
+				//optionsOverlay.SetActive(false);
 			}
 			if (GameObject.Find("LoadMenu") != null)
 			{
 				loadMenu = GameObject.Find("LoadMenu");
 				loadMenu.GetComponent<MenuController>().menu = menu;
-				loadMenu.SetActive(false);
+				//loadMenu.SetActive(false);
 			}
 		}
 		else
 		{
 			optionsOverlay = transform.gameObject;
+			transform.gameObject.SetActive(false);
 		}
 	}
+
+	//IN-GAME
 
 	public void GoToScene(string sceneName)
 	{
@@ -96,6 +99,8 @@ public class MenuController : MonoBehaviour
 	{
 		Debug.Log("Playing Button Sound Effect");
 	}
+
+	//MAIN MENU
 
 	public void NewGame()
 	{

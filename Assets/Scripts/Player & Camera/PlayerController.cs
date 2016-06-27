@@ -149,11 +149,11 @@ public class PlayerController : MonoBehaviour {
 
         if (isRunning) // reference for this in TouchInput
         {
-            transform.position -= addXRunPos;
+            transform.position -= addXRunPos * Time.deltaTime;
         }
         else
         {
-            transform.position -= addXPos;
+            transform.position -= addXPos * Time.deltaTime;
         }
     }
 
@@ -167,11 +167,11 @@ public class PlayerController : MonoBehaviour {
 
         if (isRunning) // reference for this in TouchInput
         {
-            transform.position += addXRunPos;
+            transform.position += addXRunPos * Time.deltaTime;
         }
         else
         {
-            transform.position += addXPos;
+            transform.position += addXPos * Time.deltaTime;
         }
     }
 

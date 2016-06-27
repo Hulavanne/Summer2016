@@ -5,16 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
+	public static bool startingNewGame = false;
 	public static bool gamePaused = false;
 	//public string SceneToGo;
 	//public int levelId;
 
-	InventoryManager inventoryManager;
-	GameObject pauseOverlay;
-	GameObject optionsOverlay;
-	GameObject menu;
+	public InventoryManager inventoryManager;
+	public GameObject pauseOverlay;
+	public GameObject optionsOverlay;
+	public GameObject loadMenu;
+	public GameObject menu;
     
-	void Awake ()
+	void Awake()
     {
 		Time.timeScale = 1;
 
@@ -29,7 +31,7 @@ public class MenuController : MonoBehaviour
 			pauseOverlay.SetActive(false);
 		}
 
-		if (transform.name != "OptionsOverlay")
+		if (transform.name != "OptionsOverlay" && transform.name != "LoadMenu")
 		{
 			menu = transform.gameObject;
 
@@ -38,6 +40,12 @@ public class MenuController : MonoBehaviour
 				optionsOverlay = GameObject.Find("OptionsOverlay");
 				optionsOverlay.GetComponent<MenuController>().menu = menu;
 				optionsOverlay.SetActive(false);
+			}
+			if (GameObject.Find("LoadMenu") != null)
+			{
+				loadMenu = GameObject.Find("LoadMenu");
+				loadMenu.GetComponent<MenuController>().menu = menu;
+				loadMenu.SetActive(false);
 			}
 		}
 		else
@@ -87,6 +95,94 @@ public class MenuController : MonoBehaviour
 	public void PlaySoundEffect()
 	{
 		Debug.Log("Playing Button Sound Effect");
+	}
+
+	public void NewGame()
+	{
+		MenuController.startingNewGame = true;
+		SavingAndLoading.LoadSavedGames();
+
+		if (SavingAndLoading.savedGames.Count == 0)
+		{
+			StartNewGame(0);
+		}
+		else
+		{
+			OpenLoadMenu(true);
+		}
+	}
+
+	public void OpenLoadMenu(bool pickSaveSlot)
+	{
+		loadMenu.SetActive(true);
+		menu.SetActive(false);
+
+		Text titleText = transform.FindChild("Title").GetComponent<Text>();
+
+		if (pickSaveSlot)
+		{
+			titleText.text = "Pick A Save Slot";
+		}
+		else
+		{
+			titleText.text = "Load Game";
+		}
+	}
+
+	public void PickSaveSlot(int saveSlotIndex)
+	{
+		// Picking a slot to save a new game to
+		if (MenuController.startingNewGame)
+		{
+			StartNewGame(saveSlotIndex);
+		}
+		// Loading an existing game file
+		else
+		{
+			LoadGame(saveSlotIndex);
+		}
+	}
+
+	public void StartNewGame(int saveSlotIndex)
+	{
+		Game newGame = new Game();
+		Game.current = newGame;
+
+		if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
+		{
+			SavingAndLoading.savedGames[saveSlotIndex] = newGame;
+		}
+		else
+		{
+			SavingAndLoading.savedGames.Add(newGame);
+		}
+
+		SavingAndLoading.SaveGame();
+		MenuController.startingNewGame = false;
+		GoToScene("MainScene");
+	}
+
+	public void LoadGame(int gameIndex)
+	{
+		SavingAndLoading.LoadSavedGames();
+		Game.current = SavingAndLoading.savedGames[gameIndex];
+		GoToScene(Game.current.level);
+	}
+
+	public void CloseLoadMenu()
+	{
+		MenuController.startingNewGame = false;
+
+		menu.SetActive(true);
+
+		if (loadMenu != null)
+		{
+			loadMenu.SetActive(false);
+		}
+		else
+		{
+			this.gameObject.SetActive(false);
+		}
 	}
 
 	//OPTIONS

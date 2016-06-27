@@ -7,7 +7,7 @@ public class InventoryItemSlots : MonoBehaviour
 {
 	public List<GameObject> itemSlots = new List<GameObject>();
 	public List<GameObject> itemsInSlots = new List<GameObject>();
-	public GameObject itemDescription;
+	public GameObject itemDescriptionObject;
 
 	static public bool inspectingItem = false;
 	static public int inspectedItemIndex = -1;
@@ -28,8 +28,8 @@ public class InventoryItemSlots : MonoBehaviour
 			}
 			else
 			{
-				itemDescription = child.gameObject;
-				itemDescription.SetActive(false);
+				itemDescriptionObject = child.gameObject;
+				itemDescriptionObject.SetActive(false);
 			}
 		}
 
@@ -84,9 +84,8 @@ public class InventoryItemSlots : MonoBehaviour
 		for (int i = 0; i < itemSlots.Count; ++i)
 		{
 			DeactivateItemSlot(i);
-			Debug.Log(i);
 		}
-		itemDescription.SetActive(false);
+		itemDescriptionObject.SetActive(false);
 	}
 
 	public void ClearItemSlots()
@@ -155,8 +154,8 @@ public class InventoryItemSlots : MonoBehaviour
 			}
 			itemSlots[index].transform.localPosition = itemSlots[0].transform.localPosition;
 
-			itemDescription.SetActive(true);
-			itemDescription.GetComponentInChildren<Text>().text = itemsInSlots[index].GetComponent<ItemData>().description;
+			itemDescriptionObject.SetActive(true);
+			itemDescriptionObject.GetComponentInChildren<Text>().text = itemsInSlots[index].GetComponent<ItemData>().description;
 			inspectingItem = true;
 			inspectedItemIndex = index;
 		}
@@ -181,13 +180,15 @@ public class InventoryItemSlots : MonoBehaviour
 		}
 		itemSlots[inspectedItemIndex].transform.localPosition = itemSlotPositions[inspectedItemIndex];
 
-		itemDescription.SetActive(false);
+		itemDescriptionObject.SetActive(false);
 		inspectingItem = false;
 		inspectedItemIndex = -1;
 	}
 
 	public void UseItem()
 	{
+		Debug.Log("Using item '" + itemsInSlots[inspectedItemIndex].name + "'");
+
 		if (inspectedItemIndex == 0)
 		{
 			

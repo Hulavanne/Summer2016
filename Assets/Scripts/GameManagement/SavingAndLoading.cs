@@ -9,7 +9,7 @@ public static class SavingAndLoading
 	public static List<Game> savedGames = new List<Game>();
 	public const string SAVE_PATH = "/SavedGames.memories";
 
-	public static void SaveGame()
+	public static void SaveGames()
 	{
 		BinaryFormatter binaryFormatter = new BinaryFormatter();
 		FileStream file = File.Create(Application.persistentDataPath + SAVE_PATH);

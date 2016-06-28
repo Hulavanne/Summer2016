@@ -3,6 +3,8 @@ using System.Collections;
 
 public class NavigationTest : MonoBehaviour
 {
+	public Vector2 startingPosition;
+
 	// Targets
 	public Transform target1;
 	public Transform target2;
@@ -16,6 +18,12 @@ public class NavigationTest : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
 	{
+		if (Game.current.startingPositionX != 0.0f)
+		{
+			startingPosition = new Vector2(Game.current.startingPositionX, Game.current.startingPositionY);
+			transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+		}
+
 		agent = GetComponentInChildren<NavMeshAgent>();
 		agent.updateRotation = false;
 	}
@@ -51,15 +59,15 @@ public class NavigationTest : MonoBehaviour
 
 		if (Input.GetKeyDown (KeyCode.Q))
 		{
-			agent.SetDestination(target1.position);
+			//agent.SetDestination(target1.position);
 		}
 		else if (Input.GetKeyDown (KeyCode.W))
 		{
-			agent.SetDestination(target2.position);
+			//agent.SetDestination(target2.position);
 		}
 		else if (Input.GetKeyDown (KeyCode.E))
 		{
-			agent.SetDestination(target3.position);
+			//agent.SetDestination(target3.position);
 		}
 	}
 }

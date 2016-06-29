@@ -275,7 +275,6 @@ public class TouchInput_Diogo : MonoBehaviour
                 }
             }
         }
-    }
 #endif
     }
 }

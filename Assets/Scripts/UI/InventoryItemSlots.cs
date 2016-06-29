@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class InventoryItemSlots : MonoBehaviour
 {
 	public List<GameObject> itemSlots = new List<GameObject>();
-	public List<GameObject> itemsInSlots = new List<GameObject>();
+	public List<Item> itemsInSlots = new List<Item>();
 	public GameObject itemDescriptionObject;
 
 	static public bool inspectingItem = false;
@@ -53,31 +52,33 @@ public class InventoryItemSlots : MonoBehaviour
 	{
 		for (int i = 0; i < itemsInSlots.Count; ++i)
 		{
-			GameObject item = itemsInSlots[i];
+			Item itemData = itemsInSlots[i];
 
-			if (item.GetComponent<ItemData>() != null)
+			itemSlotOccupied[i] = true;
+			ActivateItemSlot(i);
+
+			foreach (Transform child in itemSlots[i].transform)
 			{
-				ItemData itemData;
-				itemData = item.GetComponent<ItemData>();
-
-				itemSlotOccupied[i] = true;
-				ActivateItemSlot(i);
-
-				foreach (Transform child in itemSlots[i].transform)
+				if (child.name == "ItemImage")
 				{
-					if (child.name == "ItemImage")
+					Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
+					Sprite icon = null;
+
+					for (int j = 0; j < sprites.Length; ++j)
 					{
-						child.GetComponent<Image>().sprite = itemData.icon;
+						if (sprites[j].name == itemData.iconName)
+						{
+							icon = sprites[j];
+							j = 100;
+						}
 					}
-					else if (child.name == "ItemNameText")
-					{
-						child.GetComponent<Text>().text = itemData.displayName;
-					}
+
+					child.GetComponent<Image>().sprite = icon;
 				}
-			}
-			else
-			{
-				Debug.LogError("InventoryItemSlots -> AssignItemToSlots : ItemData not found in object '" + item.name + "'");
+				else if (child.name == "ItemNameText")
+				{
+					child.GetComponent<Text>().text = itemData.name;
+				}
 			}
 		}
 
@@ -155,7 +156,7 @@ public class InventoryItemSlots : MonoBehaviour
 			itemSlots[index].transform.localPosition = itemSlots[0].transform.localPosition;
 
 			itemDescriptionObject.SetActive(true);
-			itemDescriptionObject.GetComponentInChildren<Text>().text = itemsInSlots[index].GetComponent<ItemData>().description;
+			itemDescriptionObject.GetComponentInChildren<Text> ().text = itemsInSlots [index].description;// GetComponent<ItemData>().description;
 			inspectingItem = true;
 			inspectedItemIndex = index;
 		}

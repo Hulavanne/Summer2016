@@ -23,10 +23,11 @@ public class Savepoint : MonoBehaviour
 
 	void Update()
 	{
-		if (colliding && Input.GetKeyDown(KeyCode.S))
+		if (colliding)// && Input.GetKeyDown(KeyCode.S))
 		{
 			MenuController.savingGame = true;
 			gameManager.collidingSavepoint = transform.gameObject;
+			colliding = false;
 			menuController.OpenLoadMenu();
 		}
 	}

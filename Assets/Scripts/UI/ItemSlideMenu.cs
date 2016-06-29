@@ -6,15 +6,17 @@ public class ItemSlideMenu : MonoBehaviour
 {
 	public bool canSlide = true;
 	public float slideSpeed = 10.0f;
-	public float draggingThreshold = 75.0f;
-	public float slideSlidingDistance = 900.0f;
+	public float slideDraggingThreshold = 10.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
+	public float emptyDraggingThreshold = 100.0f; // Replaces the above value when canSlide is false
+	public float slideSlidingDistance = 1000.0f;
 	public List<GameObject> itemSlides = new List<GameObject>();
 
-	public List<float> slideStartPositionsX = new List<float>();
-	float cursorStartPositionX = 0.0f;
-	float cursorDistanceMoved = 0.0f;
-	bool dragging = false;
-	bool inputLocked = false;
+	List<float> slideStartPositionsX = new List<float>();
+	public GameObject background;
+	float cursorStartPositionX = 0.0f; // Position of the finger / cursor at the start of input
+	float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
+	bool dragging = false; // Is the player dragging the slides
+	bool inputLocked = false; // Insures that only a single slide occurs
 	bool slidesSliding = false;
 	bool slidesResetting = false;
 	string slidingDirection = "left";
@@ -23,7 +25,9 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void Awake()
 	{
-		for (int i = 0; i < transform.childCount; ++i)
+		background = transform.GetChild(0).gameObject;
+
+		for (int i = 1; i < transform.childCount; ++i)
 		{
 			itemSlides.Add(transform.GetChild(i).gameObject);
 			slideStartPositionsX.Add(0);
@@ -54,16 +58,69 @@ public class ItemSlideMenu : MonoBehaviour
 		UpdateSlides();
 	}
 
+	void TouchInput()
+	{
+		// If user is touching the screen
+		if (Input.touchCount > 0)
+		{
+			// Check first touch (prevent issues with multi touch)
+			Touch touch = Input.touches[0];
+			int pointerID = touch.fingerId;
+
+			// If user is not touching a button (eg. pause button)
+			if (!EventSystem.current.IsPointerOverGameObject(pointerID))
+			{
+				// If user just began touching the screen
+				//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
+				if (Input.GetTouch(0).phase == TouchPhase.Began && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				{
+					InputBegan("touch");
+				}
+				// If input is ongoing and the finger is moving
+				if (Input.GetTouch(0).phase == TouchPhase.Moved && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				{
+					InputMoving("touch");
+				}
+				// If input just ended
+				if (Input.GetTouch(0).phase == TouchPhase.Ended && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				{
+					InputEnded();
+				}
+			}
+		}
+	}
+
+	void MouseInput()
+	{
+		// If the left mouse button was just clicked:
+		if (Input.GetMouseButtonDown(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		{
+			InputBegan("mouse");
+		}
+		// If the left mouse button is still pressed down:
+		if (Input.GetMouseButton(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		{
+			InputMoving("mouse");
+		}
+		// If the left mouse button was just released:
+		if (Input.GetMouseButtonUp(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		{
+			InputEnded();
+		}
+	}
+
 	void InputBegan(string inputType)
 	{
 		// Set the starting position of the finger / cursor
 		if (inputType == "touch")
 		{
 			cursorStartPositionX = Input.touches[0].position.x;
+			inputLocked = false;
 		}
 		else if (inputType == "mouse")
 		{
 			cursorStartPositionX = Input.mousePosition.x;
+			inputLocked = false;
 		}
 		else
 		{
@@ -79,94 +136,109 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void InputMoving(string inputType)
 	{
-		// Set the current position of the finger / cursor
-		float cursorCurrentPositionX = 0.0f;
+		if (!inputLocked)
+		{
+			// Set the current position of the finger / cursor
+			float cursorCurrentPositionX = 0.0f;
 
-		if (inputType == "touch")
-		{
-			cursorCurrentPositionX = Input.touches[0].position.x;
-		}
-		else if (inputType == "mouse")
-		{
-			cursorCurrentPositionX = Input.mousePosition.x;
-		}
-		else
-		{
-			// Error message
-			cursorCurrentPositionX = 0.0f;
-			Debug.LogError("ItemSlideMenu -> InputMoving : Invalid inputType: '" + inputType + "'");
-		}
-
-		// Set the distance of the finger / cursor to the start position
-		float cursorDistanceToStartPosition = cursorStartPositionX - cursorCurrentPositionX;
-
-		// If the slides are not yet being dragged:
-		if (!dragging)
-		{
-			// If dragging left
-			if (cursorDistanceToStartPosition > 5)
+			if (inputType == "touch")
 			{
-				// Set direction
-				slidingDirection = "left";
-
-				// If the slides can be moved:
-				if (canSlide)
-				{
-					// Fill the item slots of the slides
-					inventoryManager.FillItemSlots(slidingDirection);
-				}
-
-				// Slides are no loger being dragged
-				dragging = true;
+				cursorCurrentPositionX = Input.touches[0].position.x;
 			}
-			// If dragging right
-			else if (cursorDistanceToStartPosition < -5)
+			else if (inputType == "mouse")
 			{
-				slidingDirection = "right";
-
-				// If the slides can be moved:
-				if (canSlide)
-				{
-					// Fill the item slots of the slides
-					inventoryManager.FillItemSlots(slidingDirection);
-				}
-
-				// Slides are no loger being dragged
-				dragging = true;
+				cursorCurrentPositionX = Input.mousePosition.x;
 			}
-		}
-		else
-		{
-			// Loop through all the slides
-			for (int i = 0; i < itemSlides.Count; ++i)
+			else
 			{
-				// Update the local position of the slide so that it follows the finger / cursor
-				RectTransform slide = itemSlides[i].GetComponent<RectTransform>();
-				slide.localPosition = new Vector3(slideStartPositionsX[i] - 1 * cursorDistanceToStartPosition, slide.localPosition.y, slide.localPosition.z);
+				// Error message
+				cursorCurrentPositionX = 0.0f;
+				Debug.LogError("ItemSlideMenu -> InputMoving : Invalid inputType: '" + inputType + "'");
 			}
 
-			// Set the distance that the finger / cursor has moved since input began
-			cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
+			// Set the distance of the finger / cursor to the start position
+			float cursorDistanceToStartPosition = cursorStartPositionX - cursorCurrentPositionX;
 
-			// If the distance moved is long enough:
-			if (cursorDistanceMoved >= draggingThreshold)
+			// If the slides are not yet being dragged:
+			if (!dragging)
 			{
-				// If the slides can be moved:
-				if (canSlide)
+				// If dragging left
+				if (cursorDistanceToStartPosition > 5)
 				{
-					// Start sliding the slides
-					slidesSliding = true;
+					// Set direction
+					slidingDirection = "left";
+
+					// If the slides can be moved:
+					if (canSlide)
+					{
+						// Fill the item slots of the slides
+						inventoryManager.FillItemSlots(slidingDirection);
+					}
+
+					// Slides are being dragged
+					dragging = true;
 				}
-				// If the slides can't be moved:
-				else
+				// If dragging right
+				else if (cursorDistanceToStartPosition < -5)
 				{
-					// Reset the slides back to their original position and lock input
-					slidesResetting = true;
+					slidingDirection = "right";
+
+					// If the slides can be moved:
+					if (canSlide)
+					{
+						// Fill the item slots of the slides
+						inventoryManager.FillItemSlots(slidingDirection);
+					}
+
+					// Slides are being dragged
+					dragging = true;
+				}
+			}
+			else
+			{
+				RectTransform backgroundTransform = background.GetComponent<RectTransform>();
+				backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1 * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+
+				// Loop through all the slides
+				for (int i = 0; i < itemSlides.Count; ++i)
+				{
+					// Update the local position of the slide so that it follows the finger / cursor
+					RectTransform slideTranform = itemSlides[i].GetComponent<RectTransform>();
+					slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 1 * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
+				}
+
+				// Set the distance that the finger / cursor has moved since input began
+				cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
+				// When dragging the screen if this threshold is reached the sliding will be triggered
+				float threshold = slideDraggingThreshold;
+
+				// If the slides can't slide, use the secondary threshold instead
+				if (!canSlide)
+				{
+					threshold = emptyDraggingThreshold;
+				}
+
+				// If the distance moved is long enough:
+				if (cursorDistanceMoved >= threshold)
+				{
+					// If the slides can be moved:
+					if (canSlide)
+					{
+						// Start sliding the slides
+						slidesSliding = true;
+					}
+					// If the slides can't be moved:
+					else
+					{
+						// Reset the slides back to their original position and lock input
+						slidesResetting = true;
+					}
+
+					// Slides are no longer being dragged
+					dragging = false;
+					// Lock input to make sure only a single slide occurs
 					inputLocked = true;
 				}
-
-				// Slides are no loger being dragged
-				dragging = false;
 			}
 		}
 	}
@@ -176,8 +248,7 @@ public class ItemSlideMenu : MonoBehaviour
 		// If input is locked:
 		if (inputLocked)
 		{
-			// Reset the slides back to their original position and release the input lock
-			slidesResetting = false;
+			// Release the lock
 			inputLocked = false;
 		}
 		// If input isn't locked:
@@ -191,7 +262,7 @@ public class ItemSlideMenu : MonoBehaviour
 			}
 		}
 
-		// Slides are no loger being dragged
+		// Slides are no longer being dragged
 		dragging = false;
 	}
 
@@ -228,57 +299,6 @@ public class ItemSlideMenu : MonoBehaviour
 		}
 	}
 
-	void TouchInput()
-	{
-		// If user is touching the screen
-		if (Input.touchCount > 0)
-		{
-			// Check first touch (prevent issues with multi touch)
-			Touch touch = Input.touches[0];
-			int pointerID = touch.fingerId;
-
-			// If user is not touching a button (eg. pause button)
-			if (!EventSystem.current.IsPointerOverGameObject(pointerID))
-			{
-				// If user just began touching the screen
-				//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
-				if (Input.GetTouch(0).phase == TouchPhase.Began && !slidesSliding && !InventoryItemSlots.inspectingItem)
-				{
-					InputBegan("touch");
-				}
-				// If input is ongoing and the finger is moving
-				if (Input.GetTouch(0).phase == TouchPhase.Moved && !slidesSliding && !InventoryItemSlots.inspectingItem && !inputLocked)
-				{
-					InputMoving("touch");
-				}
-				// If input just ended
-				if (Input.GetTouch(0).phase == TouchPhase.Ended && !slidesSliding && !InventoryItemSlots.inspectingItem)
-				{
-					InputEnded();
-				}
-			}
-		}
-	}
-
-	void MouseInput()
-	{
-		// If the left mouse button was just clicked:
-		if (Input.GetMouseButtonDown(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
-		{
-			InputBegan("mouse");
-		}
-		// If the left mouse button is still pressed down:
-		if (Input.GetMouseButton(0) && !slidesSliding && !InventoryItemSlots.inspectingItem && !inputLocked)
-		{
-			InputMoving("mouse");
-		}
-		// If the left mouse button was just released:
-		if (Input.GetMouseButtonUp(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
-		{
-			InputEnded();
-		}
-	}
-
 	void SlideSlides(string direction, float distance, float slidingSpeed, bool snapWhenFinished)
 	{
 		// Multiplies certain values depending on the direction
@@ -289,20 +309,24 @@ public class ItemSlideMenu : MonoBehaviour
 			directionMultiplier *= -1;
 		}
 
+		RectTransform backgroundTransform = background.GetComponent<RectTransform>();
+		Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + directionMultiplier * (distance + 5), backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+		backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
+
 		// For each item slide:
 		for (int i = 0; i < itemSlides.Count; ++i)
 		{
 			// Lerp the slide's local position towards the target distance
-			RectTransform slide = itemSlides[i].GetComponent<RectTransform>();
-			Vector3 targetPosition = new Vector3(slideStartPositionsX[i] + directionMultiplier * (distance + 5), slide.localPosition.y, slide.localPosition.z);
-			slide.localPosition = Vector3.Lerp(slide.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
+			RectTransform slideTransform = itemSlides[i].GetComponent<RectTransform>();
+			targetPosition = new Vector3(slideStartPositionsX[i] + directionMultiplier * (distance + 5), slideTransform.localPosition.y, slideTransform.localPosition.z);
+			slideTransform.localPosition = Vector3.Lerp(slideTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
 
 			bool destinationReached = false;
 
 			if (direction == "left")
 			{
 				// If the slide has moved the wanted distance or more:
-				if (slide.localPosition.x <= slideStartPositionsX[i] + directionMultiplier * distance)
+				if (slideTransform.localPosition.x <= slideStartPositionsX[i] + directionMultiplier * distance)
 				{
 					destinationReached = true;
 				}
@@ -310,7 +334,7 @@ public class ItemSlideMenu : MonoBehaviour
 			else
 			{
 				// If the slide has moved the wanted distance or more:
-				if (slide.localPosition.x >= slideStartPositionsX[i] + directionMultiplier * distance)
+				if (slideTransform.localPosition.x >= slideStartPositionsX[i] + directionMultiplier * distance)
 				{
 					destinationReached = true;
 				}
@@ -318,6 +342,8 @@ public class ItemSlideMenu : MonoBehaviour
 
 			if (destinationReached)
 			{
+				backgroundTransform.localPosition = new Vector3 (slideStartPositionsX[1], backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+
 				// For each item slide:
 				for (int j = 0; j < itemSlides.Count; ++j)
 				{

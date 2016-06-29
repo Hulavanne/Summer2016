@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
@@ -10,7 +9,7 @@ public class MenuController : MonoBehaviour
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
 
-	public GameManager gameManager;
+	GameManager gameManager;
 	InventoryManager inventoryManager;
     GameObject gui;
 	GameObject floatingMessage;
@@ -30,10 +29,6 @@ public class MenuController : MonoBehaviour
 		{
 			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
-		if (transform.GetComponentInChildren<InventoryManager>() != null)
-		{
-			inventoryManager = transform.GetComponentInChildren<InventoryManager>();
-		}
         if (transform.FindChild("GUI") != null)
         {
             gui = transform.FindChild("GUI").gameObject;
@@ -43,6 +38,7 @@ public class MenuController : MonoBehaviour
         if (transform.FindChild("PauseScreen") != null)
 		{
 			pauseOverlay = transform.FindChild("PauseScreen").gameObject;
+			inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
 			pauseOverlay.SetActive(false);
 		}
 		if (transform.name != "OptionsOverlay" && transform.name != "LoadMenu")

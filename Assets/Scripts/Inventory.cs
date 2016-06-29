@@ -1,22 +1,23 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 
 public class Inventory : MonoBehaviour
 {
-	public List<GameObject> itemsInInventory = new List<GameObject>();
+	public List<Item> items = new List<Item>();
 
 	void Awake()
 	{
-		
+		// Load in the items of the current game
+		items = Game.current.items;
 	}
 
 	void Update()
 	{
 		if (Input.GetKeyDown (KeyCode.S))
 		{
-			useItem(itemsInInventory.Count - 1);
+			UseItem(items.Count - 1);
 		}
 	}
 
@@ -24,18 +25,19 @@ public class Inventory : MonoBehaviour
 	{
 		if (other.gameObject.tag == "Item")
 		{
-			addItemToInventory(other.gameObject);
-			other.gameObject.SetActive(false);
+			AddItemToInventory(other.gameObject);
+			//other.gameObject.SetActive(false);
 		}
 	}
 
-	void addItemToInventory(GameObject objectPrefab)
+	void AddItemToInventory(GameObject item)
 	{
-		itemsInInventory.Add(objectPrefab);
+		items.Add(item.GetComponent<ItemData>().item);
+		Destroy(item.gameObject);
 	}
 
-	void useItem(int index)
+	void UseItem(int index)
 	{
-		itemsInInventory.Remove(itemsInInventory[index]);
+		items.Remove(items[index]);
 	}
 }

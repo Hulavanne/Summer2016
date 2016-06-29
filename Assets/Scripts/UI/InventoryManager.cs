@@ -7,8 +7,8 @@ public class InventoryManager : MonoBehaviour
 	public int numberOfSlides;
 
 	Inventory inventory;
-	List<GameObject> itemsInInventory = new List<GameObject>();
-	List<List<GameObject>> itemsInSlides = new List<List<GameObject>>();
+	List<Item> items = new List<Item>();
+	List<List<Item>> itemsInSlides = new List<List<Item>>();
 	ItemSlideMenu itemSlideMenu;
 
 	void Awake()
@@ -20,18 +20,18 @@ public class InventoryManager : MonoBehaviour
 
 	public void SetSlideVariables()
 	{
-		itemsInInventory = inventory.itemsInInventory;
+		items = inventory.items;
 
-		if (itemsInInventory.Count > 0)
+		if (items.Count > 0)
 		{
-			numberOfSlides = Mathf.CeilToInt(itemsInInventory.Count / 3.0f);
+			numberOfSlides = Mathf.CeilToInt(items.Count / 3.0f);
 		}
 		else
 		{
 			numberOfSlides = 1;
 		}
 
-		if (itemsInInventory.Count > 3)
+		if (items.Count > 3)
 		{
 			itemSlideMenu.canSlide = true;
 		}
@@ -79,19 +79,19 @@ public class InventoryManager : MonoBehaviour
 
 		for (int i = 0; i < numberOfSlides; ++i)
 		{
-			List<GameObject> tempItemsList = new List<GameObject>();
+			List<Item> tempItemsList = new List<Item>();
 
-			if (itemsInInventory.Count > i * 3)
+			if (items.Count > i * 3)
 			{
-				tempItemsList.Add(itemsInInventory[i * 3]);
+				tempItemsList.Add(items[i * 3]);
 			}
-			if (itemsInInventory.Count > i * 3 + 1)
+			if (items.Count > i * 3 + 1)
 			{
-				tempItemsList.Add(itemsInInventory[i * 3 + 1]);
+				tempItemsList.Add(items[i * 3 + 1]);
 			}
-			if (itemsInInventory.Count > i * 3 + 2)
+			if (items.Count > i * 3 + 2)
 			{
-				tempItemsList.Add(itemsInInventory[i * 3 + 2]);
+				tempItemsList.Add(items[i * 3 + 2]);
 			}
 
 			itemsInSlides.Add(tempItemsList);
@@ -103,15 +103,15 @@ public class InventoryManager : MonoBehaviour
 		// Fill next slide
 		if (itemsInSlides[itemsInSlidesIndex].Count > 0)
 		{
-			itemSlide.itemsInSlots.Add(itemsInInventory[0]);
+			itemSlide.itemsInSlots.Add(itemsInSlides[itemsInSlidesIndex][0]);
 		}
 		if (itemsInSlides[itemsInSlidesIndex].Count > 1)
 		{
-			itemSlide.itemsInSlots.Add(itemsInInventory[1]);
+			itemSlide.itemsInSlots.Add(itemsInSlides[itemsInSlidesIndex][1]);
 		}
 		if (itemsInSlides[itemsInSlidesIndex].Count > 2)
 		{
-			itemSlide.itemsInSlots.Add(itemsInInventory[2]);
+			itemSlide.itemsInSlots.Add(itemsInSlides[itemsInSlidesIndex][2]);
 		}
 
 		itemSlide.AssignItemsToSlots();

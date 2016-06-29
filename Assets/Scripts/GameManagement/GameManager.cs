@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviour
 			seconds = game.seconds = (int)playedTime % 60;
 			minutes = game.minutes = ((int)playedTime / 60) % 60;
 			hours = game.hours = ((int)playedTime / 3600) % 24;
+
+			// Update the items in the player's inventory of the current game
+			game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
 		}
 	}
 
@@ -68,10 +71,5 @@ public class GameManager : MonoBehaviour
 		seconds = game.seconds;
 		minutes = game.minutes;
 		hours = game.hours;
-	}
-
-	void OnGUI()
-	{
-		//GUI.Label(new Rect(50, 50, 400, 50), "Played Time: " + hours.ToString() + " Hours " + minutes.ToString() + " Minutes " + seconds.ToString() + " Seconds");
 	}
 }

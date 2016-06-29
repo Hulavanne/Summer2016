@@ -2,16 +2,12 @@
 using System.Collections;
 using UnityEngine.UI;
 
-// To comment this properly, I still have to go through this code so I know how it really works
-// ^ I followed a youtube tutorial, so I'm still kind of unsure of what some things do.
-
 public class ActivateTextAtLine : MonoBehaviour {
+
+    public string NPCName;
 
     public PlayerController player;
     public GameObject selection;
-
-    public int[] activateYesNoButtonsAtLines;
-    public int[] activateOptButtonsAtLines;
 
     public bool showYesNoButtons;
     public bool showOptButtons;
@@ -42,34 +38,37 @@ public class ActivateTextAtLine : MonoBehaviour {
     private bool waitForPress;
 
     public bool destroyWhenActivated;
-
-	// Use this for initialization
-	void Awake ()
-    {
-        // theTextBox = FindObjectOfType<TextBoxManager>();
-	}
-	
-	// Update is called once per frame
+    public TextList textnumber;
+    
 	void Update ()
     {
 	    if (player.talkToNPC)
         {
-            Debug.Log("talktoNPC working");
+            if (player.NPCName == "NPC_1") ReloadTextRefScript(textnumber.Text1, textnumber.buttonsYesNo1, textnumber.buttonsOpt1);
+            if (player.NPCName == "NPC_2") ReloadTextRefScript(textnumber.Text2, textnumber.buttonsYesNo2, textnumber.buttonsOpt2);
+            if (player.NPCName == "NPC_3") ReloadTextRefScript(textnumber.Text3, textnumber.buttonsYesNo3, textnumber.buttonsOpt3);
 
             player.talkToNPC = false;
-            player.playerAnim.SetBool("isIdle", true);
-            player.playerAnim.SetBool("isWalking", false);
-
-            theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
-                Button1G, Button2G, Button3G, Button4G);
-            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines,
-                GetComponent<ActivateTextAtLine>());
-            theTextBox.currentLine = startLine;
-            theTextBox.endAtLine = endLine;
-            theTextBox.EnableTextBox();
-
         }
 	}
+
+    public void ReloadTextRefScript(TextAsset currentText,
+        int[] currentYesNoButtons, int[] currentOptButtons)
+    {
+        player.talkToNPC = false;
+        player.playerAnim.SetBool("isIdle", true);
+        player.playerAnim.SetBool("isWalking", false);
+
+        theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
+            Button1G, Button2G, Button3G, Button4G);
+
+        theTextBox.ReloadScript(currentText, currentYesNoButtons, currentOptButtons,
+            GetComponent<ActivateTextAtLine>());       
+
+        theTextBox.currentLine = startLine;
+        theTextBox.endAtLine = endLine;
+        theTextBox.EnableTextBox();
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -91,27 +90,6 @@ public class ActivateTextAtLine : MonoBehaviour {
                 waitForPress = true;
                 return;
             }
-
-            
-            
-        }
-    }
-
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if (player.talkToNPC)
-        {
-            /*
-            Debug.Log("talktoNPC working");
-            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines,
-                GetComponent<ActivateTextAtLine>());
-            theTextBox.currentLine = startLine;
-            theTextBox.endAtLine = endLine;
-            theTextBox.EnableTextBox();
-
-            theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
-                Button1G, Button2G, Button3G, Button4G);
-                */
         }
     }
 

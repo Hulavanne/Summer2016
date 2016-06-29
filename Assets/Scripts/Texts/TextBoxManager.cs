@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour {
 
+    public bool showCurrentYesNoButtons;
+    public bool showCurrentOptButtons;
+
     public GameObject OptTextBox;
     public ActivateTextAtLine textRef;
 
@@ -58,58 +61,46 @@ public class TextBoxManager : MonoBehaviour {
 
     public float typeSpeed;
 
+    public void OnOptButtonClick()
+    {
+        OptTextBox.SetActive(false);
+        showCurrentOptButtons = false;
+        hasClickedOptButton = true;
+    }
+
     public void OnOpt1Click()
     {
         Debug.Log("Clicked Opt 1 Button.");
-        OptTextBox.SetActive(false);
-        textRef.showOptButtons = false;
-        hasClickedOptButton = true;
-        // showOptButtons = false;
+        OnOptButtonClick();
     }
-
     public void OnOpt2Click()
     {
         Debug.Log("Clicked Opt 2 Button.");
-        OptTextBox.SetActive(false);
-        textRef.showOptButtons = false;
-        hasClickedOptButton = true;
-        // showOptButtons = false;
+        OnOptButtonClick();
     }
-
     public void OnOpt3Click()
     {
         Debug.Log("Clicked Opt 3 Button.");
-        OptTextBox.SetActive(false);
-        textRef.showOptButtons = false;
-        hasClickedOptButton = true;
-        // showOptButtons = false;
+        OnOptButtonClick();
     }
-
     public void OnOpt4Click()
     {
         Debug.Log("Clicked Opt 4 Button.");
-        OptTextBox.SetActive(false);
-        textRef.showOptButtons = false;
-        hasClickedOptButton = true;
-        // showOptButtons = false;
+        OnOptButtonClick();
     }
-
-
 
     public void onYesClick()
     {
         Debug.Log("Clicked Yes Button.");
-        textRef.showYesNoButtons = false;
+        showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
-        // showYesNoButtons = false;
     }
 
     public void onNoClick()
     {
         Debug.Log("Clicked No Button");
-        textRef.showYesNoButtons = false;
+        showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
-        // showYesNoButtons = false;
     }
 
     public void setYesNoButtons (bool value)
@@ -118,7 +109,7 @@ public class TextBoxManager : MonoBehaviour {
 
         if (value)
         {
-            textRef.showYesNoButtons = true;
+            showCurrentYesNoButtons = true;
         }
     }
 
@@ -130,9 +121,8 @@ public class TextBoxManager : MonoBehaviour {
             {
                 if (lineNum == currentLine)
                 {
-                    textRef.showYesNoButtons = true;
+                    showCurrentYesNoButtons = true;
                 }
-
             }
         }
     }
@@ -146,9 +136,8 @@ public class TextBoxManager : MonoBehaviour {
                 if (lineNum == currentLine)
                 {
                     OptTextBox.SetActive(true);
-                    textRef.showOptButtons = true;
+                    showCurrentOptButtons = true;
                 }
-
             }
 
             OptTextBox.SetActive(true);
@@ -157,7 +146,6 @@ public class TextBoxManager : MonoBehaviour {
 
     void Awake()
     {
-
         yesButtonG.SetActive(false);
         noButtonG.SetActive(false);
         OptTextBox.SetActive(false);
@@ -167,10 +155,6 @@ public class TextBoxManager : MonoBehaviour {
         if (textFile != null)
         {
             textLines = (textFile.text.Split('\n'));
-        }
-        else
-        {
-            // Debug.Log("Text not found.");
         }
 
         if (endAtLine == 0)
@@ -186,33 +170,28 @@ public class TextBoxManager : MonoBehaviour {
         {
             DisableTextBox();
         }
-
-        // textLines[1] += currentLine;
-        
     }
 
     void Update()
     {
-
-
         if (!isActive)
         {
             return;
         }
 
-        if (textRef.showYesNoButtons)
+        if (showCurrentYesNoButtons)
         {
             yesButtonG.SetActive(true);
             noButtonG.SetActive(true);
         }
 
-        else if (textRef.showYesNoButtons == false)
+        else if (showCurrentYesNoButtons == false)
         {
             yesButtonG.SetActive(false);
             noButtonG.SetActive(false);
         }
 
-        if (textRef.showOptButtons)
+        if (showCurrentOptButtons)
         {
             if (Button1G != null) Button1G.SetActive(true);
             if (Button2G != null) Button2G.SetActive(true);
@@ -220,18 +199,16 @@ public class TextBoxManager : MonoBehaviour {
             if (Button4G != null) Button4G.SetActive(true);
         }
 
-        else if (textRef.showOptButtons == false)
+        else if (showCurrentOptButtons == false)
         {
             if (Button1G != null) Button1G.SetActive(false);
             if (Button2G != null) Button2G.SetActive(false);
             if (Button3G != null) Button3G.SetActive(false);
             if (Button4G != null) Button4G.SetActive(false);
         }
-
-        // theText.text = textLines[currentLine];
         
-        if ((((Input.GetMouseButtonDown(0)) && (!textRef.showYesNoButtons)) // disable click if there are yes/no buttons
-            && ((Input.GetMouseButtonDown(0)) && (!textRef.showOptButtons))) // disable click if there are option buttons
+        if ((((Input.GetMouseButtonDown(0)) && (!showCurrentYesNoButtons)) // disable click if there are yes/no buttons
+            && ((Input.GetMouseButtonDown(0)) && (!showCurrentOptButtons))) // disable click if there are option buttons
             || (hasClickedYesNoButton) || (hasClickedOptButton)) // proceed if the player clicked a button
             
         {
@@ -239,15 +216,12 @@ public class TextBoxManager : MonoBehaviour {
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 
-            if ((textRef.showYesNoButtons == false) || (showOptButtons == false))
+            if ((showCurrentYesNoButtons == false) || (showOptButtons == false))
             {
 
                 if (!isTyping)
                 {
-
                     currentLine++;
-
-                    // textRef.showYesNoButtons = true; // ACTIVATING HERE
 
                     if (currentLine > endAtLine)
                     {
@@ -264,10 +238,6 @@ public class TextBoxManager : MonoBehaviour {
                 }
             }
         }
-
-
-
-
     }
 
     private IEnumerator TextScroll (string lineOfText)
@@ -284,21 +254,10 @@ public class TextBoxManager : MonoBehaviour {
             letter += 1;
             yield return new WaitForSeconds(typeSpeed);
         }
-
-        // textRef.showYesNoButtons = true;
-
+        
         getYesNoButtonLines();
 
         getOptButtonLines();
-
-        
-        
-        // showOptButtons = true;
-
-        if (showOptButtons)
-        {
-            // OptTextBox.SetActive(true);
-        }
 
         theText.text = lineOfText;
         isTyping = false;
@@ -324,12 +283,6 @@ public class TextBoxManager : MonoBehaviour {
         
         #region Insert Variables
 
-        // Insert any variables or extra text at the end of a line HERE
-
-        int apples = 105;
-
-        textLines[1] += apples;
-
         #endregion
         
         StartCoroutine(TextScroll(textLines[currentLine]));
@@ -337,32 +290,54 @@ public class TextBoxManager : MonoBehaviour {
 
     public void DisableTextBox()
     {
-        // showOptButtons = false;
         OptTextBox.SetActive(false);
-
         textBox.SetActive(false);
         isActive = false;
-
         player.canMove = true;
     }
 
-    public void ReloadScript(TextAsset theText, int[] a, int[] b, ActivateTextAtLine reference)
+    public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines, ActivateTextAtLine reference)
     {
+        textFile = newText;
         textRef = reference;
 
-        if (theText != null)
+        if (textFile != null)
+        {
+            textLines = (textFile.text.Split('\n'));
+        }
+
+        if (newText != null)
         {
             textLines = new string[1];
-            textLines = (theText.text.Split('\n'));
+            textLines = (newText.text.Split('\n'));
 
             int x = 0;
-            foreach (int num in a)
+
+            //reset numbers
+
+            foreach (int num in activateYesNoButtonsAtLines)
+            {
+                activateYesNoButtonsAtLines[x] = -1;
+                x++;
+            }
+            x = 0;
+
+            foreach (int num in activateOptButtonsAtLines)
+            {
+                activateOptButtonsAtLines[x] = -1;
+                x++;
+            }
+            x = 0;
+
+            // cast buttons into this script
+
+            foreach (int num in buttonsYesNoAtLines)
             {
                 activateYesNoButtonsAtLines[x] = num;
                 x++;
             }
             x = 0;                                                                                                                         
-            foreach (int num in b)
+            foreach (int num in buttonsOptAtLines)
             {
                 activateOptButtonsAtLines[x] = num;
                 x++;

@@ -13,24 +13,17 @@ public class PlayerController : MonoBehaviour {
         NPC,
         DEFAULT,
     };
-
     public Selection selection = Selection.DEFAULT;
+
+    public string NPCName;
 
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool talkToNPC;
     public Animator playerAnim;
 
-    public Sprite sprite1;
-    public Sprite sprite2;
-
-    public SpriteRenderer spriteRenderer;
-
     public GameObject rightBoundary;
     public GameObject leftBoundary;
-    public float boundaryScale;
-    public float screenWidth;
-    public float screenHeight;
 
     public bool canWalkRight = true;
     public bool canWalkLeft = true;
@@ -45,7 +38,7 @@ public class PlayerController : MonoBehaviour {
     public bool isHidden;
 
     public HideBehaviour selectHide;
-    public ActivateTextAtLine textRef;
+    public TextBoxManager textRef;
 
     public Slider staminaBar;
     public Button yesButton;
@@ -55,9 +48,6 @@ public class PlayerController : MonoBehaviour {
 
     public bool isOverlappingDoor;
     public bool isClickingButton;
-
-    public GameObject[] buttons; // am I using this?
-    public Collider2D[] collidedButtons; // or this?
 
     public LevelManager manageLevel;
 
@@ -89,18 +79,18 @@ public class PlayerController : MonoBehaviour {
     // ^ using this to set background speed (to follow player)
  
     Vector3 addXPos = new Vector3(2f, 0, 0); // Add X position to player (to move < or >)
-
-    //running value
-    Vector3 addXRunPos = new Vector3(4f, 0, 0); 
-
-    Vector3 tempVec; // Vector being used to make background follow (slowly)
-
-    // int position = 0; // used to label and switch lanes --> delete this after disabling up/down funcs.
-
+    Vector3 addXRunPos = new Vector3(4f, 0, 0); // same for running
+    Vector3 tempVec; // Vector being used to hide/unhide
+    
     #endregion
 
     void OnTriggerStay2D(Collider2D other)
     {
+        if (other.tag == "NPC")
+        {
+            NPCName = other.gameObject.name;
+        }
+
         if (other.tag == "RightBoundary")
         {
             canCameraFollow = false;
@@ -123,6 +113,8 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
+        NPCName = "";
+
         if (other.tag == "RightBoundary")
         {
             canWalkRight = true;
@@ -140,7 +132,6 @@ public class PlayerController : MonoBehaviour {
         gameOverObj.SetActive(true);
         opacity += 0.015f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
-        // gameOverObj.GetComponent<CanvasRenderer>.
     }
 
     public void GoLeft()
@@ -226,22 +217,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Awake () {
-        
-        if(spriteRenderer.sprite == null)
-        {
-            spriteRenderer.sprite = sprite1;
-        }
-
-        screenWidth = Screen.width;
-        screenHeight = Screen.height;
-
-        boundaryScale = (1/(screenHeight / screenWidth));
-        if (boundaryScale > 1.8f) boundaryScale = 1.2f * boundaryScale;
-        else if (boundaryScale > 1.0f) boundaryScale = 1.0f * boundaryScale;
-        // boundaryScale = (screenHeight / screenWidth);
-        
-        rightBoundary.transform.localScale = new Vector3(boundaryScale, rightBoundary.transform.localScale.y, rightBoundary.transform.localScale.z);
-        leftBoundary.transform.localScale = new Vector3(boundaryScale, leftBoundary.transform.localScale.y, leftBoundary.transform.localScale.z);
 
         gameOverObj.SetActive(false);
 
@@ -279,16 +254,6 @@ public class PlayerController : MonoBehaviour {
         yesButtonG.SetActive(true);
         noButtonG.SetActive(true);
 
-        buttons = GameObject.FindGameObjectsWithTag("Button");
-
-        if (textRef.showYesNoButtons == false)
-        {
-            yesButtonG.SetActive(false);
-            noButtonG.SetActive(false);
-        }
-
-        b = 0;
-
         // collidedDoors = .FindGameObjectsWithTag("Door");
         // SelectDoor.GetComponent<Collider>(); // ^ this collider is for RayCastHit into the Door
 
@@ -303,18 +268,14 @@ public class PlayerController : MonoBehaviour {
 
     public void OnUserClick()
     {
-        // this will make a mouse/touch input RayCast to select and use the Door
-        // _collided is a collider reference for the Door Object
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
+        // this will make a mouse/touch input RayCast to select and use the Door
         RaycastHit2D hit = Physics2D.Raycast(mouseposition, Input.mousePosition);
 
         foreach (Collider2D col in collidedDoors)
         {
-
             if ((hit.collider && hit.collider.tag == "Door") && (isSelectionActive) && (selection == Selection.DOOR))
             {
                 switchingLevel = true;
@@ -330,7 +291,6 @@ public class PlayerController : MonoBehaviour {
         {
             if ((hit.collider && hit.collider.tag == "NPC") && (isSelectionActive) && (selection == Selection.NPC))
             {
-                Debug.Log("working");
                 talkToNPC = true;
                 QuestionMark.SetActive(false);
                 isSelectionActive = false;
@@ -339,7 +299,6 @@ public class PlayerController : MonoBehaviour {
             else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.NPC))
                 && isOverlappingNPC)
             {
-                Debug.Log("working");
                 talkToNPC = true;
                 QuestionMark.SetActive(false);
                 isSelectionActive = false;
@@ -358,12 +317,10 @@ public class PlayerController : MonoBehaviour {
                 if (isHidden)
                 {
                     PlayerUnhide();
-                    spriteRenderer.sprite = sprite1;
                 }
                 else if (canHide)
                 {
                     PlayerHide();
-                    spriteRenderer.sprite = sprite2;
                 }
             }
         }
@@ -371,10 +328,6 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
-        //Debug.Log("Screen Width : " + Screen.width);
-        //Debug.Log("Screen Height : " + Screen.height);
-
-
         if (isGameOver)
         {
             GameOverSplash();
@@ -383,9 +336,6 @@ public class PlayerController : MonoBehaviour {
             return;
         }
         
-        //if (isHidden) cameraReference.opacity = 0.5f;
-        //else cameraReference.opacity = 0.0f;
-
         #region darkScreen
 
         if (switchingLevel) // if true, turns the screen dark
@@ -401,16 +351,12 @@ public class PlayerController : MonoBehaviour {
         {
             cameraReference.StartJoinPlayer();
             canMove = true;
-
             manageLevel.ChangeLevel();
 
             //resetting these variables
             switchingLevel = false;
             switchingLevelTime = 0.0f;
         }
-
         #endregion
-        
-        
     }
 }

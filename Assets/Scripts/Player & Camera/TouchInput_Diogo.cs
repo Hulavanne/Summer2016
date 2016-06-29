@@ -3,11 +3,6 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-// To Do :
-// > either merge this script with Pyry's or re-organize it other way
-// > remember to cap fps so time.deltaTime remains constant (40 min?)
-// > set other time-related options related to time.deltaTime (25 min)
-
 public class TouchInput_Diogo : MonoBehaviour
 {
     public Slider staminaBar;
@@ -21,8 +16,8 @@ public class TouchInput_Diogo : MonoBehaviour
     public float runTouchDelay = 0;
     float runTouchDelayMax = 2;
     public bool isTouchingRight;
-
     bool isTouching;
+
     /*
     To run, the player must double tap and hold within the second tap.  
     So, we have a runValue that can have of value 0, 1 and 2.
@@ -34,24 +29,16 @@ public class TouchInput_Diogo : MonoBehaviour
     */
 
     public float minSwipeDistY; // minimum swipe distance to prevent accidental touch input
-
-    private Vector2 startPos; // create a starting position Vector2 when the player clicks / touches
-
-    void Awake()
-    {
-
-    }
-
+    
     void Update()
     {
-
         if (player.isGameOver)
         {
             if (Input.GetMouseButton(0))
             {
-                Application.LoadLevel(Application.loadedLevel);
+                // talk to pyry to change this into going back to main menu for example
+                Application.LoadLevel(Application.loadedLevel); // reset the scene
             }
-
             return;
         }
 
@@ -64,8 +51,6 @@ public class TouchInput_Diogo : MonoBehaviour
         {
             staminaBar.value -= Time.deltaTime * 0.18f;
         }
-
-        // Debug.Log(staminaBar.value);
 
         if ((staminaBar.value <= .01f) && (Input.GetMouseButton(0)))
         {
@@ -132,6 +117,7 @@ public class TouchInput_Diogo : MonoBehaviour
                 player.canMove = false;
             }
 
+            #region OtherMovementInput
             // this piece of code is an optimized version of movement that's not being used
             /*
             Camera camera = mainCamera.GetComponent<Camera>();
@@ -150,6 +136,7 @@ public class TouchInput_Diogo : MonoBehaviour
                 player.GoRight();
             }
             */
+            #endregion
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
@@ -170,14 +157,10 @@ public class TouchInput_Diogo : MonoBehaviour
                     player.GoRight();
                 }
             }
-
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            startPos = Input.mousePosition;
-
-
 
             //Running Input
 
@@ -222,7 +205,6 @@ public class TouchInput_Diogo : MonoBehaviour
             // this sets the delay to its max value
         }
 
-
         if (Input.GetMouseButtonUp(0))
         {
             playerAnim.SetBool("isRunning", false);
@@ -231,16 +213,12 @@ public class TouchInput_Diogo : MonoBehaviour
             // Running Input
             if (runValue == 2)
             {
-                
                 // if at any point the player releases the touch while the value is 2, it resets to 0
                 runValue = 0;
             }
         }
 
-
-        // For touch device
-        
-
+// For touch device
 #elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
         // If user is touching the screen
         if (Input.touchCount > 0)
@@ -256,22 +234,12 @@ public class TouchInput_Diogo : MonoBehaviour
                 // switching basic touchBegin and End functions    
 
                 {
-
-
                     case TouchPhase.Began:
-                        player.OnUserClick();
 
-                        startPos = touch.position;
+                        player.OnUserClick();
                         break;
 
-                    // Insert Running Input Here
-
-
                     case TouchPhase.Ended:
-                        float swipeDistVertical = (new Vector3(0, touch.position.y, 0) - new Vector3(0, startPos.y, 0)).magnitude;
-                        // gets a single value to see if a minimum swipe distance is bigger than the vector created
-                        // ^ this way little swipes won't be considered by the program
-
 
                         // Insert Running Input Here
 
@@ -291,7 +259,6 @@ public class TouchInput_Diogo : MonoBehaviour
                                 runValue++;
                             }
                         }
-
                         runTouchDelay = runTouchDelayMax;
                         break;
                 }

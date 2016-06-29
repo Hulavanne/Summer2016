@@ -18,8 +18,6 @@ public class DoorBehaviour : MonoBehaviour {
     {
         if ((AutomaticDoor) && (other.gameObject.tag == "Player"))
         {
-            Debug.Log("hue?");
-
             player.switchingLevel = true;
             if (goesDown) manageLevel.goNextLevel = true;
             else manageLevel.goNextLevel = false;
@@ -57,8 +55,7 @@ public class DoorBehaviour : MonoBehaviour {
             player.selection = PlayerController.Selection.DOOR;
         }
     }
-
-
+    
     void OnTriggerExit2D (Collider2D other)
     {
         if (other.gameObject.tag == "Player")
@@ -69,12 +66,4 @@ public class DoorBehaviour : MonoBehaviour {
             player.selection = PlayerController.Selection.DEFAULT;
         }
     }
-    
-	void Awake () {
-
-    }
-	
-	void Update () {
-	    
-	}
 }

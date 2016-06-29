@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class ActivateTextAtLine : MonoBehaviour {
 
+    public PlayerController player;
+    public GameObject selection;
+
     public int[] activateYesNoButtonsAtLines;
     public int[] activateOptButtonsAtLines;
 
@@ -43,24 +46,28 @@ public class ActivateTextAtLine : MonoBehaviour {
 	// Use this for initialization
 	void Awake ()
     {
-        theTextBox = FindObjectOfType<TextBoxManager>();
+        // theTextBox = FindObjectOfType<TextBoxManager>();
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-	    if (waitForPress && Input.GetKeyDown(KeyCode.J))
+	    if (player.talkToNPC)
         {
-            
-            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines);
+            Debug.Log("talktoNPC working");
+
+            player.talkToNPC = false;
+            player.playerAnim.SetBool("isIdle", true);
+            player.playerAnim.SetBool("isWalking", false);
+
+            theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
+                Button1G, Button2G, Button3G, Button4G);
+            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines,
+                GetComponent<ActivateTextAtLine>());
             theTextBox.currentLine = startLine;
             theTextBox.endAtLine = endLine;
             theTextBox.EnableTextBox();
 
-            if (destroyWhenActivated)
-            {
-                Destroy(gameObject);
-            }
         }
 	}
 
@@ -68,22 +75,43 @@ public class ActivateTextAtLine : MonoBehaviour {
     {
         if (other.name == "Player")
         {
+            player.isOverlappingNPC = true;
+            if (other.gameObject.tag == "Player")
+            {
+                player.isSelectionActive = true;
+                selection.SetActive(true);
+                player.selection = PlayerController.Selection.NPC;
+            }
+
+            player.playerAnim.SetBool("isIdle", true);
+            player.playerAnim.SetBool("isWalking", false);
+
             if (requireButtonPress)
             {
                 waitForPress = true;
                 return;
             }
 
-            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines);
+            
+            
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (player.talkToNPC)
+        {
+            /*
+            Debug.Log("talktoNPC working");
+            theTextBox.ReloadScript(theText, activateYesNoButtonsAtLines, activateOptButtonsAtLines,
+                GetComponent<ActivateTextAtLine>());
             theTextBox.currentLine = startLine;
             theTextBox.endAtLine = endLine;
             theTextBox.EnableTextBox();
 
-            if(destroyWhenActivated)
-            {
-                Destroy(gameObject);
-            }
-
+            theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
+                Button1G, Button2G, Button3G, Button4G);
+                */
         }
     }
 
@@ -91,7 +119,11 @@ public class ActivateTextAtLine : MonoBehaviour {
     {
         if (other.name == "Player")
         {
+            player.isOverlappingNPC = false;
             waitForPress = false;
+            player.selection = PlayerController.Selection.DEFAULT;
+            player.isSelectionActive = false;
+            selection.SetActive(false);
         }
     }
 }

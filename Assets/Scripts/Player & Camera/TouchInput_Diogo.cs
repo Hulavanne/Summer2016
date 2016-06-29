@@ -57,24 +57,30 @@ public class TouchInput_Diogo : MonoBehaviour
 
         if ((staminaBar.value < 100) && (runValue != 2))
         {
-            staminaBar.value += Time.deltaTime * 0.02f;
+            staminaBar.value += Time.deltaTime * 0.05f;
         }
 
         if (runValue == 2)
         {
-            staminaBar.value -= Time.deltaTime * 0.33f;
+            staminaBar.value -= Time.deltaTime * 0.18f;
         }
 
         // Debug.Log(staminaBar.value);
 
         if ((staminaBar.value <= .01f) && (Input.GetMouseButton(0)))
         {
-            staminaBar.value = 0.0f;
+            runValue = 0;
+            playerAnim.SetBool("isIdle", true);
+            playerAnim.SetBool("isWalking", false);
+            playerAnim.SetBool("isRunning", false);
         }
 
-        if (staminaBar.value <= 0)
+        if ((staminaBar.value <= 0.01f) && runValue > 0)
         {
             runValue = 0;
+            playerAnim.SetBool("isIdle", true);
+            playerAnim.SetBool("isWalking", false);
+            playerAnim.SetBool("isRunning", false);
         }
 
         // keeps checking if player is touching the first time
@@ -147,16 +153,22 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
-                playerAnim.SetBool("isFacingRight", false);
-                playerAnim.SetBool("isWalking", true);
+                if (player.canMove)
+                {
+                    playerAnim.SetBool("isFacingRight", false);
+                    playerAnim.SetBool("isWalking", true);
+                }
                 player.GoLeft();
             }
 
             else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
             {
-                playerAnim.SetBool("isFacingRight", true);
-                playerAnim.SetBool("isWalking", true);
-                player.GoRight();
+                if (player.canMove)
+                {
+                    playerAnim.SetBool("isFacingRight", true);
+                    playerAnim.SetBool("isWalking", true);
+                    player.GoRight();
+                }
             }
 
         }

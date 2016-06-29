@@ -10,11 +10,15 @@ public class PlayerController : MonoBehaviour {
     {
         DOOR,
         HIDEOBJECT,
+        NPC,
         DEFAULT,
     };
 
     public Selection selection = Selection.DEFAULT;
 
+    public bool isOverlappingHideObject;
+    public bool isOverlappingNPC;
+    public bool talkToNPC;
     public Animator playerAnim;
 
     public Sprite sprite1;
@@ -72,6 +76,9 @@ public class PlayerController : MonoBehaviour {
     public GameObject[] hideObjects;
     public Collider2D[] collidedHideObjects;
 
+    public GameObject[] npcs;
+    public Collider2D[] collidedNPCs;
+
     public bool canMove = true;
     public bool isRunning;
 
@@ -89,17 +96,6 @@ public class PlayerController : MonoBehaviour {
     Vector3 tempVec; // Vector being used to make background follow (slowly)
 
     // int position = 0; // used to label and switch lanes --> delete this after disabling up/down funcs.
-
-    #region MoveBackground
-    /*
-    void MoveBackground(Vector3 addPosition)
-    {
-        bckgPlane.transform.position += addPosition ;
-    }
-    */
-    #endregion
-
-    // Go up or down function (adds Y vector to transform.position)
 
     #endregion
 
@@ -119,8 +115,8 @@ public class PlayerController : MonoBehaviour {
             canCameraFollow = false;
             if (transform.position.x < leftBoundary.transform.position.x)
             {
-                Debug.Log("working.");
                 canWalkLeft = false;
+                canCameraFollow = false;
             }
         }
     }
@@ -149,10 +145,14 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
-        playerAnim.SetBool("isFacingRight", false);
-        playerAnim.SetBool("isWalking", true);
-        playerAnim.SetBool("isIdle", false);
+        if (canMove)
+        {
+            playerAnim.SetBool("isFacingRight", false);
+            playerAnim.SetBool("isWalking", true);
+            playerAnim.SetBool("isIdle", false);
+        }
 
+        if (canCameraFollow)
         cameraReference.JumpToPlayer();
 
         if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
@@ -175,10 +175,14 @@ public class PlayerController : MonoBehaviour {
 
     public void GoRight()
     {
-        playerAnim.SetBool("isFacingRight", true);
-        playerAnim.SetBool("isWalking", true);
-        playerAnim.SetBool("isIdle", false);
+        if (canMove)
+        {
+            playerAnim.SetBool("isFacingRight", true);
+            playerAnim.SetBool("isWalking", true);
+            playerAnim.SetBool("isIdle", false);
+        }
 
+        if (canCameraFollow)
         cameraReference.JumpToPlayer();
 
         if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
@@ -232,14 +236,10 @@ public class PlayerController : MonoBehaviour {
         screenHeight = Screen.height;
 
         boundaryScale = (1/(screenHeight / screenWidth));
-        Debug.Log(boundaryScale);
         if (boundaryScale > 1.8f) boundaryScale = 1.2f * boundaryScale;
         else if (boundaryScale > 1.0f) boundaryScale = 1.0f * boundaryScale;
         // boundaryScale = (screenHeight / screenWidth);
-
-        Debug.Log(screenWidth);
-        Debug.Log(screenHeight);
-        Debug.Log(boundaryScale);
+        
         rightBoundary.transform.localScale = new Vector3(boundaryScale, rightBoundary.transform.localScale.y, rightBoundary.transform.localScale.z);
         leftBoundary.transform.localScale = new Vector3(boundaryScale, leftBoundary.transform.localScale.y, leftBoundary.transform.localScale.z);
 
@@ -256,12 +256,21 @@ public class PlayerController : MonoBehaviour {
         
         doors = GameObject.FindGameObjectsWithTag("Door");
         hideObjects = GameObject.FindGameObjectsWithTag("HideObject");
+        npcs = GameObject.FindGameObjectsWithTag("NPC");
         
         int b = 0;
 
         foreach (GameObject doorNum in doors)
         {
             collidedDoors[b] = doorNum.GetComponent<Collider2D>();
+            b++;
+        }
+
+        b = 0;
+
+        foreach(GameObject npcNum in npcs)
+        {
+            collidedNPCs[b] = npcNum.GetComponent<Collider2D>();
             b++;
         }
 
@@ -299,9 +308,9 @@ public class PlayerController : MonoBehaviour {
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        Vector2 test = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        RaycastHit2D hit = Physics2D.Raycast(test, Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mouseposition, Input.mousePosition);
 
         foreach (Collider2D col in collidedDoors)
         {
@@ -317,10 +326,33 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
+        foreach (Collider2D col in collidedNPCs)
+        {
+            if ((hit.collider && hit.collider.tag == "NPC") && (isSelectionActive) && (selection == Selection.NPC))
+            {
+                Debug.Log("working");
+                talkToNPC = true;
+                QuestionMark.SetActive(false);
+                isSelectionActive = false;
+                selection = Selection.DEFAULT;
+            }
+            else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.NPC))
+                && isOverlappingNPC)
+            {
+                Debug.Log("working");
+                talkToNPC = true;
+                QuestionMark.SetActive(false);
+                isSelectionActive = false;
+                selection = Selection.DEFAULT;
+            }
+        }
+
         foreach (Collider2D col in collidedHideObjects)
         {
 
-            if ((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
+            if (((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
+                || ((((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
+                && isOverlappingHideObject)))
             {
                 tempVec = new Vector3(0, 0, 5);
                 if (isHidden)

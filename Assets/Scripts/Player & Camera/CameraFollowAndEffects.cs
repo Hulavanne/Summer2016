@@ -31,15 +31,19 @@ public class CameraFollowAndEffects : MonoBehaviour {
             if (playerPos > cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x - 2.0f, transform.position.y, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
 
-            if (playerPos < cameraPos)
+            else if (playerPos < cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x + 2.0f, transform.position.y, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
+        }
 
+        else
+        {
+            transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
         }
     }
 
@@ -86,23 +90,14 @@ public class CameraFollowAndEffects : MonoBehaviour {
         opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
                                                                // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 
-        GetDistance();
-
-        transform.position = new Vector3(transform.position.x, player.transform.position.y + 2, transform.position.z);
-
         if (!controlPlayer.canCameraFollow)
         {
             return;
         }
-
-        // JumpToPlayer();
-
-       
-
-        // transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
-
-
-
+        
+            GetDistance();
+            JumpToPlayer();
+            
         // ^ this makes the camera follow the player in x axis, and specific y+2 axis
         // Alternatively, just parent the camera to the player, add 2 to y, and delete this
     }

@@ -11,6 +11,7 @@ public class HideBehaviour : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
+            player.isOverlappingHideObject = true;
             player.isSelectionActive = true;
             QuestionMark.SetActive(true);
             player.selection = PlayerController.Selection.HIDEOBJECT;
@@ -19,18 +20,18 @@ public class HideBehaviour : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player") {
-
+        if (other.gameObject.tag == "Player")
+        {
             player.selection = PlayerController.Selection.HIDEOBJECT;
-
-            }
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-            player.isSelectionActive = false;
-            QuestionMark.SetActive(false);
-            player.selection = PlayerController.Selection.DEFAULT;
+        player.isOverlappingHideObject = false;
+        player.isSelectionActive = false;
+        QuestionMark.SetActive(false);
+        player.selection = PlayerController.Selection.DEFAULT;
     }
 
 	void Awake () {

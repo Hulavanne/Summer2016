@@ -34,7 +34,7 @@ public class EnemyBehaviour : MonoBehaviour {
     // other
     // public bool IsFollowingPlayer;
 
-    enum EnemyBehav
+    public enum EnemyBehav
     {
         PATROLLING,
         SUSPICIOUS,

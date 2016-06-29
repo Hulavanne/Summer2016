@@ -29,6 +29,8 @@ public class TextBoxManager : MonoBehaviour {
     public GameObject Button3G;
     public GameObject Button4G;
 
+    GameObject btn1G, btn2G, btn3G, btn4G;
+
     public bool showYesNoButtons = true;
     public bool showOptButtons = true;
 
@@ -200,7 +202,6 @@ public class TextBoxManager : MonoBehaviour {
 
         if (textRef.showYesNoButtons)
         {
-            // Debug.Log("workenggg");
             yesButtonG.SetActive(true);
             noButtonG.SetActive(true);
         }
@@ -213,18 +214,18 @@ public class TextBoxManager : MonoBehaviour {
 
         if (textRef.showOptButtons)
         {
-            Button1G.SetActive(true);
-            Button2G.SetActive(true);
-            Button3G.SetActive(true);
-            Button4G.SetActive(true);
+            if (Button1G != null) Button1G.SetActive(true);
+            if (Button2G != null) Button2G.SetActive(true);
+            if (Button3G != null) Button3G.SetActive(true);
+            if (Button4G != null) Button4G.SetActive(true);
         }
 
         else if (textRef.showOptButtons == false)
         {
-            Button1G.SetActive(false);
-            Button2G.SetActive(false);
-            Button3G.SetActive(false);
-            Button4G.SetActive(false);
+            if (Button1G != null) Button1G.SetActive(false);
+            if (Button2G != null) Button2G.SetActive(false);
+            if (Button3G != null) Button3G.SetActive(false);
+            if (Button4G != null) Button4G.SetActive(false);
         }
 
         // theText.text = textLines[currentLine];
@@ -232,7 +233,9 @@ public class TextBoxManager : MonoBehaviour {
         if ((((Input.GetMouseButtonDown(0)) && (!textRef.showYesNoButtons)) // disable click if there are yes/no buttons
             && ((Input.GetMouseButtonDown(0)) && (!textRef.showOptButtons))) // disable click if there are option buttons
             || (hasClickedYesNoButton) || (hasClickedOptButton)) // proceed if the player clicked a button
+            
         {
+            player.talkToNPC = false;
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 
@@ -343,8 +346,10 @@ public class TextBoxManager : MonoBehaviour {
         player.canMove = true;
     }
 
-    public void ReloadScript(TextAsset theText, int[] a, int[] b)
+    public void ReloadScript(TextAsset theText, int[] a, int[] b, ActivateTextAtLine reference)
     {
+        textRef = reference;
+
         if (theText != null)
         {
             textLines = new string[1];
@@ -356,7 +361,7 @@ public class TextBoxManager : MonoBehaviour {
                 activateYesNoButtonsAtLines[x] = num;
                 x++;
             }
-            x = 0;
+            x = 0;                                                                                                                         
             foreach (int num in b)
             {
                 activateOptButtonsAtLines[x] = num;
@@ -364,5 +369,19 @@ public class TextBoxManager : MonoBehaviour {
             }
             x = 0;
         }
+    }
+
+    public void ReloadButtons (Button btn1, Button btn2, Button btn3, Button btn4,
+        GameObject Button1G, GameObject Button2G, GameObject Button3G, GameObject Button4G)
+    {
+        Button1 = btn1;
+        Button2 = btn2;
+        Button3 = btn3;
+        Button4 = btn4;
+
+        this.Button1G = Button1G;
+        this.Button2G = Button2G;
+        this.Button3G = Button3G;
+        this.Button4G = Button4G;
     }
 }

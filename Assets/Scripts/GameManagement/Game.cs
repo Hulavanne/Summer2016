@@ -8,8 +8,10 @@ public class Game
 	public static int currentIndex; // Current game's index in the saved games list
 
 	public string level;
+	public float startingPositionX = 0.0f; // Position on the X-axis at which the player start when loading in
+	public float startingPositionY = 0.0f; // Position on the Y-axis at which the player start when loading in
 	//public Sprite image;
-	public System.DateTime dateTime;// Date and time
+	public System.DateTime dateTime; // Date and time
 	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
 	public int seconds = 0; // Seconds spent in-game
 	public int minutes = 0; // Minutes spent in-game
@@ -22,11 +24,12 @@ public class Game
 
 	public void PrintGameVariables()
 	{
-		Debug.Log("Level: " + level);
-		Debug.Log("Date and Time: " + dateTime);
-		Debug.Log("Played Time: " + playedTime);
-		Debug.Log("Played Seconds: " + seconds);
-		Debug.Log("Played Minutes: " + minutes);
-		Debug.Log("Played Hours: " + hours);
+		Debug.Log("Level: " + level +
+			" | Savepoint: " + dateTime +
+			" | Date and Time: " + dateTime +
+			" | Played Time: " + playedTime +
+			" | Played Hours: " + hours +
+			" | Played Minutes: " + minutes +
+			" | Played Seconds: " + seconds);
 	}
 }

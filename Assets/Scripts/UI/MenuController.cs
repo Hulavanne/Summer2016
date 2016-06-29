@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-	public static bool startingNewGame = false;
+	public static bool savingGame = false;
 	public static bool gamePaused = false;
 
-	GameManager gameManager;
+	public GameManager gameManager;
 	InventoryManager inventoryManager;
     GameObject gui;
+	GameObject floatingMessage;
 	GameObject menu;
 	GameObject pauseOverlay;
 	GameObject optionsOverlay;
@@ -24,24 +25,26 @@ public class MenuController : MonoBehaviour
 	void Awake()
     {
 		Time.timeScale = 1;
-		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+		if (GameObject.Find("GameManager") != null)
+		{
+			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+		}
 		if (transform.GetComponentInChildren<InventoryManager>() != null)
 		{
 			inventoryManager = transform.GetComponentInChildren<InventoryManager>();
 		}
-
         if (transform.FindChild("GUI") != null)
         {
             gui = transform.FindChild("GUI").gameObject;
+			floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
+			floatingMessage.SetActive(false);
         }
-
         if (transform.FindChild("PauseScreen") != null)
 		{
 			pauseOverlay = transform.FindChild("PauseScreen").gameObject;
 			pauseOverlay.SetActive(false);
 		}
-
 		if (transform.name != "OptionsOverlay" && transform.name != "LoadMenu")
 		{
 			menu = transform.gameObject;
@@ -77,10 +80,22 @@ public class MenuController : MonoBehaviour
 
 	public void GoToScene(string sceneName)
 	{
-		if (SceneManager.GetActiveScene().name == "MainMenu" && Game.current != null)
+		// If heading out of the Main Menu:
+		if (SceneManager.GetActiveScene().name == "MainMenu")
 		{
-			gameManager.LoadCurrentGameVariables();
+			// If current game exists, load its variables into the game manager
+			if (Game.current != null)
+			{
+				gameManager.LoadCurrentGameVariables();
+			}
 		}
+		// If heading into the Main Menu:
+		else
+		{
+			// Destroy the current game manager to avoid duplicates
+			Destroy(gameManager.gameObject);
+		}
+
 		SceneManager.LoadScene(sceneName);
 	}
 
@@ -88,22 +103,22 @@ public class MenuController : MonoBehaviour
 
 	public void PauseGame()
 	{
-        gui.SetActive(false);
-
-        gamePaused = true;
-		pauseOverlay.SetActive(true);
 		Time.timeScale = 0;
+		MenuController.gamePaused = true;
+
+		gui.SetActive(false);
+		pauseOverlay.SetActive(true);
 
 		inventoryManager.FillItemSlots();
 	}
 
     public void ResumeGame()
     {
-        gui.SetActive(true);
-
         Time.timeScale = 1;
+		MenuController.gamePaused = false;
+
+		gui.SetActive(true);
         pauseOverlay.SetActive(false);
-        gamePaused = false;
     }
 
 	public void InspectItem(GameObject item)
@@ -132,29 +147,41 @@ public class MenuController : MonoBehaviour
 
 	public void NewGame()
 	{
-		MenuController.startingNewGame = true;
-		SavingAndLoading.LoadSavedGames();
+		Game game = new Game();
+		Game.current = game;
+		Game.currentIndex = -1;
 
-		if (SavingAndLoading.savedGames.Count == 0)
-		{
-			StartNewGame(0);
-		}
-		else
-		{
-			OpenLoadMenu();
-		}
+		GoToScene(game.level);
 	}
 
 	public void OpenLoadMenu()
 	{
-		SavingAndLoading.LoadSavedGames();
-		loadMenu.SetActive(true);
-		menu.SetActive(false);
-
 		Text titleText = loadMenu.transform.FindChild("Title").GetComponent<Text>();
 
-		List<GameObject> saveSlots = new List<GameObject>();
+		// If selecting a game to be loaded this insures that all empty slots are set to non-interactable,
+		// but if saving a game this doesn't do anything
+		int indexModifier = 0;
 
+		// If saving a game:
+		if (MenuController.savingGame)
+		{
+			// Set the title text
+			titleText.text = pickSaveSlotString;
+
+			// Pause the game
+			MenuController.gamePaused = true;
+			Time.timeScale = 0;
+		}
+		// If loading a game:
+		else
+		{
+			// Set the title text and index modifier
+			titleText.text = loadGameString;
+			indexModifier = -1;
+		}
+
+		// Adding all save slots to a list
+		List<GameObject> saveSlots = new List<GameObject>();
 		saveSlots.Add(loadMenu.transform.FindChild("SaveSlot1").gameObject);
 		saveSlots.Add(loadMenu.transform.FindChild("SaveSlot2").gameObject);
 		saveSlots.Add(loadMenu.transform.FindChild("SaveSlot3").gameObject);
@@ -167,19 +194,7 @@ public class MenuController : MonoBehaviour
 			saveSlots[i].transform.FindChild("Image").gameObject.SetActive(false);
 		}
 
-		// If starting a new game this doesn't do anything,
-		// if selecting a game to be loaded this insures that all empty slots are set to non-interactable
-		int indexModifier = 0;
-
-		if (MenuController.startingNewGame)
-		{
-			titleText.text = pickSaveSlotString;
-		}
-		else
-		{
-			titleText.text = loadGameString;
-			indexModifier = -1;
-		}
+		SavingAndLoading.LoadSavedGames();
 
 		// Updating the save slots to display their save information and setting slots that aren't needed to non-interactable
 		if (SavingAndLoading.savedGames.Count == 0)
@@ -192,7 +207,7 @@ public class MenuController : MonoBehaviour
 		else if (SavingAndLoading.savedGames.Count == 1)
 		{
 			saveSlots[0].transform.FindChild("SaveInfo").GetComponent<Text>().text = GetSaveInfo(0);
-			saveSlots [0].transform.FindChild ("Image").GetComponent<Image> ().sprite = null;//SavingAndLoading.savedGames[0].image;
+			saveSlots [0].transform.FindChild("Image").GetComponent<Image>().sprite = null;//SavingAndLoading.savedGames[0].image;
 
 			for (int i = 2 + indexModifier; i < saveSlots.Count; ++i)
 			{
@@ -220,22 +235,30 @@ public class MenuController : MonoBehaviour
 				saveSlots[i].transform.FindChild("Image").GetComponent<Image>().sprite = null;//SavingAndLoading.savedGames[i].image;
 			}
 		}
+
+		loadMenu.SetActive(true);
+		menu.SetActive(false);
 	}
 
 	public string GetSaveInfo(int savedGamesIndex)
 	{
+		// Format the date into yyyy-mm-dd and exclude the time
+		string formattedDateTime = string.Format("{0:yyyy-MM-dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
+		Debug.Log(formattedDateTime);
+
 		return SavingAndLoading.savedGames[savedGamesIndex].level + "\n" +
-			SavingAndLoading.savedGames[savedGamesIndex].dateTime + "\n" +
+			formattedDateTime + "\n" +
 			SavingAndLoading.savedGames[savedGamesIndex].hours + " hours " +
-			SavingAndLoading.savedGames[savedGamesIndex].minutes + " minutes played";
+			SavingAndLoading.savedGames[savedGamesIndex].minutes + " minutes\n" +
+			"played";
 	}
 
 	public void PickSaveSlot(int saveSlotIndex)
 	{
 		// Picking a slot to save a new game to
-		if (MenuController.startingNewGame)
+		if (MenuController.savingGame)
 		{
-			StartNewGame(saveSlotIndex);
+			SaveGame(saveSlotIndex);
 		}
 		// Loading an existing game file
 		else
@@ -244,25 +267,33 @@ public class MenuController : MonoBehaviour
 		}
 	}
 
-	public void StartNewGame(int saveSlotIndex)
+	public void SaveGame(int saveSlotIndex)
 	{
-		Game newGame = new Game();
-		Game.current = newGame;
-		Game.currentIndex = saveSlotIndex;
+		Game game = Game.current;
 
 		if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
 		{
-			SavingAndLoading.savedGames[saveSlotIndex] = newGame;
+			//Game oldGame = SavingAndLoading.savedGames[saveSlotIndex];
+			//Destroy(oldGame);
+
+			SavingAndLoading.savedGames[saveSlotIndex] = game;
+			Game.currentIndex = saveSlotIndex;
 		}
 		else
 		{
-			SavingAndLoading.savedGames.Add(newGame);
+			SavingAndLoading.savedGames.Add(game);
+			Game.currentIndex = SavingAndLoading.savedGames.Count - 1;
 		}
 
-		SavingAndLoading.SaveGame();
-		MenuController.startingNewGame = false;
+		SavingAndLoading.SaveGames();
 
-		GoToScene(Game.current.level);
+		// Resume game
+		CloseLoadMenu();
+
+		// Display "Game Saved" message
+		menu.GetComponent<MenuController>().floatingMessage.SetActive(true);
+		menu.GetComponent<MenuController>().floatingMessage.GetComponent<Text>().text = "Game Saved";
+		menu.GetComponent<MenuController>().floatingMessage.GetComponent<FadeText>().StartTimer();
 	}
 
 	public void LoadGame(int gameIndex)
@@ -276,7 +307,10 @@ public class MenuController : MonoBehaviour
 
 	public void CloseLoadMenu()
 	{
-		MenuController.startingNewGame = false;
+		Time.timeScale = 1;
+		MenuController.gamePaused = false;
+		MenuController.savingGame = false;
+
 		menu.SetActive(true);
 		loadMenu.SetActive(false);
 	}

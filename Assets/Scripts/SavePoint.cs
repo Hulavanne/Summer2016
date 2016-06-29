@@ -1,37 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SavePoint : MonoBehaviour
+//[System.Serializable]
+public class Savepoint : MonoBehaviour
 {
+	MenuController menuController;
+	GameManager gameManager;
+
+	bool colliding = false;
+
 	void Awake()
 	{
-		
+		if (GameObject.Find("InGameUI") != null)
+		{
+			menuController = GameObject.Find("InGameUI").gameObject.GetComponent<MenuController>();
+		}
+		if (GameObject.Find("GameManager") != null)
+		{
+			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+		}
 	}
 
 	void Update()
 	{
-		
+		if (colliding && Input.GetKeyDown(KeyCode.S))
+		{
+			MenuController.savingGame = true;
+			gameManager.collidingSavepoint = transform.gameObject;
+			menuController.OpenLoadMenu();
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (other.gameObject.tag == "Player")
 		{
-			Debug.Log("Before Save:");
+			colliding = true;
+		}
+	}
 
-			for (int i = 0; i < SavingAndLoading.savedGames.Count; ++i)
-			{
-				SavingAndLoading.savedGames[i].PrintGameVariables();
-			}
-
-			SavingAndLoading.SaveGame();
-
-			Debug.Log("After Save:");
-
-			for (int i = 0; i < SavingAndLoading.savedGames.Count; ++i)
-			{
-				SavingAndLoading.savedGames[i].PrintGameVariables();
-			}
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "Player")
+		{
+			colliding = false;
 		}
 	}
 }

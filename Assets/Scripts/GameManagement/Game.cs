@@ -23,7 +23,7 @@ public class Game
 	public Game()
 	{
 		// The first level of the game
-		level = "Test";
+		level = "MainScene";
 	}
 
 	public void PrintGameVariables()

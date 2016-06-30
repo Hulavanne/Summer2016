@@ -223,7 +223,18 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void Awake () {
+    void Awake ()
+    {
+        if (Game.current != null)
+        {
+            if (Game.current.startingPositionX != 0.0f)
+            {
+                Vector2 startingPosition = transform.position;
+                startingPosition = new Vector2(Game.current.startingPositionX, Game.current.startingPositionY);
+                transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+            }
+        }
+
         canShowGameOverButtons = true;
         ReloadSaveButton.SetActive(false);
         BackToMenuButton.SetActive(false);

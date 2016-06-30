@@ -47,6 +47,7 @@ public class ActivateTextAtLine : MonoBehaviour {
             if (player.NPCName == "NPC_1") ReloadTextRefScript(textnumber.Text1, textnumber.buttonsYesNo1, textnumber.buttonsOpt1);
             if (player.NPCName == "NPC_2") ReloadTextRefScript(textnumber.Text2, textnumber.buttonsYesNo2, textnumber.buttonsOpt2);
             if (player.NPCName == "NPC_3") ReloadTextRefScript(textnumber.Text3, textnumber.buttonsYesNo3, textnumber.buttonsOpt3);
+            if (player.NPCName == "Savepoint") ReloadTextRefScript(textnumber.SaveText, textnumber.buttonsYesNoSave, textnumber.buttonsOptSave);
 
             player.talkToNPC = false;
         }

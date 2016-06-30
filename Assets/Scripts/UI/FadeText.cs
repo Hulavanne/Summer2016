@@ -4,46 +4,31 @@ using System.Collections;
 
 public class FadeText : MonoBehaviour
 {
+	public float fadeTime = 5.0f;
+
 	Text text;
+	Color visibleColor;
+	Color fadedColor;
 
-	float showTextTimer = 0.5f;
-	float showTextTimerFull;
-
-	float fadeTimer = 0.5f;
-	float fadeTimerFull;
+	float timer = 1.0f;
+	float timerFull;
 
 	void Awake()
 	{
 		text = transform.GetComponent<Text>();
-
-		showTextTimerFull = showTextTimer;
-		fadeTimerFull = fadeTimer;
-
-		showTextTimer = 0.0f;
-		fadeTimer = 0.0f;
+		visibleColor = new Color(text.color.r, text.color.g, text.color.b, 255);
+		fadedColor = new Color(visibleColor.r, visibleColor.g, visibleColor.b, 0);
+		timerFull = timer;
 	}
 
 	void Update()
 	{
-		if (showTextTimer > 0.0f)
+		// if end color not reached yet
+		if (timer <= timerFull)
 		{
-			showTextTimer -= Time.deltaTime;
+			timer += Time.deltaTime / fadeTime; // advance timer at the right speed
+			text.color = Color.Lerp(visibleColor, fadedColor, timer);
 		}
-		else
-		{
-			showTextTimer = 0.0f;
-
-			if (fadeTimer > 0.0f)
-			{
-				fadeTimer -= Time.deltaTime;
-
-				float asd = fadeTimerFull / text.color.a;
-
-				text.color = new Color(text.color.r, text.color.g, text.color.b, text.color.a - 5 * Time.deltaTime);
-			}
-		}
-
-
 
 
 		//Debug.Log(timer);
@@ -51,7 +36,8 @@ public class FadeText : MonoBehaviour
 
 	public void StartTimer()
 	{
-		//text.color = new Color(text.color.r, text.color.g, text.color.b, 255);
+		text.color = visibleColor;
+		timer = 0.0f;
 		//showTextTimer = showTextTimerFull;
 		//fadeTimer = fadeTimerFull;
 	}

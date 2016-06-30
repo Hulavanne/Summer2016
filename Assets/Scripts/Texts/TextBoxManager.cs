@@ -6,7 +6,7 @@ using UnityEngine.UI;
 // ^ I followed a youtube tutorial, so I'm still kind of unsure of what some things do.
 
 public class TextBoxManager : MonoBehaviour {
-    public static GameObject NPC;
+    public static GameObject currentNPC;
     public bool hasClickedYesButton;
 
     public bool showCurrentYesNoButtons;
@@ -93,9 +93,9 @@ public class TextBoxManager : MonoBehaviour {
 
     public void OnYesClick()
     {
-        if (NPC.GetComponent<Savepoint>() != null)
+		if (currentNPC.GetComponent<Savepoint>() != null)
         {
-            NPC.GetComponent<Savepoint>().OpenSaveMenu();
+			currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
         }
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
@@ -118,7 +118,7 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
-    public void getYesNoButtonLines()
+    public void GetYesNoButtonLines()
     {
         if (showYesNoButtons)
         {
@@ -132,7 +132,7 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
-    public void getOptButtonLines()
+    public void GetOptButtonLines()
     {
         if (showOptButtons)
         {
@@ -260,9 +260,9 @@ public class TextBoxManager : MonoBehaviour {
             yield return new WaitForSeconds(typeSpeed);
         }
         
-        getYesNoButtonLines();
+        GetYesNoButtonLines();
 
-        getOptButtonLines();
+        GetOptButtonLines();
 
         theText.text = lineOfText;
         isTyping = false;

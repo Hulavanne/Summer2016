@@ -7,10 +7,9 @@ public class Savepoint : MonoBehaviour
 	MenuController menuController;
 	GameManager gameManager;
     PlayerController player;
-    bool isOverlappingPlayer;
     GameObject textManager;
 
-	bool colliding = false;
+	bool isOverlappingPlayer;
 
 	void Awake()
 	{
@@ -29,7 +28,7 @@ public class Savepoint : MonoBehaviour
 
     void OnTriggerEnter2D()
     {
-        TextBoxManager.NPC = transform.gameObject;
+		TextBoxManager.currentNPC = transform.gameObject;
         isOverlappingPlayer = true;
     }
 
@@ -44,9 +43,8 @@ public class Savepoint : MonoBehaviour
         {
             MenuController.savingGame = true;
             gameManager.collidingSavepoint = transform.gameObject;
-            colliding = false;
+			textManager.GetComponent<TextBoxManager>().DisableTextBox();
             menuController.OpenLoadMenu();
-            textManager.GetComponent<TextBoxManager>().DisableTextBox();
         }
     }
 }

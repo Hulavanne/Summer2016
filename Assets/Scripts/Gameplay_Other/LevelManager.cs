@@ -2,8 +2,6 @@
 using System.Collections;
 using UnityEngine.UI;
 
-// Will use this LevelManager as alternative to keeping all the changing level stuck into PlayerController and stuff
-
 public class LevelManager : MonoBehaviour {
 
     public enum Level
@@ -14,12 +12,17 @@ public class LevelManager : MonoBehaviour {
     };
 
     Level thisLevel;
+    
+    public GameObject ReloadSaveButton;
+    public GameObject BackToMenuButton;
 
     public float LightAmount;
     public float lightLevel1 = 0.1f,
         lightLevel2 = 0.0f,
         lightLevel3 = -0.5f;
     public GameObject LightInLevel;
+
+    MenuController menuController;
 
     public Color tempColor;
     public CanvasRenderer lightPlaneRenderer, darknessPlaneRenderer;
@@ -28,9 +31,15 @@ public class LevelManager : MonoBehaviour {
     public PlayerController player;
     public GameObject playerG;
     public GameObject QuestionMark;
+    
+    public bool goNextLevel = true; // goes down one level if true, goes down one level if false
 
-    // public int currentLevel = 1; // begins at level 1
-    public bool goNextLevel = true; // goes up one level if true, goes down one level if false
+    void Awake() {
+        thisLevel = Level.LEVEL1;
+        LightAmount = lightLevel1;
+
+        menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();
+    }
 
     public void SetLighting()
     {
@@ -59,12 +68,54 @@ public class LevelManager : MonoBehaviour {
             lightPlaneRenderer.SetAlpha(0.0f);
             darknessPlaneRenderer.SetAlpha(0.0f);
         }
-        
+    }
+
+    public void ReloadLevel()
+    {
+        Debug.Log("Reloading Level");
+        SavingAndLoading.LoadSavedGames();
+
+        if (SavingAndLoading.savedGames.Count > 0)
+        {
+            for (int i = 0; i < SavingAndLoading.savedGames.Count; ++i)
+            {
+                Debug.Log("working 0");
+                if (SavingAndLoading.savedGames[i] == Game.current)
+                {
+                    menuController.LoadGame(Game.currentIndex);
+                    Debug.Log("working 1");
+                }
+                else
+                {
+                    if (i == SavingAndLoading.savedGames.Count - 1)
+                    {
+                        menuController.NewGame();
+                        Debug.Log("working 2");
+                    }
+                }
+            }
+        }
+        else
+        {
+            menuController.NewGame();
+        }
+
+        ReloadSaveButton.SetActive(false);
+        BackToMenuButton.SetActive(false);
+        player.isGameOver = false;
+    }
+
+    public void GoToMenu()
+    {
+        Debug.Log("Going to Menu");
+        menuController.GoToScene("MainMenu");
+        ReloadSaveButton.SetActive(false);
+        BackToMenuButton.SetActive(false);
+        player.isGameOver = false;
     }
 
     public void ChangePlayerPosition()
     {
-
         Vector3 tempVec = new Vector3(0, 20, 0); // temporary Vector3
 
         if (goNextLevel)
@@ -79,7 +130,6 @@ public class LevelManager : MonoBehaviour {
 
     public void ChangeLevel()
     {
-        // Debug.Log("previous level > " + thisLevel);
 
         switch (thisLevel)
         {
@@ -139,10 +189,7 @@ public class LevelManager : MonoBehaviour {
 
     
 
-    void Awake () {
-        thisLevel = Level.LEVEL1;
-        LightAmount = lightLevel1;
-    }
+    
 	
 	void Update () {
 	    if (!player.switchingLevel)

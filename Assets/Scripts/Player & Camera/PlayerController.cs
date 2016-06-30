@@ -17,10 +17,14 @@ public class PlayerController : MonoBehaviour {
 
     public string NPCName;
 
+    public bool canShowGameOverButtons;
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool talkToNPC;
     public Animator playerAnim;
+
+    public GameObject ReloadSaveButton;
+    public GameObject BackToMenuButton;
 
     public GameObject rightBoundary;
     public GameObject leftBoundary;
@@ -71,12 +75,8 @@ public class PlayerController : MonoBehaviour {
 
     public bool canMove = true;
     public bool isRunning;
-
-    // some functions & values related to background moving are commented out
-
+    
     public GameObject bckgPlane;
-    // public float bckgSpeed = 2.0f;
-    // ^ using this to set background speed (to follow player)
  
     Vector3 addXPos = new Vector3(2f, 0, 0); // Add X position to player (to move < or >)
     Vector3 addXRunPos = new Vector3(4f, 0, 0); // same for running
@@ -132,6 +132,13 @@ public class PlayerController : MonoBehaviour {
         gameOverObj.SetActive(true);
         opacity += 0.015f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
+        
+        if((opacity >= 1.0f) && (canShowGameOverButtons))
+        {
+            canShowGameOverButtons = false;
+            ReloadSaveButton.SetActive(true);
+            BackToMenuButton.SetActive(true);
+        }
     }
 
     public void GoLeft()
@@ -217,22 +224,19 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Awake () {
-
+        canShowGameOverButtons = true;
+        ReloadSaveButton.SetActive(false);
+        BackToMenuButton.SetActive(false);
         gameOverObj.SetActive(false);
 
-        // Application.targetFrameRate = 30; --> switch this to a level manager object
-
         staminaBar.value = 100.0f;
-
-        // tempVec = new Vector3 (bckgSpeed*Time.deltaTime,0,0);
-        // ^ have to work this out so background follows
-
         QuestionMark.SetActive(false); // Activates once the player reaches a clickable object 
         
         doors = GameObject.FindGameObjectsWithTag("Door");
         hideObjects = GameObject.FindGameObjectsWithTag("HideObject");
         npcs = GameObject.FindGameObjectsWithTag("NPC");
         
+
         int b = 0;
 
         foreach (GameObject doorNum in doors)
@@ -240,7 +244,6 @@ public class PlayerController : MonoBehaviour {
             collidedDoors[b] = doorNum.GetComponent<Collider2D>();
             b++;
         }
-
         b = 0;
 
         foreach(GameObject npcNum in npcs)
@@ -248,21 +251,16 @@ public class PlayerController : MonoBehaviour {
             collidedNPCs[b] = npcNum.GetComponent<Collider2D>();
             b++;
         }
-
         b = 0;
 
         yesButtonG.SetActive(true);
         noButtonG.SetActive(true);
-
-        // collidedDoors = .FindGameObjectsWithTag("Door");
-        // SelectDoor.GetComponent<Collider>(); // ^ this collider is for RayCastHit into the Door
 
         foreach(GameObject hideObjectNum in hideObjects)
         {
             collidedHideObjects[b] = hideObjectNum.GetComponent<Collider2D>();
             b++;
         }
-
         b = 0;
     }
 

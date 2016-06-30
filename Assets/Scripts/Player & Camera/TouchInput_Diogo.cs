@@ -32,15 +32,6 @@ public class TouchInput_Diogo : MonoBehaviour
     
     void Update()
     {
-        if (player.isGameOver)
-        {
-            if (Input.GetMouseButton(0))
-            {
-                // talk to pyry to change this into going back to main menu for example
-                Application.LoadLevel(Application.loadedLevel); // reset the scene
-            }
-            return;
-        }
 
         if ((staminaBar.value < 100) && (runValue != 2))
         {

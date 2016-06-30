@@ -9,6 +9,7 @@ public class LevelManager : MonoBehaviour {
         LEVEL1,
         LEVEL2,
         LEVEL3,
+        LEVEL4,
     };
 
     Level thisLevel;
@@ -32,7 +33,7 @@ public class LevelManager : MonoBehaviour {
     public GameObject playerG;
     public GameObject QuestionMark;
     
-    public bool goNextLevel = true; // goes down one level if true, goes down one level if false
+    public int goNextLevel = 0; // goes down one level if true, goes down one level if false
 
     void Awake() {
         thisLevel = Level.LEVEL1;
@@ -45,11 +46,9 @@ public class LevelManager : MonoBehaviour {
     {
         if (LightAmount > 1) LightAmount = 1;
         if (LightAmount < -1) LightAmount = -1;
-
         if (LightAmount > 0) // turn white
         {
             lightPlaneRenderer.SetAlpha(LightAmount);
-            //colorOfLightPlane.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             darknessPlaneRenderer.SetAlpha(0.0f);
         }
 
@@ -72,25 +71,21 @@ public class LevelManager : MonoBehaviour {
 
     public void ReloadLevel()
     {
-        Debug.Log("Reloading Level");
         SavingAndLoading.LoadSavedGames();
 
         if (SavingAndLoading.savedGames.Count > 0)
         {
             for (int i = 0; i < SavingAndLoading.savedGames.Count; ++i)
             {
-                Debug.Log("working 0");
                 if (SavingAndLoading.savedGames[i] == Game.current)
                 {
                     menuController.LoadGame(Game.currentIndex);
-                    Debug.Log("working 1");
                 }
                 else
                 {
                     if (i == SavingAndLoading.savedGames.Count - 1)
                     {
                         menuController.NewGame();
-                        Debug.Log("working 2");
                     }
                 }
             }
@@ -114,65 +109,57 @@ public class LevelManager : MonoBehaviour {
         player.isGameOver = false;
     }
 
-    public void ChangePlayerPosition()
-    {
-        Vector3 tempVec = new Vector3(0, 20, 0); // temporary Vector3
-
-        if (goNextLevel)
-        {
-            player.transform.position -= tempVec;  // going down means increasing a level
-        }
-        else
-        {
-            player.transform.position += tempVec; // therefore going up means decreasing a level
-        }
-    }
-
     public void ChangeLevel()
     {
-
+        GameObject door;
         switch (thisLevel)
         {
             case Level.LEVEL1:
-                if (goNextLevel)
+                if (player.doorName == "Door_1>2")
                 {
                     thisLevel = Level.LEVEL2;
-                    ChangePlayerPosition();
                     LightAmount = lightLevel2;
+                    door = GameObject.Find("Door_2>1");
+                    player.transform.position = door.transform.position;
+                    player.cameraReference.JoinPlayer();
                 }
                 else
                 {
-                    //thisLevel = Level.LEVEL;
-                    //ChangePlayerPosition();
                     // do nothing here because there is no level -1
                 }
                 break;
             case Level.LEVEL2:
-                if (goNextLevel)
+                if (player.doorName == "Door_2>3")
                 {
                     thisLevel = Level.LEVEL3;
-                    ChangePlayerPosition();
                     LightAmount = lightLevel3;
+                    door = GameObject.Find("Door_3>2");
+                    player.transform.position = door.transform.position;
+                    player.cameraReference.JoinPlayer();
                 }
-                else
+                else if (player.doorName == "Door_2>1")
                 {
                     thisLevel = Level.LEVEL1;
-                    ChangePlayerPosition();
                     LightAmount = lightLevel1;
+                    door = GameObject.Find("Door_1>2");
+                    player.transform.position = door.transform.position;
+                    player.cameraReference.JoinPlayer();
                 }
                 break;
             case Level.LEVEL3:
-                if (goNextLevel)
+                if ( 1==2 )
                 {
                     // thisLevel = Level.LEVEL4;
                     // ChangePlayerPosition();
                     // do nothing here because there is no level 4
                 }
-                else
+                else if (player.doorName == "Door_3>2")
                 {
                     thisLevel = Level.LEVEL2;
-                    ChangePlayerPosition();
                     LightAmount = lightLevel2;
+                    door = GameObject.Find("Door_2>3");
+                    player.transform.position = door.transform.position;
+                    player.cameraReference.JoinPlayer();
                 }
                 break;
 

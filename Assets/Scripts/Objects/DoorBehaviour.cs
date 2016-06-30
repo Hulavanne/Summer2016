@@ -14,13 +14,16 @@ public class DoorBehaviour : MonoBehaviour {
     public PlayerController player;
     public GameObject QuestionMark;
 
+
     void OnTriggerEnter2D (Collider2D other)
     {
+        
+
         if ((AutomaticDoor) && (other.gameObject.tag == "Player"))
         {
             player.switchingLevel = true;
-            if (goesDown) manageLevel.goNextLevel = true;
-            else manageLevel.goNextLevel = false;
+            //if (goesDown) manageLevel.goNextLevel = true;
+            //else manageLevel.goNextLevel = false;
             player.isOverlappingDoor = true;
             player.playerAnim.SetBool("isIdle", true);
             player.playerAnim.SetBool("isRunning", false);
@@ -29,15 +32,6 @@ public class DoorBehaviour : MonoBehaviour {
 
         else if (other.gameObject.tag == "Player")
         {
-            if (goesDown)
-            {
-                manageLevel.goNextLevel = true;
-            }
-            else
-            {
-                manageLevel.goNextLevel = false;
-            }
-
             player.isSelectionActive = true;
             QuestionMark.SetActive(true);
             player.selection = PlayerController.Selection.DOOR;

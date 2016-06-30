@@ -19,7 +19,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
     public PlayerController controlPlayer;
     public TouchInput_Diogo playerMotion;
 
-    public void StartJoinPlayer()
+    public void JoinPlayer()
     {
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
     }
@@ -62,7 +62,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
     void Awake()
     {
-        StartJoinPlayer();
+        JoinPlayer(); // Initially joins player
         turnBlack = false;
         opacity = 1.0f;
     }

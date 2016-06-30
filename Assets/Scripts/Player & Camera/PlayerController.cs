@@ -17,17 +17,21 @@ public class PlayerController : MonoBehaviour {
 
     public string NPCName;
 
+    public string doorName;
+
     public bool canShowGameOverButtons;
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool talkToNPC;
     public Animator playerAnim;
 
+    public bool hasClickedActionButton;
+
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
 
-    public GameObject rightBoundary;
-    public GameObject leftBoundary;
+    GameObject rightBoundary;
+    GameObject leftBoundary;
 
     public bool canWalkRight = true;
     public bool canWalkLeft = true;
@@ -86,6 +90,11 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
+        if (other.tag == "Door")
+        {
+            doorName = other.gameObject.name;
+        }
+
         if (other.tag == "NPC")
         {
             NPCName = other.gameObject.name;
@@ -93,6 +102,7 @@ public class PlayerController : MonoBehaviour {
 
         if (other.tag == "RightBoundary")
         {
+            rightBoundary = other.gameObject;
             canCameraFollow = false;
             if (transform.position.x > rightBoundary.transform.position.x)
             {
@@ -102,6 +112,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if (other.tag == "LeftBoundary")
         {
+            leftBoundary = other.gameObject;
             canCameraFollow = false;
             if (transform.position.x < leftBoundary.transform.position.x)
             {
@@ -113,6 +124,7 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
+        doorName = "";
         NPCName = "";
 
         if (other.tag == "RightBoundary")
@@ -125,6 +137,12 @@ public class PlayerController : MonoBehaviour {
             canWalkLeft = true;
             canCameraFollow = true;
         }
+    }
+
+    public void OnActionButtonClick()
+    {
+        Debug.Log("Player has clicked Action Button.");
+        hasClickedActionButton = true;
     }
 
     void GameOverSplash()
@@ -283,38 +301,6 @@ public class PlayerController : MonoBehaviour {
         // this will make a mouse/touch input RayCast to select and use the Door
         RaycastHit2D hit = Physics2D.Raycast(mouseposition, Input.mousePosition);
 
-        foreach (Collider2D col in collidedDoors)
-        {
-            if ((hit.collider && hit.collider.tag == "Door") && (isSelectionActive) && (selection == Selection.DOOR))
-            {
-                switchingLevel = true;
-            }
-            else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.DOOR))
-                && isOverlappingDoor)
-            {
-                switchingLevel = true;
-            }
-        }
-
-        foreach (Collider2D col in collidedNPCs)
-        {
-            if ((hit.collider && hit.collider.tag == "NPC") && (isSelectionActive) && (selection == Selection.NPC))
-            {
-                talkToNPC = true;
-                QuestionMark.SetActive(false);
-                isSelectionActive = false;
-                selection = Selection.DEFAULT;
-            }
-            else if (((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.NPC))
-                && isOverlappingNPC)
-            {
-                talkToNPC = true;
-                QuestionMark.SetActive(false);
-                isSelectionActive = false;
-                selection = Selection.DEFAULT;
-            }
-        }
-
         foreach (Collider2D col in collidedHideObjects)
         {
 
@@ -337,6 +323,24 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
+        if ((hasClickedActionButton) && (isSelectionActive))
+        {
+            if (selection == Selection.DOOR)
+            {
+                switchingLevel = true;
+                hasClickedActionButton = false;
+            }
+            if (selection == Selection.NPC)
+            {
+                talkToNPC = true;
+                QuestionMark.SetActive(false);
+                isSelectionActive = false;
+                selection = Selection.DEFAULT;
+                hasClickedActionButton = false;
+            }
+        }
+
+
         if (isGameOver)
         {
             GameOverSplash();
@@ -358,7 +362,7 @@ public class PlayerController : MonoBehaviour {
         }
         if (switchingLevelTime >= 1) // note that this 1 is a timer
         {
-            cameraReference.StartJoinPlayer();
+            cameraReference.JoinPlayer();
             canMove = true;
             manageLevel.ChangeLevel();
 

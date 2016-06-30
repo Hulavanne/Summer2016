@@ -33,7 +33,7 @@ public class MenuController : MonoBehaviour
         {
             gui = transform.FindChild("GUI").gameObject;
 			floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
-			floatingMessage.SetActive(false);
+			//floatingMessage.SetActive(false);
         }
         if (transform.FindChild("PauseScreen") != null)
 		{
@@ -92,7 +92,8 @@ public class MenuController : MonoBehaviour
 			Destroy(gameManager.gameObject);
 		}
 
-		SceneManager.LoadScene(sceneName);
+		SceneManager.LoadSceneAsync("LoadingScene");
+		SceneManager.LoadSceneAsync(sceneName);
 	}
 
 	//----------------------IN-GAME----------------------
@@ -105,6 +106,7 @@ public class MenuController : MonoBehaviour
 		gui.SetActive(false);
 		pauseOverlay.SetActive(true);
 
+		inventoryManager.SetSlideVariables();
 		inventoryManager.FillItemSlots();
 	}
 
@@ -240,7 +242,6 @@ public class MenuController : MonoBehaviour
 	{
 		// Format the date into yyyy-mm-dd and exclude the time
 		string formattedDateTime = string.Format("{0:yyyy-MM-dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
-		Debug.Log(formattedDateTime);
 
 		return SavingAndLoading.savedGames[savedGamesIndex].level + "\n" +
 			formattedDateTime + "\n" +
@@ -287,7 +288,7 @@ public class MenuController : MonoBehaviour
 		CloseLoadMenu();
 
 		// Display "Game Saved" message
-		menu.GetComponent<MenuController>().floatingMessage.SetActive(true);
+		//menu.GetComponent<MenuController>().floatingMessage.SetActive(true);
 		menu.GetComponent<MenuController>().floatingMessage.GetComponent<Text>().text = "Game Saved";
 		menu.GetComponent<MenuController>().floatingMessage.GetComponent<FadeText>().StartTimer();
 	}

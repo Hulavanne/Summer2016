@@ -8,13 +8,23 @@ public class CameraAdjuster : MonoBehaviour
 	public float width = 1;
 	public float height = 1;
 
-	void Start()
+	GameObject player;
+
+	void Update()
 	{
+		player = GameObject.FindGameObjectWithTag("Player");
+
 		//aspect = width / height;
 
-		Camera.main.projectionMatrix = Matrix4x4.Ortho(
+		/*Camera.main.projectionMatrix = Matrix4x4.Ortho(
 			-orthographicSize * aspect, orthographicSize * aspect,
 			-orthographicSize, orthographicSize,
-			Camera.main.nearClipPlane, Camera.main.farClipPlane);
+			Camera.main.nearClipPlane, Camera.main.farClipPlane);*/
+
+		Camera camera = Camera.main;
+		Transform cameraTransform = camera.transform;
+
+		//camera.orthographicSize = Screen.width / 100;
+		cameraTransform.position = new Vector3(cameraTransform.position.x, camera.orthographicSize, cameraTransform.position.z);
 	}
 }

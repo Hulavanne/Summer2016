@@ -15,7 +15,6 @@ public class InventoryManager : MonoBehaviour
 	{
 		inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
 		itemSlideMenu = transform.GetComponent<ItemSlideMenu>();
-		SetSlideVariables();
 	}
 
 	public void SetSlideVariables()
@@ -39,10 +38,33 @@ public class InventoryManager : MonoBehaviour
 		{
 			itemSlideMenu.canSlide = false;
 		}
+
+		itemsInSlides.Clear();
+
+		for (int i = 0; i < numberOfSlides; ++i)
+		{
+			List<Item> tempItemsList = new List<Item>();
+
+			if (items.Count > i * 3)
+			{
+				tempItemsList.Add(items[i * 3]);
+			}
+			if (items.Count > i * 3 + 1)
+			{
+				tempItemsList.Add(items[i * 3 + 1]);
+			}
+			if (items.Count > i * 3 + 2)
+			{
+				tempItemsList.Add(items[i * 3 + 2]);
+			}
+
+			itemsInSlides.Add(tempItemsList);
+		}
 	}
 
 	public void FillItemSlots(string slidingDirection = "noDirection")
 	{
+		SetSlideVariables();
 		int nextSlideIndex = 0;
 
 		if (slidingDirection == "left")
@@ -75,28 +97,6 @@ public class InventoryManager : MonoBehaviour
 
 	void SetItemsInSlots(int nextSlideIndex, int itemsInSlidesIndex)
 	{
-		itemsInSlides.Clear();
-
-		for (int i = 0; i < numberOfSlides; ++i)
-		{
-			List<Item> tempItemsList = new List<Item>();
-
-			if (items.Count > i * 3)
-			{
-				tempItemsList.Add(items[i * 3]);
-			}
-			if (items.Count > i * 3 + 1)
-			{
-				tempItemsList.Add(items[i * 3 + 1]);
-			}
-			if (items.Count > i * 3 + 2)
-			{
-				tempItemsList.Add(items[i * 3 + 2]);
-			}
-
-			itemsInSlides.Add(tempItemsList);
-		}
-
 		InventoryItemSlots itemSlide = itemSlideMenu.itemSlides[nextSlideIndex].GetComponent<InventoryItemSlots>();
 		itemSlide.itemsInSlots.Clear();
 

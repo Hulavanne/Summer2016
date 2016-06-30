@@ -25,40 +25,43 @@ public class GameManager : MonoBehaviour
 
 	void Update ()
 	{
-		if (SceneManager.GetActiveScene().name != "MainMenu")
+		if (SceneManager.GetActiveScene().name != "LoadingScene")
 		{
-			currentState = GameManager.GameState.IN_GAME;
-		}
-		else
-		{
-			currentState = GameManager.GameState.MAIN_MENU;
-		}
-
-		if (currentState == GameState.IN_GAME)
-		{
-			Game game = Game.current;
-
-			if (collidingSavepoint != null)
+			if (SceneManager.GetActiveScene().name != "MainMenu")
 			{
-				game.startingPositionX = collidingSavepoint.transform.position.x;
-				game.startingPositionY = collidingSavepoint.transform.position.y;
+				currentState = GameManager.GameState.IN_GAME;
+			}
+			else
+			{
+				currentState = GameManager.GameState.MAIN_MENU;
 			}
 
-			// Update date and time, both in the manager and in the current game
-			dateTime = System.DateTime.Now;
-			game.dateTime = dateTime;
+			if (currentState == GameState.IN_GAME)
+			{
+				Game game = Game.current;
 
-			// Update played time, both in the manager and in the current game
-			playedTime += Time.deltaTime;
-			game.playedTime = playedTime;
+				if (collidingSavepoint != null)
+				{
+					game.startingPositionX = collidingSavepoint.transform.position.x;
+					game.startingPositionY = collidingSavepoint.transform.position.y;
+				}
 
-			// Update seconds, minutes and hours, both in the manager and in the current game
-			seconds = game.seconds = (int)playedTime % 60;
-			minutes = game.minutes = ((int)playedTime / 60) % 60;
-			hours = game.hours = ((int)playedTime / 3600) % 24;
+				// Update date and time, both in the manager and in the current game
+				dateTime = System.DateTime.Now;
+				game.dateTime = dateTime;
 
-			// Update the items in the player's inventory of the current game
-			game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
+				// Update played time, both in the manager and in the current game
+				playedTime += Time.deltaTime;
+				game.playedTime = playedTime;
+
+				// Update seconds, minutes and hours, both in the manager and in the current game
+				seconds = game.seconds = (int)playedTime % 60;
+				minutes = game.minutes = ((int)playedTime / 60) % 60;
+				hours = game.hours = ((int)playedTime / 3600) % 24;
+
+				// Update the items in the player's inventory of the current game
+				game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
+			}
 		}
 	}
 

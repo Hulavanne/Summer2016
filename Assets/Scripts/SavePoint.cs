@@ -21,9 +21,15 @@ public class Savepoint : MonoBehaviour
 		{
 			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
+		if (GameObject.Find("Player").GetComponent<PlayerController>() != null)
+		{
+			player = GameObject.Find("Player").GetComponent<PlayerController>();
 
-        player = GameObject.Find("Player").GetComponent<PlayerController>();
-        textManager = GameObject.Find("TextBoxManager");
+		}
+		if (GameObject.Find("TextBoxManager"))
+		{
+			textManager = GameObject.Find("TextBoxManager");
+		}
     }
 
     void OnTriggerEnter2D()

@@ -44,17 +44,22 @@ public class ActivateTextAtLine : MonoBehaviour {
     {
 	    if (player.talkToNPC)
         {
-            if (player.NPCName == "NPC_1") ReloadTextRefScript(textnumber.Text1, textnumber.buttonsYesNo1, textnumber.buttonsOpt1);
-            if (player.NPCName == "NPC_2") ReloadTextRefScript(textnumber.Text2, textnumber.buttonsYesNo2, textnumber.buttonsOpt2);
-            if (player.NPCName == "NPC_3") ReloadTextRefScript(textnumber.Text3, textnumber.buttonsYesNo3, textnumber.buttonsOpt3);
-            if (player.NPCName == "Savepoint") ReloadTextRefScript(textnumber.SaveText, textnumber.buttonsYesNoSave, textnumber.buttonsOptSave);
+            if (player.NPCName == "NPC_1") ReloadTextRefScript(textnumber.Text1, textnumber.buttonsYesNo1, textnumber.buttonsOpt1,
+                textnumber.text1StartLine, textnumber.text1CurrentLine);
+            if (player.NPCName == "NPC_2") ReloadTextRefScript(textnumber.Text2, textnumber.buttonsYesNo2, textnumber.buttonsOpt2,
+                textnumber.text2StartLine, textnumber.text2CurrentLine);
+            if (player.NPCName == "NPC_3") ReloadTextRefScript(textnumber.Text3, textnumber.buttonsYesNo3, textnumber.buttonsOpt3,
+                textnumber.text3StartLine, textnumber.text3CurrentLine);
+            if (player.NPCName == "Savepoint") ReloadTextRefScript(textnumber.SaveText, textnumber.buttonsYesNoSave, textnumber.buttonsOptSave,
+                textnumber.textSavStartLine, textnumber.textSavCurrentLine);
 
             player.talkToNPC = false;
         }
 	}
 
     public void ReloadTextRefScript(TextAsset currentText,
-        int[] currentYesNoButtons, int[] currentOptButtons)
+        int[] currentYesNoButtons, int[] currentOptButtons,
+        int npcStartLine, int npcEndLine)
     {
         player.talkToNPC = false;
         player.playerAnim.SetBool("isIdle", true);
@@ -64,10 +69,8 @@ public class ActivateTextAtLine : MonoBehaviour {
             Button1G, Button2G, Button3G, Button4G);
 
         theTextBox.ReloadScript(currentText, currentYesNoButtons, currentOptButtons,
-            GetComponent<ActivateTextAtLine>());       
-
-        theTextBox.currentLine = startLine;
-        theTextBox.endAtLine = endLine;
+            GetComponent<ActivateTextAtLine>(), npcStartLine, npcEndLine);       
+        
         theTextBox.EnableTextBox();
     }
 

@@ -109,6 +109,10 @@ public class PlayerController : MonoBehaviour {
                 canWalkRight = false;
                 canCameraFollow = false;
             }
+            else if (transform.position.x <= rightBoundary.transform.position.x)
+            {
+                canWalkRight = true;
+            }
         }
         else if (other.tag == "LeftBoundary")
         {
@@ -118,6 +122,10 @@ public class PlayerController : MonoBehaviour {
             {
                 canWalkLeft = false;
                 canCameraFollow = false;
+            }
+            else if (transform.position.x >= leftBoundary.transform.position.x)
+            {
+                canWalkLeft = true;
             }
         }
     }
@@ -295,18 +303,14 @@ public class PlayerController : MonoBehaviour {
 
     public void OnUserClick()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+       
+    }
 
-        Vector2 mouseposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // this will make a mouse/touch input RayCast to select and use the Door
-        RaycastHit2D hit = Physics2D.Raycast(mouseposition, Input.mousePosition);
-
-        foreach (Collider2D col in collidedHideObjects)
+    void Update()
+    {
+        if ((hasClickedActionButton) && (isSelectionActive))
         {
-
-            if (((hit.collider && hit.collider.tag == "HideObject") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
-                || ((((hit.collider && hit.collider.tag == "Player") && (isSelectionActive) && (selection == Selection.HIDEOBJECT))
-                && isOverlappingHideObject)))
+            if (selection == Selection.HIDEOBJECT)
             {
                 tempVec = new Vector3(0, 0, 5);
                 if (isHidden)
@@ -318,19 +322,13 @@ public class PlayerController : MonoBehaviour {
                     PlayerHide();
                 }
             }
-        }
-    }
 
-    void Update()
-    {
-        if ((hasClickedActionButton) && (isSelectionActive))
-        {
-            if (selection == Selection.DOOR)
+            else if (selection == Selection.DOOR)
             {
                 switchingLevel = true;
                 hasClickedActionButton = false;
             }
-            if (selection == Selection.NPC)
+            else if (selection == Selection.NPC)
             {
                 talkToNPC = true;
                 QuestionMark.SetActive(false);

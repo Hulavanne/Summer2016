@@ -301,8 +301,12 @@ public class TextBoxManager : MonoBehaviour {
         player.canMove = true;
     }
 
-    public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines, ActivateTextAtLine reference)
+    public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines,
+        ActivateTextAtLine reference, int getCurrentLine, int endLine)
     {
+        currentLine = getCurrentLine;
+        endAtLine = endLine;
+
         textFile = newText;
         textRef = reference;
 

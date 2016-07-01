@@ -19,9 +19,11 @@ public class CameraFollowAndEffects : MonoBehaviour {
     public PlayerController controlPlayer;
     public TouchInput_Diogo playerMotion;
 
+	Camera cameraComponent;
+
     public void JoinPlayer()
     {
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
+        //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
     }
 
     public void JumpToPlayer()
@@ -31,19 +33,19 @@ public class CameraFollowAndEffects : MonoBehaviour {
             if (playerPos > cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+                //transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
 
             else if (playerPos < cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-                transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+                //transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
         }
 
         else
         {
-            transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
+            //transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
         }
     }
 
@@ -62,13 +64,16 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
     void Awake()
     {
-        JoinPlayer(); // Initially joins player
+		player = GameObject.FindGameObjectWithTag("Player");
+		cameraComponent = transform.GetComponent<Camera>();
+
+        //JoinPlayer(); // Initially joins player
         turnBlack = false;
         opacity = 1.0f;
     }
 
-	void Update () {
-        
+	void Update ()
+	{
         if (turnBlack)
         {
             if (opacity <= 1)
@@ -90,13 +95,20 @@ public class CameraFollowAndEffects : MonoBehaviour {
         opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
                                                                // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 
-        if (!controlPlayer.canCameraFollow)
+
+
+
+		// Adjust camera to the screen size
+		transform.position = new Vector3(transform.position.x, player.transform.position.y + cameraComponent.orthographicSize, transform.position.z);
+
+		// Making the camera follow the player
+        if (controlPlayer.canCameraFollow)
         {
-            return;
+			transform.position = new Vector2(player.transform.position.x, transform.position.y);
         }
-        
-            GetDistance();
-            JumpToPlayer();
+
+		//GetDistance();
+		//JumpToPlayer();
             
         // ^ this makes the camera follow the player in x axis, and specific y+2 axis
         // Alternatively, just parent the camera to the player, add 2 to y, and delete this

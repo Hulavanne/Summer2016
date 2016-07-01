@@ -25,6 +25,6 @@ public class CameraAdjuster : MonoBehaviour
 		Transform cameraTransform = camera.transform;
 
 		//camera.orthographicSize = Screen.width / 100;
-		cameraTransform.position = new Vector3(cameraTransform.position.x, camera.orthographicSize, cameraTransform.position.z);
+		cameraTransform.position = new Vector3(cameraTransform.position.x, player.transform.position.y + camera.orthographicSize, cameraTransform.position.z);
 	}
 }

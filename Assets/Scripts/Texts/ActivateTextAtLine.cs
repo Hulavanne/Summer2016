@@ -35,44 +35,23 @@ public class ActivateTextAtLine : MonoBehaviour {
     public TextBoxManager theTextBox;
 
     public bool requireButtonPress;
-    public bool waitForPress;
+    private bool waitForPress;
 
     public bool destroyWhenActivated;
-    public TextList textNumber;
-
-    GameFlowManager npcState;
-
-    void Awake()
-    {
-        theTextBox = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
-        textNumber = GameObject.Find("TextList").GetComponent<TextList>();
-        npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
-    }
-
+    public TextList textnumber;
+    
 	void Update ()
     {
 	    if (player.talkToNPC)
         {
-            if ((player.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.Text1,
-                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
-
-            if ((player.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 1)) ReloadTextRefScript(textNumber.Text1,
-               textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
-
-            if ((player.NPCName == "NPC_1") && (npcState.npc1Behav == 0)) ReloadTextRefScript(textNumber.Text1,
-                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
-
-            if ((player.NPCName == "NPC_1") && (npcState.npc1Behav == 1)) ReloadTextRefScript(textNumber.Text1,
-               textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
-
-            if (player.NPCName == "NPC_2") ReloadTextRefScript(textNumber.Text2, textNumber.buttonsYesNo2, textNumber.buttonsOpt2,
-                textNumber.text2StartLine, textNumber.text2EndLine);
-
-            if (player.NPCName == "NPC_3") ReloadTextRefScript(textNumber.Text3, textNumber.buttonsYesNo3, textNumber.buttonsOpt3,
-                textNumber.text3StartLine, textNumber.text3EndLine);
-
-            if (player.NPCName == "Savepoint") ReloadTextRefScript(textNumber.SaveText, textNumber.buttonsYesNoSave, textNumber.buttonsOptSave,
-                textNumber.textSavStartLine, textNumber.textSavEndLine);
+            if (player.NPCName == "NPC_1") ReloadTextRefScript(textnumber.Text1, textnumber.buttonsYesNo1, textnumber.buttonsOpt1,
+                textnumber.text1StartLine, textnumber.text1CurrentLine);
+            if (player.NPCName == "NPC_2") ReloadTextRefScript(textnumber.Text2, textnumber.buttonsYesNo2, textnumber.buttonsOpt2,
+                textnumber.text2StartLine, textnumber.text2CurrentLine);
+            if (player.NPCName == "NPC_3") ReloadTextRefScript(textnumber.Text3, textnumber.buttonsYesNo3, textnumber.buttonsOpt3,
+                textnumber.text3StartLine, textnumber.text3CurrentLine);
+            if (player.NPCName == "Savepoint") ReloadTextRefScript(textnumber.SaveText, textnumber.buttonsYesNoSave, textnumber.buttonsOptSave,
+                textnumber.textSavStartLine, textnumber.textSavCurrentLine);
 
             player.talkToNPC = false;
         }
@@ -93,5 +72,40 @@ public class ActivateTextAtLine : MonoBehaviour {
             GetComponent<ActivateTextAtLine>(), npcStartLine, npcEndLine);       
         
         theTextBox.EnableTextBox();
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.name == "Player")
+        {
+            player.isOverlappingNPC = true;
+            if (other.gameObject.tag == "Player")
+            {
+                player.isSelectionActive = true;
+                selection.SetActive(true);
+                player.selection = PlayerController.Selection.NPC;
+            }
+
+            player.playerAnim.SetBool("isIdle", true);
+            player.playerAnim.SetBool("isWalking", false);
+
+            if (requireButtonPress)
+            {
+                waitForPress = true;
+                return;
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.name == "Player")
+        {
+            player.isOverlappingNPC = false;
+            waitForPress = false;
+            player.selection = PlayerController.Selection.DEFAULT;
+            player.isSelectionActive = false;
+            selection.SetActive(false);
+        }
     }
 }

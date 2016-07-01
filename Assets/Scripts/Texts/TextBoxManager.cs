@@ -6,9 +6,6 @@ using UnityEngine.UI;
 // ^ I followed a youtube tutorial, so I'm still kind of unsure of what some things do.
 
 public class TextBoxManager : MonoBehaviour {
-
-    public GameFlowManager gameFlow;
-
     public static GameObject currentNPC;
     public bool hasClickedYesButton;
 
@@ -154,8 +151,6 @@ public class TextBoxManager : MonoBehaviour {
 
     void Awake()
     {
-        gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
-
         yesButtonG.SetActive(false);
         noButtonG.SetActive(false);
         OptTextBox.SetActive(false);
@@ -220,6 +215,7 @@ public class TextBoxManager : MonoBehaviour {
         if ((((Input.GetMouseButtonDown(0)) && (!showCurrentYesNoButtons)) // disable click if there are yes/no buttons
             && ((Input.GetMouseButtonDown(0)) && (!showCurrentOptButtons))) // disable click if there are option buttons
             || (hasClickedYesNoButton) || (hasClickedOptButton)) // proceed if the player clicked a button
+            
         {
             player.talkToNPC = false;
             hasClickedYesNoButton = false;
@@ -303,8 +299,6 @@ public class TextBoxManager : MonoBehaviour {
         textBox.SetActive(false);
         isActive = false;
         player.canMove = true;
-
-        gameFlow.ChangeNPCBehaviour();
     }
 
     public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines,

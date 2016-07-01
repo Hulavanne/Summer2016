@@ -27,8 +27,17 @@ public class PlayerController : MonoBehaviour {
 
     public bool hasClickedActionButton;
 
-    public GameObject ReloadSaveButton;
-    public GameObject BackToMenuButton;
+	public Slider staminaBar;
+	public Button yesButton;
+	public Button noButton;
+
+	public bool canHide = true; // monsters will set this to false
+	public bool isGameOver = false;
+	public GameObject gameOverObj;
+	public Text gameOverImg;
+	public float opacity = 0.0f;
+    public GameObject reloadSaveButton;
+    public GameObject backToMenuButton;
 
     GameObject rightBoundary;
     GameObject leftBoundary;
@@ -37,27 +46,15 @@ public class PlayerController : MonoBehaviour {
     public bool canWalkLeft = true;
     public bool canCameraFollow = true;
 
-    public bool canHide = true; // monsters will set this to false
-    public bool isGameOver = false;
-    public GameObject gameOverObj;
-    public Text gameOverImg;
-    public float opacity = 0.0f;
-
     public bool isHidden;
 
     public HideBehaviour selectHide;
     public TextBoxManager textRef;
 
-    public Slider staminaBar;
-    public Button yesButton;
-    public Button noButton;
-    public GameObject yesButtonG;
-    public GameObject noButtonG;
-
     public bool isOverlappingDoor;
     public bool isClickingButton;
 
-    public LevelManager manageLevel;
+    public LevelManager levelManager;
 
     Camera cameraComponent;
     CameraFollowAndEffects cameraScript; // this is the reference to set the dark screen when changing level
@@ -67,17 +64,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool isSelectionActive; // using this to know if it's colliding with RayCastHit
     
-    public GameObject QuestionMark;
-
-    // Selecting Declaration
-    public GameObject[] doors;
-    public Collider2D[] collidedDoors;
-
-    public GameObject[] hideObjects;
-    public Collider2D[] collidedHideObjects;
-
-    public GameObject[] npcs;
-    public Collider2D[] collidedNPCs;
+    public GameObject questionMark;
 
     public bool canMove = true;
     public bool isRunning;
@@ -89,6 +76,108 @@ public class PlayerController : MonoBehaviour {
     Vector3 tempVec; // Vector being used to hide/unhide
     
     #endregion
+
+	void Awake ()
+	{
+		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
+		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
+
+		levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		playerAnim = transform.GetComponentInChildren<Animator>();
+		questionMark = transform.FindChild ("QuestionMark").gameObject;
+		gameOverObj = gui.transform.FindChild("GameOver").gameObject;
+		gameOverImg = gameOverObj.GetComponent<Text>();
+		reloadSaveButton = gameOverObj.transform.FindChild("ReloadSave").gameObject;
+		backToMenuButton = gameOverObj.transform.FindChild("BackToMenu").gameObject;
+		textRef = inGameUI.GetComponent<TextBoxManager>();
+		staminaBar = gui.transform.FindChild("StaminaBar").GetComponent<Slider>();
+		yesButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonYes").GetComponent<Button>();
+		noButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonNo").GetComponent<Button>();
+		cameraComponent = Camera.main;
+		cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
+
+		if (Game.current != null)
+		{
+			if (Game.current.startingPositionX != 0.0f)
+			{
+				Vector2 startingPosition = transform.position;
+				startingPosition = new Vector2(Game.current.startingPositionX, Game.current.startingPositionY);
+				transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+			}
+		}
+
+		canShowGameOverButtons = true;
+
+		staminaBar.value = 100.0f;
+		questionMark.SetActive(false); // Activates once the player reaches a clickable object
+
+		canMove = true;
+	}
+
+	void Update()
+	{
+		if ((hasClickedActionButton) && (isSelectionActive))
+		{
+			if (selection == Selection.HIDEOBJECT)
+			{
+				tempVec = new Vector3(0, 0, 5);
+				if (isHidden)
+				{
+					PlayerUnhide();
+				}
+				else if (canHide)
+				{
+					PlayerHide();
+				}
+			}
+
+			else if (selection == Selection.DOOR)
+			{
+				switchingLevel = true;
+				hasClickedActionButton = false;
+			}
+			else if (selection == Selection.NPC)
+			{
+				talkToNPC = true;
+				questionMark.SetActive(false);
+				isSelectionActive = false;
+				selection = Selection.DEFAULT;
+				hasClickedActionButton = false;
+			}
+		}
+
+
+		if (isGameOver)
+		{
+			GameOverSplash();
+			cameraScript.FadeToBlack();// turnBlack = true;
+			//cameraScript.opacity = 1.0f;
+			return;
+		}
+
+		#region darkScreen
+
+		if (switchingLevel) // if true, turns the screen dark
+		{
+			cameraScript.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
+			switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
+		}
+		else
+		{
+			cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
+		}
+		if (switchingLevelTime >= 1) // note that this 1 is a timer
+		{
+			//cameraScript.JoinPlayer();
+			canMove = true;
+			levelManager.ChangeLevel();
+
+			//resetting these variables
+			switchingLevel = false;
+			switchingLevelTime = 0.0f;
+		}
+		#endregion
+	}
 
     void OnTriggerStay2D(Collider2D other)
     {
@@ -164,8 +253,8 @@ public class PlayerController : MonoBehaviour {
         if((opacity >= 1.0f) && (canShowGameOverButtons))
         {
             canShowGameOverButtons = false;
-            ReloadSaveButton.SetActive(true);
-            BackToMenuButton.SetActive(true);
+            reloadSaveButton.SetActive(true);
+            backToMenuButton.SetActive(true);
         }
     }
 
@@ -178,8 +267,10 @@ public class PlayerController : MonoBehaviour {
             playerAnim.SetBool("isIdle", false);
         }
 
-        if (canCameraFollow)
-        cameraScript.JumpToPlayer();
+        //if (canCameraFollow)
+		//{
+		//	cameraScript.JumpToPlayer();
+		//}
 
         if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -208,8 +299,11 @@ public class PlayerController : MonoBehaviour {
             playerAnim.SetBool("isIdle", false);
         }
 
-        if (canCameraFollow)
-        cameraScript.JumpToPlayer();
+        //if (canCameraFollow)
+		//{
+        //	cameraScript.JumpToPlayer();
+		//}
+		
 
         if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -251,128 +345,8 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void Awake ()
-    {
-        cameraComponent = Camera.main;
-        cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
-
-        if (Game.current != null)
-        {
-            if (Game.current.startingPositionX != 0.0f)
-            {
-                Vector2 startingPosition = transform.position;
-                startingPosition = new Vector2(Game.current.startingPositionX, Game.current.startingPositionY);
-                transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
-            }
-        }
-
-        canShowGameOverButtons = true;
-        ReloadSaveButton.SetActive(false);
-        BackToMenuButton.SetActive(false);
-        gameOverObj.SetActive(false);
-
-        staminaBar.value = 100.0f;
-        QuestionMark.SetActive(false); // Activates once the player reaches a clickable object 
-        
-        doors = GameObject.FindGameObjectsWithTag("Door");
-        hideObjects = GameObject.FindGameObjectsWithTag("HideObject");
-        npcs = GameObject.FindGameObjectsWithTag("NPC");
-        
-
-        int b = 0;
-
-        foreach (GameObject doorNum in doors)
-        {
-            collidedDoors[b] = doorNum.GetComponent<Collider2D>();
-            b++;
-        }
-        b = 0;
-
-        foreach(GameObject npcNum in npcs)
-        {
-            collidedNPCs[b] = npcNum.GetComponent<Collider2D>();
-            b++;
-        }
-        b = 0;
-
-        yesButtonG.SetActive(true);
-        noButtonG.SetActive(true);
-
-        foreach(GameObject hideObjectNum in hideObjects)
-        {
-            collidedHideObjects[b] = hideObjectNum.GetComponent<Collider2D>();
-            b++;
-        }
-        b = 0;
-    }
-
     public void OnUserClick()
     {
        
-    }
-
-    void Update()
-    {
-        if ((hasClickedActionButton) && (isSelectionActive))
-        {
-            if (selection == Selection.HIDEOBJECT)
-            {
-                tempVec = new Vector3(0, 0, 5);
-                if (isHidden)
-                {
-                    PlayerUnhide();
-                }
-                else if (canHide)
-                {
-                    PlayerHide();
-                }
-            }
-
-            else if (selection == Selection.DOOR)
-            {
-                switchingLevel = true;
-                hasClickedActionButton = false;
-            }
-            else if (selection == Selection.NPC)
-            {
-                talkToNPC = true;
-                QuestionMark.SetActive(false);
-                isSelectionActive = false;
-                selection = Selection.DEFAULT;
-                hasClickedActionButton = false;
-            }
-        }
-
-
-        if (isGameOver)
-        {
-            GameOverSplash();
-            cameraScript.turnBlack = true;
-            cameraScript.opacity = 1.0f;
-            return;
-        }
-        
-        #region darkScreen
-
-        if (switchingLevel) // if true, turns the screen dark
-        {
-            cameraScript.turnBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
-            switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
-        }
-        else
-        {
-            cameraScript.turnBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
-        }
-        if (switchingLevelTime >= 1) // note that this 1 is a timer
-        {
-            cameraScript.JoinPlayer();
-            canMove = true;
-            manageLevel.ChangeLevel();
-
-            //resetting these variables
-            switchingLevel = false;
-            switchingLevelTime = 0.0f;
-        }
-        #endregion
     }
 }

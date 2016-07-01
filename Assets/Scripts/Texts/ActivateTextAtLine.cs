@@ -6,7 +6,7 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     public string NPCName;
 
-    public PlayerController player;
+    public PlayerController playerController;
     public GameObject selection;
 
     public bool showYesNoButtons;
@@ -44,6 +44,7 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     void Awake()
     {
+		playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         theTextBox = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
         textNumber = GameObject.Find("TextList").GetComponent<TextList>();
         npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
@@ -51,30 +52,30 @@ public class ActivateTextAtLine : MonoBehaviour {
 
 	void Update ()
     {
-	    if (player.talkToNPC)
+	    if (playerController.talkToNPC)
         {
-            if ((player.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.Text1,
                 textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
 
-            if ((player.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 1)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 1)) ReloadTextRefScript(textNumber.Text1,
                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
 
-            if ((player.NPCName == "NPC_1") && (npcState.npc1Behav == 0)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "NPC_1") && (npcState.npc1Behav == 0)) ReloadTextRefScript(textNumber.Text1,
                 textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
 
-            if ((player.NPCName == "NPC_1") && (npcState.npc1Behav == 1)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "NPC_1") && (npcState.npc1Behav == 1)) ReloadTextRefScript(textNumber.Text1,
                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
 
-            if (player.NPCName == "NPC_2") ReloadTextRefScript(textNumber.Text2, textNumber.buttonsYesNo2, textNumber.buttonsOpt2,
+            if (playerController.NPCName == "NPC_2") ReloadTextRefScript(textNumber.Text2, textNumber.buttonsYesNo2, textNumber.buttonsOpt2,
                 textNumber.text2StartLine, textNumber.text2EndLine);
 
-            if (player.NPCName == "NPC_3") ReloadTextRefScript(textNumber.Text3, textNumber.buttonsYesNo3, textNumber.buttonsOpt3,
+            if (playerController.NPCName == "NPC_3") ReloadTextRefScript(textNumber.Text3, textNumber.buttonsYesNo3, textNumber.buttonsOpt3,
                 textNumber.text3StartLine, textNumber.text3EndLine);
 
-            if (player.NPCName == "Savepoint") ReloadTextRefScript(textNumber.SaveText, textNumber.buttonsYesNoSave, textNumber.buttonsOptSave,
+            if (playerController.NPCName == "Savepoint") ReloadTextRefScript(textNumber.SaveText, textNumber.buttonsYesNoSave, textNumber.buttonsOptSave,
                 textNumber.textSavStartLine, textNumber.textSavEndLine);
 
-            player.talkToNPC = false;
+            playerController.talkToNPC = false;
         }
 	}
 
@@ -82,9 +83,9 @@ public class ActivateTextAtLine : MonoBehaviour {
         int[] currentYesNoButtons, int[] currentOptButtons,
         int npcStartLine, int npcEndLine)
     {
-        player.talkToNPC = false;
-        player.playerAnim.SetBool("isIdle", true);
-        player.playerAnim.SetBool("isWalking", false);
+        playerController.talkToNPC = false;
+        playerController.playerAnim.SetBool("isIdle", true);
+        playerController.playerAnim.SetBool("isWalking", false);
 
         theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
             Button1G, Button2G, Button3G, Button4G);

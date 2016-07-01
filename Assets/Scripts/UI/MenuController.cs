@@ -10,9 +10,14 @@ public class MenuController : MonoBehaviour
 	public static bool gamePaused = false;
 
 	GameManager gameManager;
+	LevelManager levelManager;
 	InventoryManager inventoryManager;
+	PlayerController playerController;
+
     GameObject gui;
 	GameObject floatingMessage;
+	GameObject gameOverScreen;
+
 	GameObject menu;
 	GameObject pauseOverlay;
 	GameObject optionsOverlay;
@@ -29,11 +34,25 @@ public class MenuController : MonoBehaviour
 		{
 			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
+		if (GameObject.Find("GameManager") != null)
+		{
+			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		}
+		if (GameObject.FindGameObjectWithTag("Player") != null)
+		{
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+		}
         if (transform.FindChild("GUI") != null)
         {
             gui = transform.FindChild("GUI").gameObject;
 			floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
-			//floatingMessage.SetActive(false);
+			gameOverScreen = gui.transform.FindChild ("GameOver").gameObject;
+
+			foreach (Transform child in gameOverScreen.transform)
+			{
+				child.gameObject.SetActive(false);
+			}
+			gameOverScreen.SetActive(false);
         }
         if (transform.FindChild("PauseScreen") != null)
 		{
@@ -97,6 +116,21 @@ public class MenuController : MonoBehaviour
 	}
 
 	//----------------------IN-GAME----------------------
+
+	public void ActionButton()
+	{
+		playerController.OnActionButtonClick();
+	}
+
+	public void ReloadLevel()
+	{
+		levelManager.ReloadLevel();
+	}
+
+	public void GoToMenu()
+	{
+		levelManager.GoToMenu();
+	}
 
 	public void PauseGame()
 	{

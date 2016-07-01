@@ -41,12 +41,14 @@ public class npcBehaviour : MonoBehaviour {
         }
     }
 
-    void Awake () {
+    void Awake ()
+	{
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
 	}
 	
-	void Update () {
+	void Update ()
+	{
 	
 	}
 }

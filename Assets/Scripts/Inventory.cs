@@ -10,7 +10,10 @@ public class Inventory : MonoBehaviour
 	void Awake()
 	{
 		// Load in the items of the current game
-		items = Game.current.items;
+		if (Game.current != null)
+		{
+			items = Game.current.items;
+		}
 	}
 
 	void Update()

@@ -125,7 +125,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>1");
                     player.transform.position = door.transform.position;
-                    cameraScript.JoinPlayer();
+                    //cameraScript.JoinPlayer();
                 }
                 else
                 {
@@ -139,7 +139,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel3;
                     door = GameObject.Find("Door_3>2");
                     player.transform.position = door.transform.position;
-                    cameraScript.JoinPlayer();
+					//cameraScript.JoinPlayer();
                 }
                 else if (player.doorName == "Door_2>1")
                 {
@@ -147,7 +147,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel1;
                     door = GameObject.Find("Door_1>2");
                     player.transform.position = door.transform.position;
-                    cameraScript.JoinPlayer();
+					//cameraScript.JoinPlayer();
                 }
                 break;
             case Level.LEVEL3:
@@ -163,7 +163,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>3");
                     player.transform.position = door.transform.position;
-                    cameraScript.JoinPlayer();
+					//cameraScript.JoinPlayer();
                 }
                 break;
 

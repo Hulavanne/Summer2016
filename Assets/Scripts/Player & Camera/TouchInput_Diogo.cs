@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class TouchInput_Diogo : MonoBehaviour
 {
-    public Slider staminaBar;
-    public Camera mainCamera;
-    public Animator playerAnim;
+	public PlayerController playerController;
+	Vector3 addXPos = new Vector3(.1f, 0, 0);
 
-    public PlayerController player;
-    Vector3 addXPos = new Vector3(.1f, 0, 0);
+	public Animator playerAnim;
+    public Slider staminaBar;
 
     public int runValue = 0;
     public float runTouchDelay = 0;
@@ -30,9 +29,15 @@ public class TouchInput_Diogo : MonoBehaviour
 
     public float minSwipeDistY; // minimum swipe distance to prevent accidental touch input
     
+	void Awake()
+	{
+		playerController = transform.GetComponent<PlayerController>();
+		playerAnim = transform.GetComponentInChildren<Animator>();
+		staminaBar = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("StaminaBar").GetComponent<Slider>();
+	}
+
     void Update()
     {
-
         if ((staminaBar.value < 100) && (runValue != 2))
         {
             staminaBar.value += Time.deltaTime * 0.05f;
@@ -80,11 +85,11 @@ public class TouchInput_Diogo : MonoBehaviour
         // checks every frame if runValue is 2 and sets isRunning
         if (runValue == 2)
         {
-            player.isRunning = true;
+			playerController.isRunning = true;
         }
         else
         {
-            player.isRunning = false;
+			playerController.isRunning = false;
         }
 
         // For unity editor
@@ -93,7 +98,7 @@ public class TouchInput_Diogo : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            player.OnUserClick();
+			playerController.OnUserClick();
         }
 
         //Running Input
@@ -103,9 +108,9 @@ public class TouchInput_Diogo : MonoBehaviour
         {
             // Go Left and Right Input
 
-            if (player.switchingLevel)
+			if (playerController.switchingLevel)
             {
-                player.canMove = false;
+				playerController.canMove = false;
             }
 
             #region OtherMovementInput
@@ -131,21 +136,21 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
-                if (player.canMove)
+				if (playerController.canMove)
                 {
                     playerAnim.SetBool("isFacingRight", false);
                     playerAnim.SetBool("isWalking", true);
                 }
-                player.GoLeft();
+				playerController.GoLeft();
             }
 
             else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
             {
-                if (player.canMove)
+				if (playerController.canMove)
                 {
                     playerAnim.SetBool("isFacingRight", true);
                     playerAnim.SetBool("isWalking", true);
-                    player.GoRight();
+					playerController.GoRight();
                 }
             }
         }

@@ -59,7 +59,9 @@ public class PlayerController : MonoBehaviour {
 
     public LevelManager manageLevel;
 
-    public CameraFollowAndEffects cameraReference; // this is the reference to set the dark screen when changing level
+    Camera cameraComponent;
+    CameraFollowAndEffects cameraScript; // this is the reference to set the dark screen when changing level
+
     public bool switchingLevel; // These two variables are to check if it's switching level, and a timer to fading in/out of dark screen
     public float switchingLevelTime; // ^
 
@@ -177,7 +179,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         if (canCameraFollow)
-        cameraReference.JumpToPlayer();
+        cameraScript.JumpToPlayer();
 
         if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -207,7 +209,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         if (canCameraFollow)
-        cameraReference.JumpToPlayer();
+        cameraScript.JumpToPlayer();
 
         if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -251,6 +253,9 @@ public class PlayerController : MonoBehaviour {
 
     void Awake ()
     {
+        cameraComponent = Camera.main;
+        cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
+
         if (Game.current != null)
         {
             if (Game.current.startingPositionX != 0.0f)
@@ -342,8 +347,8 @@ public class PlayerController : MonoBehaviour {
         if (isGameOver)
         {
             GameOverSplash();
-            cameraReference.turnBlack = true;
-            cameraReference.opacity = 1.0f;
+            cameraScript.turnBlack = true;
+            cameraScript.opacity = 1.0f;
             return;
         }
         
@@ -351,16 +356,16 @@ public class PlayerController : MonoBehaviour {
 
         if (switchingLevel) // if true, turns the screen dark
         {
-            cameraReference.turnBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
+            cameraScript.turnBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
             switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
         }
         else
         {
-            cameraReference.turnBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
+            cameraScript.turnBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
         }
         if (switchingLevelTime >= 1) // note that this 1 is a timer
         {
-            cameraReference.JoinPlayer();
+            cameraScript.JoinPlayer();
             canMove = true;
             manageLevel.ChangeLevel();
 

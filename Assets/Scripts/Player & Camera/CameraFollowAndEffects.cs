@@ -23,7 +23,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
     public void JoinPlayer()
     {
-        //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
+        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
     }
 
     public void JumpToPlayer()
@@ -33,19 +33,19 @@ public class CameraFollowAndEffects : MonoBehaviour {
             if (playerPos > cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-                //transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
 
             else if (playerPos < cameraPos)
             {
                 // transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-                //transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+                transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
             }
         }
 
         else
         {
-            //transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
         }
     }
 

@@ -17,6 +17,9 @@ public class LevelManager : MonoBehaviour {
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
 
+    Camera cameraComponent;
+    CameraFollowAndEffects cameraScript;
+
     public float LightAmount;
     public float lightLevel1 = 0.1f,
         lightLevel2 = 0.0f,
@@ -38,7 +41,8 @@ public class LevelManager : MonoBehaviour {
     void Awake() {
         thisLevel = Level.LEVEL1;
         LightAmount = lightLevel1;
-
+        cameraComponent = Camera.main;
+        cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
         menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();
     }
 
@@ -121,7 +125,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>1");
                     player.transform.position = door.transform.position;
-                    player.cameraReference.JoinPlayer();
+                    cameraScript.JoinPlayer();
                 }
                 else
                 {
@@ -135,7 +139,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel3;
                     door = GameObject.Find("Door_3>2");
                     player.transform.position = door.transform.position;
-                    player.cameraReference.JoinPlayer();
+                    cameraScript.JoinPlayer();
                 }
                 else if (player.doorName == "Door_2>1")
                 {
@@ -143,7 +147,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel1;
                     door = GameObject.Find("Door_1>2");
                     player.transform.position = door.transform.position;
-                    player.cameraReference.JoinPlayer();
+                    cameraScript.JoinPlayer();
                 }
                 break;
             case Level.LEVEL3:
@@ -159,7 +163,7 @@ public class LevelManager : MonoBehaviour {
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>3");
                     player.transform.position = door.transform.position;
-                    player.cameraReference.JoinPlayer();
+                    cameraScript.JoinPlayer();
                 }
                 break;
 

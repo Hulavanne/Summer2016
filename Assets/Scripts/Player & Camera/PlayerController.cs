@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour {
     };
     public Selection selection = Selection.DEFAULT;
 
+    public bool isIntro = true;
+
+    public float npcWaitTime = 0.0f;
+    public bool canTalkToNPC;
     public string NPCName;
 
     public string doorName;
@@ -46,6 +50,7 @@ public class PlayerController : MonoBehaviour {
     public bool canWalkLeft = true;
     public bool canCameraFollow = true;
 
+    public bool isRoomFixed;
     public bool isHidden;
 
     public HideBehaviour selectHide;
@@ -113,6 +118,7 @@ public class PlayerController : MonoBehaviour {
 		questionMark.SetActive(false); // Activates once the player reaches a clickable object
 
 		canMove = true;
+        isIntro = true;
 	}
 
     public void TalkToNPC()
@@ -126,6 +132,17 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
 	{
+        if (npcWaitTime > 0.0f)
+        {
+            canMove = false;
+            npcWaitTime -= Time.deltaTime;
+            canTalkToNPC = false;
+        }
+        else
+        {
+            canTalkToNPC = true;
+        }
+
 		if ((hasClickedActionButton) && (isSelectionActive))
 		{
 			if (selection == Selection.HIDEOBJECT)
@@ -161,17 +178,20 @@ public class PlayerController : MonoBehaviour {
 			return;
 		}
 
-		#region darkScreen
+        #region darkScreen
 
-		if (switchingLevel) // if true, turns the screen dark
-		{
-			cameraScript.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
-			switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
-		}
-		else
-		{
-			cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
-		}
+        if (switchingLevel) // if true, turns the screen dark
+        {
+            cameraScript.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
+            switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
+        }
+        else
+        {
+            if (!isIntro)
+            {
+                cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
+            }
+        }
 		if (switchingLevelTime >= 1) // note that this 1 is a timer
 		{
 			//cameraScript.JoinPlayer();
@@ -197,7 +217,13 @@ public class PlayerController : MonoBehaviour {
             NPCName = other.gameObject.name;
         }
 
-        if (other.tag == "RightBoundary")
+        if (other.tag == "FixedBoundary")
+        {
+            canCameraFollow = false;
+            isRoomFixed = true;
+        }
+
+        else if (other.tag == "RightBoundary")
         {
             rightBoundary = other.gameObject;
             canCameraFollow = false;
@@ -232,15 +258,27 @@ public class PlayerController : MonoBehaviour {
         doorName = "";
         NPCName = "";
 
+        if (other.tag == "FixedBoundary")
+        {
+            canCameraFollow = true;
+            isRoomFixed = false;
+        }
+
         if (other.tag == "RightBoundary")
         {
             canWalkRight = true;
-            canCameraFollow = true;
+            if (!isRoomFixed)
+            {
+                canCameraFollow = true;
+            }
         }
         else if (other.tag == "LeftBoundary")
         {
             canWalkLeft = true;
-            canCameraFollow = true;
+            if (!isRoomFixed)
+            {
+                canCameraFollow = true;
+            }
         }
     }
 
@@ -266,6 +304,11 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
+        if(textRef.isCursorOnActionButton)
+        {
+            return;
+        }
+
         if (canMove)
         {
             playerAnim.SetBool("isFacingRight", false);
@@ -298,6 +341,11 @@ public class PlayerController : MonoBehaviour {
 
     public void GoRight()
     {
+        if (textRef.isCursorOnActionButton)
+        {
+            return;
+        }
+
         if (canMove)
         {
             playerAnim.SetBool("isFacingRight", true);

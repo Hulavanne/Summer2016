@@ -10,6 +10,8 @@ public class GameFlowManager : MonoBehaviour {
     public TextList textNumber;
     public CameraFollowAndEffects cameraEffects;
 
+    public GameObject tempGameObject;
+
     public bool isIntro = true;
     public bool destroyNPC;
 
@@ -27,40 +29,39 @@ public class GameFlowManager : MonoBehaviour {
             destroyNPC = false;
         }
     }
-
+    
     public void ChangeNPCBehaviour()
     {
         if (npcName == "Intro_NPC")
         {
             if (npcIntroBehav == 0)
             {
-                //darkScreen = false;
-                textNumber.text1StartLine = 3;
-                textNumber.text1EndLine = 4;
+                textNumber.textIntroStartLine = 3;
+                textNumber.textIntroEndLine = 4;
                 npcIntroBehav++;
+                player.npcWaitTime = 2.0f;
+                isNPCAutomatic = true;
+                player.isIntro = false;
+                player.canMove = true;
             }
             else if (npcIntroBehav == 1)
             {
+                player.selection = PlayerController.Selection.DEFAULT;
+                player.questionMark.SetActive(false);
                 destroyNPC = true;
-                npcIntroBehav++;
+                tempGameObject.SetActive(true);
             }
-            
         }
 
         else if (npcName == "NPC_1")
         {
             if (npc1Behav == 0)
             {
-                textNumber.text1StartLine = 3;
-                textNumber.text1EndLine = 4;
-                npc1Behav++;
-                isNPCAutomatic = true;
-                Debug.Log("working0");
+
             }
             else if (npc1Behav == 1)
             {
-                destroyNPC = true;
-                npc1Behav++;
+
             }
         }
 
@@ -76,9 +77,9 @@ public class GameFlowManager : MonoBehaviour {
         isNPCAutomatic = true;
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
-        textNumber = GameObject.Find("TextList").GetComponent<TextList>();
+        textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
-        textBoxManager = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
+        textBoxManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
         cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
 	}
 	

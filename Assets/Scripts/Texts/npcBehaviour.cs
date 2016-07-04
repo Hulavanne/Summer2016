@@ -9,15 +9,12 @@ public class npcBehaviour : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.transform.parent.tag == "Player")
         {
             player.isOverlappingNPC = true;
-            if (other.gameObject.tag == "Player")
-            {
-                player.isSelectionActive = true;
-                textLoader.selection.SetActive(true);
-                player.selection = PlayerController.Selection.NPC;
-            }
+            player.isSelectionActive = true;
+            textLoader.selection.SetActive(true);
+            player.selection = PlayerController.Selection.NPC;
 
             player.playerAnim.SetBool("isIdle", true);
             player.playerAnim.SetBool("isWalking", false);
@@ -28,7 +25,7 @@ public class npcBehaviour : MonoBehaviour {
                 return;
             }
 
-            if (gameflow.isNPCAutomatic)
+            if ((gameflow.isNPCAutomatic) && (player.npcWaitTime <= 0.0f))
             {
                 player.TalkToNPC();
                 gameflow.isNPCAutomatic = false;
@@ -38,7 +35,7 @@ public class npcBehaviour : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.transform.parent.tag == "Player")
         {
             player.isOverlappingNPC = false;
             textLoader.waitForPress = false;

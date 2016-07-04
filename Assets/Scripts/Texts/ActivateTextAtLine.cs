@@ -54,8 +54,8 @@ public class ActivateTextAtLine : MonoBehaviour {
             playerController = GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponentInChildren<PlayerController>();
         }
 
-        theTextBox = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
-        textNumber = GameObject.Find("TextList").GetComponent<TextList>();
+        theTextBox = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
+        textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();
         npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
         
@@ -65,22 +65,22 @@ public class ActivateTextAtLine : MonoBehaviour {
     {
 	    if (playerController.talkToNPC)
         {
-            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.Text1,
-                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
+            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.IntroText,
+                textNumber.buttonsYesNoIntro, textNumber.buttonsOptIntro, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
 
-            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 1)) ReloadTextRefScript(textNumber.Text1,
-               textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
+            if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 1)) ReloadTextRefScript(textNumber.IntroText,
+               textNumber.buttonsYesNoIntro, textNumber.buttonsOptIntro, textNumber.textIntroStartLine, textNumber.textIntroEndLine);
 
-            if ((playerController.NPCName == "NPC_1") && (npcState.npc1Behav == 0)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "NPC_Bed") && (npcState.npc1Behav == 0)) ReloadTextRefScript(textNumber.Text1,
                 textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
 
-            if ((playerController.NPCName == "NPC_1") && (npcState.npc1Behav == 1)) ReloadTextRefScript(textNumber.Text1,
+            if ((playerController.NPCName == "NPC_Bed") && (npcState.npc1Behav == 1)) ReloadTextRefScript(textNumber.Text1,
                textNumber.buttonsYesNo1, textNumber.buttonsOpt1, textNumber.text1StartLine, textNumber.text1EndLine);
 
-            if (playerController.NPCName == "NPC_2") ReloadTextRefScript(textNumber.Text2, textNumber.buttonsYesNo2, textNumber.buttonsOpt2,
+            if (playerController.NPCName == "NPC_Box") ReloadTextRefScript(textNumber.Text2, textNumber.buttonsYesNo2, textNumber.buttonsOpt2,
                 textNumber.text2StartLine, textNumber.text2EndLine);
 
-            if (playerController.NPCName == "NPC_3") ReloadTextRefScript(textNumber.Text3, textNumber.buttonsYesNo3, textNumber.buttonsOpt3,
+            if (playerController.NPCName == "NPC_Shelf") ReloadTextRefScript(textNumber.Text3, textNumber.buttonsYesNo3, textNumber.buttonsOpt3,
                 textNumber.text3StartLine, textNumber.text3EndLine);
 
             if (playerController.NPCName == "Savepoint") ReloadTextRefScript(textNumber.SaveText, textNumber.buttonsYesNoSave, textNumber.buttonsOptSave,

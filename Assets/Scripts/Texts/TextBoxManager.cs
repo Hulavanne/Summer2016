@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TextBoxManager : MonoBehaviour {
 
+    public bool isCursorOnActionButton;
+
     public GameFlowManager gameFlow;
 
     public static GameObject currentNPC;
@@ -96,9 +98,11 @@ public class TextBoxManager : MonoBehaviour {
 
     public void OnYesClick()
     {
-		if (currentNPC.GetComponent<Savepoint>() != null)
+        Debug.Log("Has clicked Yes Button!");
+        currentNPC = GameObject.Find(player.NPCName);
+        if (currentNPC.GetComponent<Savepoint>() != null)
         {
-			currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
+            currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
         }
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
@@ -106,21 +110,11 @@ public class TextBoxManager : MonoBehaviour {
 
     public void OnNoClick()
     {
-        Debug.Log("Clicked No Button");
+        Debug.Log("Has clicked No Button!");
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
     }
-
-    public void SetYesNoButtons (bool value)
-    {
-        hasClickedYesNoButton = false;
-
-        if (value)
-        {
-            showCurrentYesNoButtons = true;
-        }
-    }
-
+    
     public void GetYesNoButtonLines()
     {
         if (showYesNoButtons)
@@ -152,9 +146,18 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
+    public void CursorOverButton()
+    {
+        isCursorOnActionButton = true;
+    }
+
+    public void CursorOutsideButton()
+    {
+        isCursorOnActionButton = false;
+    }
+
     void Awake()
     {
-        
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
 
         yesButtonG.SetActive(false);
@@ -189,7 +192,7 @@ public class TextBoxManager : MonoBehaviour {
         {
             return;
         }
-
+        
         if (showCurrentYesNoButtons)
         {
             yesButtonG.SetActive(true);
@@ -222,14 +225,15 @@ public class TextBoxManager : MonoBehaviour {
             && (Input.GetMouseButtonDown(0) && !showCurrentOptButtons)) // disable click if there are option buttons
             || hasClickedYesNoButton || hasClickedOptButton ) // proceed if the player clicked a button
         {
-            Debug.Log("working");
+            Debug.Log("working!");
             player.talkToNPC = false;
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
+            showCurrentOptButtons = false;
+            showCurrentYesNoButtons = false;
 
             if (showCurrentYesNoButtons == false || showOptButtons == false)
             {
-
                 if (!isTyping)
                 {
                     currentLine++;
@@ -277,26 +281,28 @@ public class TextBoxManager : MonoBehaviour {
 
     public void EnableTextBox()
     {
-        
-        OptTextBox.SetActive(true); // activating button text box here
-
-        textBox.SetActive(true);
-        isActive = true;
-
-        if (stopPlayerMovement)
+        if (player.canTalkToNPC)
         {
-            player.canMove = false;
-        }
-        else
-        {
-            player.canMove = true;
-        }
-        
-        #region Insert Variables
+            OptTextBox.SetActive(true); // activating button text box here
 
-        #endregion
-        
-        StartCoroutine(TextScroll(textLines[currentLine]));
+            textBox.SetActive(true);
+            isActive = true;
+
+            if (stopPlayerMovement)
+            {
+                player.canMove = false;
+            }
+            else
+            {
+                player.canMove = true;
+            }
+
+            #region Insert Variables
+
+            #endregion
+
+            StartCoroutine(TextScroll(textLines[currentLine]));
+        }
     }
 
     public void DisableTextBox()

@@ -1,6 +1,0 @@
-text 2 being displayed
-sample text
-sample text2
-sample text3
-sample text4
-sample text5

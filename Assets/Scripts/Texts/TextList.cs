@@ -16,6 +16,7 @@ public class TextList : MonoBehaviour {
     public TextAsset Text8;
     public TextAsset Text9;
     public TextAsset Text10;
+    public TextAsset IntroText;
     public TextAsset SaveText;
 
     // for now, the arrays can only have power of 2 (can change it to whatever though)

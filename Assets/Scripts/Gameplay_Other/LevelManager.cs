@@ -124,13 +124,10 @@ public class LevelManager : MonoBehaviour {
                     thisLevel = Level.LEVEL2;
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>1");
-                    player.transform.position = door.transform.position;
+                    player.transform.position = new Vector3 (door.transform.position.x, player.transform.position.y, player.transform.position.z);
                     //cameraScript.JoinPlayer();
                 }
-                else
-                {
-                    // do nothing here because there is no level -1
-                }
+            
                 break;
             case Level.LEVEL2:
                 if (player.doorName == "Door_2>3")
@@ -138,50 +135,35 @@ public class LevelManager : MonoBehaviour {
                     thisLevel = Level.LEVEL3;
                     LightAmount = lightLevel3;
                     door = GameObject.Find("Door_3>2");
-                    player.transform.position = door.transform.position;
-					//cameraScript.JoinPlayer();
+                    player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
+                    //cameraScript.JoinPlayer();
                 }
                 else if (player.doorName == "Door_2>1")
                 {
                     thisLevel = Level.LEVEL1;
                     LightAmount = lightLevel1;
                     door = GameObject.Find("Door_1>2");
-                    player.transform.position = door.transform.position;
-					//cameraScript.JoinPlayer();
+                    player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
+                    //cameraScript.JoinPlayer();
                 }
                 break;
             case Level.LEVEL3:
-                if ( 1==2 )
-                {
-                    // thisLevel = Level.LEVEL4;
-                    // ChangePlayerPosition();
-                    // do nothing here because there is no level 4
-                }
-                else if (player.doorName == "Door_3>2")
+                if (player.doorName == "Door_3>2")
                 {
                     thisLevel = Level.LEVEL2;
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>3");
-                    player.transform.position = door.transform.position;
-					//cameraScript.JoinPlayer();
+                    player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
+                    //cameraScript.JoinPlayer();
                 }
                 break;
 
-
-                player.isSelectionActive = true;
-                QuestionMark.SetActive(true);
-                player.isOverlappingDoor = true;
+            player.isSelectionActive = true;
+            QuestionMark.SetActive(true);
+            player.isOverlappingDoor = true;
         }
-
-
-        // Debug.Log("this level > " + thisLevel);
-
     }
-
     
-
-    
-	
 	void Update () {
 	    if (!player.switchingLevel)
         {

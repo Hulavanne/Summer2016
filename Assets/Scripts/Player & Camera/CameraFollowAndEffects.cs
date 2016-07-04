@@ -36,9 +36,12 @@ public class CameraFollowAndEffects : MonoBehaviour {
         }
 		cameraComponent = transform.GetComponent<Camera>();
 
-		//JoinPlayer(); // Initially joins player
-		fadeToBlack = true;
+        transform.position = new Vector3(transform.position.x, player.transform.position.y - pathHeight + cameraComponent.orthographicSize, transform.position.z);
+
+        //JoinPlayer(); // Initially joins player
+        fadeToBlack = true;
 		opacity = 1.0f;
+        
 	}
 
 	void Update ()
@@ -52,7 +55,6 @@ public class CameraFollowAndEffects : MonoBehaviour {
         }
         else
         {
-            
             if (opacity >= 0)
             {
                 opacity -= 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
@@ -64,14 +66,11 @@ public class CameraFollowAndEffects : MonoBehaviour {
         opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
                                                                // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 
-		// Adjust camera's position
-		transform.position = new Vector3(transform.position.x, player.transform.position.y - pathHeight + cameraComponent.orthographicSize, transform.position.z);
-
 		// Make the camera follow the player
         if (playerController.canCameraFollow)
         {
 			float x = player.transform.position.x;
-			//transform.position = new Vector3(x, transform.position.y, transform.position.z);
+			transform.position = new Vector3(x, transform.position.y, transform.position.z);
         }
 
 		//GetDistance();
@@ -101,13 +100,13 @@ public class CameraFollowAndEffects : MonoBehaviour {
 			if (playerPos > cameraPos)
 			{
 				// transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-				transform.position = new Vector3(player.transform.position.x - 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+				transform.position = new Vector3(player.transform.position.x - 2.0f, transform.position.y, transform.position.z);
 			}
 
 			else if (playerPos < cameraPos)
 			{
 				// transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-				transform.position = new Vector3(player.transform.position.x + 2.0f, player.transform.position.y + 2.0f, transform.position.z);
+				transform.position = new Vector3(player.transform.position.x + 2.0f, transform.position.y, transform.position.z);
 			}
 		}
 

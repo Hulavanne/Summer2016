@@ -8,6 +8,10 @@ public class Boundary_Behaviour : MonoBehaviour {
     public float screenHeight;
     
 	void Awake () {
+        if (tag == "FixedBoundary")
+        {
+            return;
+        }
 
         screenWidth = Screen.width;
         screenHeight = Screen.height;

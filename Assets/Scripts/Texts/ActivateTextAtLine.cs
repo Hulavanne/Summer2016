@@ -44,10 +44,21 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     void Awake()
     {
-		playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+        if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>() != null)
+        {
+            playerController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>();
+        }
+        else
+        {
+            playerController = GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponentInChildren<PlayerController>();
+        }
+
         theTextBox = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
         textNumber = GameObject.Find("TextList").GetComponent<TextList>();
         npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
+        selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
+        
     }
 
 	void Update ()

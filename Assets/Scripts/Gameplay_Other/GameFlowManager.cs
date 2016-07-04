@@ -8,10 +8,12 @@ public class GameFlowManager : MonoBehaviour {
     public ActivateTextAtLine textActivate;
     public TextBoxManager textBoxManager;
     public TextList textNumber;
+    public CameraFollowAndEffects cameraEffects;
 
     public bool isIntro = true;
     public bool destroyNPC;
 
+    public bool isNPCAutomatic;
     public int npcIntroBehav = 0;
     public int npc1Behav = 0;
 
@@ -52,6 +54,8 @@ public class GameFlowManager : MonoBehaviour {
                 textNumber.text1StartLine = 3;
                 textNumber.text1EndLine = 4;
                 npc1Behav++;
+                isNPCAutomatic = true;
+                Debug.Log("working0");
             }
             else if (npc1Behav == 1)
             {
@@ -63,16 +67,19 @@ public class GameFlowManager : MonoBehaviour {
         DestroyNPC(); // destroys the npc if the bool is true
     }
 
-	void Start () {
+	void Awake () {
         if (isIntro)
         {
             //darkScreen = true;
         }
 
+        isNPCAutomatic = true;
         npcName = "";
+        textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         textNumber = GameObject.Find("TextList").GetComponent<TextList>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textBoxManager = GameObject.Find("TextBoxManager").GetComponent<TextBoxManager>();
+        cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
 	}
 	
 	void Update () {

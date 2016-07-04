@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
+
 		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
 		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
@@ -114,6 +115,15 @@ public class PlayerController : MonoBehaviour {
 		canMove = true;
 	}
 
+    public void TalkToNPC()
+    {
+        talkToNPC = true;
+        questionMark.SetActive(false);
+        isSelectionActive = false;
+        selection = Selection.DEFAULT;
+        hasClickedActionButton = false;
+    }
+
 	void Update()
 	{
 		if ((hasClickedActionButton) && (isSelectionActive))
@@ -138,11 +148,7 @@ public class PlayerController : MonoBehaviour {
 			}
 			else if (selection == Selection.NPC)
 			{
-				talkToNPC = true;
-				questionMark.SetActive(false);
-				isSelectionActive = false;
-				selection = Selection.DEFAULT;
-				hasClickedActionButton = false;
+                TalkToNPC();
 			}
 		}
 

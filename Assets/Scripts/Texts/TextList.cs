@@ -18,7 +18,7 @@ public class TextList : MonoBehaviour {
     public TextAsset Text10;
     public TextAsset SaveText;
 
-    // for now, the arrays can only have power of 2 (I can change it to whatever though)
+    // for now, the arrays can only have power of 2 (can change it to whatever though)
     // to activate either yes or no buttons, just place the line on which you want to activate them
     // to not activate them, set the value to -1
 

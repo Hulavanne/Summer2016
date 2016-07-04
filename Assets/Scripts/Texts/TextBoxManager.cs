@@ -154,6 +154,7 @@ public class TextBoxManager : MonoBehaviour {
 
     void Awake()
     {
+        
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
 
         yesButtonG.SetActive(false);
@@ -216,16 +217,17 @@ public class TextBoxManager : MonoBehaviour {
             if (Button3G != null) Button3G.SetActive(false);
             if (Button4G != null) Button4G.SetActive(false);
         }
-        
-        if ((((Input.GetMouseButtonDown(0)) && (!showCurrentYesNoButtons)) // disable click if there are yes/no buttons
-            && ((Input.GetMouseButtonDown(0)) && (!showCurrentOptButtons))) // disable click if there are option buttons
-            || (hasClickedYesNoButton) || (hasClickedOptButton)) // proceed if the player clicked a button
+
+        if (((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons) // disable click if there are yes/no buttons
+            && (Input.GetMouseButtonDown(0) && !showCurrentOptButtons)) // disable click if there are option buttons
+            || hasClickedYesNoButton || hasClickedOptButton ) // proceed if the player clicked a button
         {
+            Debug.Log("working");
             player.talkToNPC = false;
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 
-            if ((showCurrentYesNoButtons == false) || (showOptButtons == false))
+            if (showCurrentYesNoButtons == false || showOptButtons == false)
             {
 
                 if (!isTyping)
@@ -303,7 +305,6 @@ public class TextBoxManager : MonoBehaviour {
         textBox.SetActive(false);
         isActive = false;
         player.canMove = true;
-
         gameFlow.ChangeNPCBehaviour();
     }
 

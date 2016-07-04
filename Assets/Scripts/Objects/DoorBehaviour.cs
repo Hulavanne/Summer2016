@@ -17,8 +17,6 @@ public class DoorBehaviour : MonoBehaviour {
 
     void OnTriggerEnter2D (Collider2D other)
     {
-        
-
         if ((AutomaticDoor) && (other.gameObject.tag == "Player"))
         {
             player.switchingLevel = true;
@@ -41,7 +39,7 @@ public class DoorBehaviour : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (!AutomaticDoor)
+        if (other.gameObject.tag == "Player")
         {
             player.isSelectionActive = true;
             QuestionMark.SetActive(true);

@@ -27,10 +27,22 @@ public class CameraFollowAndEffects : MonoBehaviour {
 	{
 		darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("DarkScreen").gameObject;
 		darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
+		
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
 
-		player = GameObject.FindGameObjectWithTag("Player");
-		playerController = player.GetComponent<PlayerController>();
-		playerMotion = player.GetComponent<TouchInput_Diogo>();
+            if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>() != null)
+            {
+                playerController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>();
+            }
+            else
+            {
+                playerController = GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponentInChildren<PlayerController>();
+            }
+        }
+
+        playerMotion = player.GetComponent<TouchInput_Diogo>();
 		cameraComponent = transform.GetComponent<Camera>();
 
 		//JoinPlayer(); // Initially joins player

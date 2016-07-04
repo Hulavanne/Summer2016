@@ -47,7 +47,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
         {
             if (opacity <= 1)
             {
-                opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
+				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
             }
         }
         else
@@ -79,6 +79,14 @@ public class CameraFollowAndEffects : MonoBehaviour {
             
         // ^ this makes the camera follow the player in x axis, and specific y+2 axis
         // Alternatively, just parent the camera to the player, add 2 to y, and delete this
+
+		// Adjusting the size of the camera to fit the current screen resolution
+		float ratio = (float)Screen.height / (float)Screen.width;
+		float screenWidth = 1920.0f;
+		float screenHeight = screenWidth * ratio;
+		float size = screenHeight / 150.0f;
+
+		cameraComponent.orthographicSize = size;
     }
 
 	public void JoinPlayer()

@@ -11,6 +11,12 @@ public class CameraAdjuster : MonoBehaviour
 
 	Camera cameraComponent;
 
+	public float screenWidth = 600;
+
+	private float size;
+	private float ratio;
+	private float screenHeight;
+
 	// Use this for initialization
 	void Awake ()
 	{
@@ -19,7 +25,7 @@ public class CameraAdjuster : MonoBehaviour
 
 	void Update()
 	{
-		targetAspect = width / height;
+		/*targetAspect = width / height;
 		windowAspect = (float)Screen.width / (float)Screen.height;
 
 		cameraComponent.orthographicSize = Screen.width / 100.0f;
@@ -32,10 +38,23 @@ public class CameraAdjuster : MonoBehaviour
 		Camera.main.projectionMatrix = Matrix4x4.Ortho(
 			-orthographicSize * targetAspect, orthographicSize * targetAspect,
 			-orthographicSize, orthographicSize,
-			Camera.main.nearClipPlane, Camera.main.farClipPlane);
+			Camera.main.nearClipPlane, Camera.main.farClipPlane);*/
 
 
+		//ratio = (float)Screen.width / (float)Screen.height;
+		ratio = (float)Screen.height / (float)Screen.width;
+		screenWidth = 1920.0f;
+		screenHeight = screenWidth * ratio;
+		size = screenHeight / 200.0f;
 
+		if (size < 7.5f)
+		{
+			cameraComponent.orthographicSize = size;
+		}
+		else
+		{
+			cameraComponent.orthographicSize = size;
+		}
 
 
 

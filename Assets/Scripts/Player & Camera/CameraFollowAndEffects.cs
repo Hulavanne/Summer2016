@@ -31,18 +31,9 @@ public class CameraFollowAndEffects : MonoBehaviour {
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
-
-            if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>() != null)
-            {
-                playerController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>();
-            }
-            else
-            {
-                playerController = GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponentInChildren<PlayerController>();
-            }
+			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+			playerMotion = player.GetComponent<TouchInput_Diogo>();
         }
-
-        playerMotion = player.GetComponent<TouchInput_Diogo>();
 		cameraComponent = transform.GetComponent<Camera>();
 
 		//JoinPlayer(); // Initially joins player

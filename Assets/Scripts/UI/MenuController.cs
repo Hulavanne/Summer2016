@@ -34,7 +34,7 @@ public class MenuController : MonoBehaviour
 		{
 			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
-		if (GameObject.Find("GameManager") != null)
+		if (GameObject.Find("LevelManager") != null)
 		{
 			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		}

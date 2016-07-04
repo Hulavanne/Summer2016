@@ -9,15 +9,26 @@ public class DoorBehaviour : MonoBehaviour {
     public bool goesDown = true;
     public bool AutomaticDoor;
 
-    public LevelManager manageLevel;
-
+	public LevelManager levelManager;
     public PlayerController player;
-    public GameObject QuestionMark;
+    public GameObject questionMark;
 
+	void Awake()
+	{
+		if (GameObject.Find("LevelManager") != null)
+		{
+			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		}
+		if (GameObject.FindGameObjectWithTag("Player") != null)
+		{
+			player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+			questionMark = player.transform.FindChild("QuestionMark").gameObject;
+		}
+	}
 
-    void OnTriggerEnter2D (Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if ((AutomaticDoor) && (other.gameObject.tag == "Player"))
+		if ((AutomaticDoor) && (other.transform.parent.tag == "Player"))
         {
             player.switchingLevel = true;
             //if (goesDown) manageLevel.goNextLevel = true;
@@ -28,10 +39,10 @@ public class DoorBehaviour : MonoBehaviour {
             player.playerAnim.SetBool("isWalking", false);
         }
 
-        else if (other.gameObject.tag == "Player")
+		else if (other.transform.parent.tag == "Player")
         {
             player.isSelectionActive = true;
-            QuestionMark.SetActive(true);
+            questionMark.SetActive(true);
             player.selection = PlayerController.Selection.DOOR;
             player.isOverlappingDoor = true;
         }
@@ -39,21 +50,21 @@ public class DoorBehaviour : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+		if (other.transform.parent.tag == "Player")
         {
             player.isSelectionActive = true;
-            QuestionMark.SetActive(true);
+            questionMark.SetActive(true);
             player.isOverlappingDoor = true;
             player.selection = PlayerController.Selection.DOOR;
         }
     }
     
-    void OnTriggerExit2D (Collider2D other)
+    void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+		if (other.transform.parent.tag == "Player")
         {
             player.isSelectionActive = false;
-            QuestionMark.SetActive(false);
+            questionMark.SetActive(false);
             player.isOverlappingDoor = false;
             player.selection = PlayerController.Selection.DEFAULT;
         }

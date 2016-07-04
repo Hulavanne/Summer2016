@@ -232,7 +232,7 @@ public class TouchInput_Diogo : MonoBehaviour
                 {
                     case TouchPhase.Began:
 
-                        player.OnUserClick();
+                        playerController.OnUserClick();
                         break;
 
                     case TouchPhase.Ended:
@@ -262,12 +262,12 @@ public class TouchInput_Diogo : MonoBehaviour
                 // If user is touching left of screen
                 if (touch.position.x >= 0 && touch.position.x <= Screen.width * 0.5)
                 {
-                    player.GoLeft();
+					playerController.GoLeft();
                 }
                 // If user is touching right of screen
                 else
                 {
-                    player.GoRight();
+					playerController.GoRight();
                 }
             }
         }

@@ -34,7 +34,7 @@ public class CameraFollowAndEffects : MonoBehaviour {
 		cameraComponent = transform.GetComponent<Camera>();
 
 		//JoinPlayer(); // Initially joins player
-		fadeToBlack = false;
+		fadeToBlack = true;
 		opacity = 1.0f;
 	}
 
@@ -61,16 +61,10 @@ public class CameraFollowAndEffects : MonoBehaviour {
         opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
                                                                // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 
-
-		float ratio = Screen.height / Screen.width;
-		cameraComponent.orthographicSize = Screen.width * Screen.height / Screen.width / 100.0f;
-
-		Debug.Log(cameraComponent.orthographicSize);
-
-		// Adjust camera to the screen size
+		// Adjust camera's position
 		transform.position = new Vector3(transform.position.x, player.transform.position.y - pathHeight + cameraComponent.orthographicSize, transform.position.z);
 
-		// Making the camera follow the player
+		// Make the camera follow the player
         if (playerController.canCameraFollow)
         {
 			float x = player.transform.position.x;

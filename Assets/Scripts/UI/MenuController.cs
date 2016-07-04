@@ -9,7 +9,8 @@ public class MenuController : MonoBehaviour
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
 
-	GameManager gameManager;
+	public AudioClip buttonSoundEffect;
+
 	LevelManager levelManager;
 	InventoryManager inventoryManager;
 	PlayerController playerController;
@@ -23,17 +24,13 @@ public class MenuController : MonoBehaviour
 	GameObject optionsOverlay;
 	GameObject loadMenu;
 
-	string pickSaveSlotString = "Pick A Save Slot";
+	string pickSaveSlotString = "Pick a Save Slot";
 	string loadGameString = "Load Game";
     
 	void Awake()
     {
 		Time.timeScale = 1;
 
-		if (GameObject.Find("GameManager") != null)
-		{
-			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-		}
 		if (GameObject.Find("LevelManager") != null)
 		{
 			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
@@ -83,6 +80,7 @@ public class MenuController : MonoBehaviour
 	{
 		if (transform.name == "OptionsOverlay")
 		{
+			SetSliderValues();
 			optionsOverlay = transform.gameObject;
 			transform.gameObject.SetActive(false);
 		}
@@ -101,14 +99,8 @@ public class MenuController : MonoBehaviour
 			// If current game exists, load its variables into the game manager
 			if (Game.current != null)
 			{
-				gameManager.LoadCurrentGameVariables();
+				GameManager.instance.LoadCurrentGameVariables();
 			}
-		}
-		// If heading into the Main Menu:
-		else
-		{
-			// Destroy the current game manager to avoid duplicates
-			Destroy(gameManager.gameObject);
 		}
 
 		SceneManager.LoadSceneAsync("LoadingScene");
@@ -170,9 +162,10 @@ public class MenuController : MonoBehaviour
 		optionsOverlay.SetActive(false);
 	}
 
-	public void PlaySoundEffect()
+	public void PlayButtonSoundEffect()
 	{
-		Debug.Log("Playing Button Sound Effect");
+		AudioManager audioManager = AudioManager.instance;
+		audioManager.PlayRandomizedSoundEffect(audioManager.buttonSoundEffect);
 	}
 
 	//---------------------MAIN MENU---------------------
@@ -348,29 +341,51 @@ public class MenuController : MonoBehaviour
 
 	//----------------------OPTIONS----------------------
 
+	public void SetSliderValues()
+	{
+		Slider masterVolumeSlider = transform.FindChild("MasterVolumeSlider").GetComponent<Slider>();
+		Slider musicVolumeSlider = transform.FindChild("MusicVolumeSlider").GetComponent<Slider>();
+		Slider soundEffectsVolumeSlider = transform.FindChild("SoundEffectsVolumeSlider").GetComponent<Slider>();
+		Slider gammaSlider = transform.FindChild("GammaSlider").GetComponent<Slider>();
+
+		masterVolumeSlider.value = 1.0f;
+		musicVolumeSlider.value = 1.0f;
+		soundEffectsVolumeSlider.value = 1.0f;
+		gammaSlider.value = 1.0f;
+
+		SetMasterVolume(masterVolumeSlider);
+		SetMusicVolume(musicVolumeSlider);
+		SetSoundEffectsVolume(soundEffectsVolumeSlider);
+		SetGamma(gammaSlider);
+	}
+
 	public void ToggleMute()
 	{
 		Debug.Log("Mute Toggled");
 	}
 
-	public void SetMasterVolume()
+	public void SetMasterVolume(Slider slider)
 	{
 		Debug.Log("Master Volume Changed");
+		AudioManager.masterVolume = slider.value;
 	}
 
-	public void SetMusicVolume()
+	public void SetMusicVolume(Slider slider)
 	{
 		Debug.Log("Music Volume Changed");
+		AudioManager.musicVolume = slider.value;
 	}
 
-	public void SetSoundEffectsVolume()
+	public void SetSoundEffectsVolume(Slider slider)
 	{
 		Debug.Log("Sound Effects Volume Changed");
+		AudioManager.soundEffectsVolume = slider.value;
 	}
 
-	public void SetGamma()
+	public void SetGamma(Slider slider)
 	{
 		Debug.Log("Gamma Changed");
+		RenderSettings.ambientLight = new Color(slider.value, slider.value, slider.value);
 	}
 
 	public void DisplayCredits()

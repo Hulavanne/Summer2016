@@ -5,7 +5,6 @@ using System.Collections;
 public class Savepoint : MonoBehaviour
 {
 	MenuController menuController;
-	GameManager gameManager;
     PlayerController player;
     GameObject textManager;
 
@@ -16,10 +15,6 @@ public class Savepoint : MonoBehaviour
 		if (GameObject.Find("InGameUI") != null)
 		{
 			menuController = GameObject.Find("InGameUI").gameObject.GetComponent<MenuController>();
-		}
-		if (GameObject.Find("GameManager") != null)
-		{
-			gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
 		if (GameObject.Find("Player").GetComponent<PlayerController>() != null)
 		{
@@ -48,7 +43,7 @@ public class Savepoint : MonoBehaviour
         if (isOverlappingPlayer)
         {
             MenuController.savingGame = true;
-            gameManager.collidingSavepoint = transform.gameObject;
+			GameManager.instance.collidingSavepoint = transform.gameObject;
 			textManager.GetComponent<TextBoxManager>().DisableTextBox();
             menuController.OpenLoadMenu();
         }

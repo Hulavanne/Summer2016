@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+	public static GameManager instance = null;
+
 	public GameObject collidingSavepoint; // Savepoint that the player is colliding currently
 	public System.DateTime dateTime; // Date and time
 	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
@@ -18,9 +20,20 @@ public class GameManager : MonoBehaviour
 	}
 	public GameState currentState = GameState.MAIN_MENU;
 
+	float gammaValue = 0.5f;
+
 	void Awake ()
 	{
-		DontDestroyOnLoad(transform.gameObject);
+		if (instance == null)
+		{
+			instance = this;
+		}
+		else if (instance != this)
+		{
+			Destroy(gameObject);
+		}
+
+		DontDestroyOnLoad(gameObject);
 	}
 
 	void Update ()
@@ -42,8 +55,9 @@ public class GameManager : MonoBehaviour
 
 				if (collidingSavepoint != null)
 				{
-					game.startingPositionX = collidingSavepoint.transform.position.x;
-					game.startingPositionY = collidingSavepoint.transform.position.y;
+					game.playerStartPositionX = collidingSavepoint.transform.position.x;
+					game.playerStartPositionY = collidingSavepoint.transform.position.y;
+					game.cameraStartPositionX = Camera.main.transform.position.x;
 				}
 
 				// Update date and time, both in the manager and in the current game

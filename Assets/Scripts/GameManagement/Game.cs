@@ -9,8 +9,9 @@ public class Game
 	public static int currentIndex; // Current game's index in the saved games list
 
 	public string level; // Saved level
-	public float startingPositionX = 0.0f; // Position on the X-axis at which the player start when loading in
-	public float startingPositionY = 0.0f; // Position on the Y-axis at which the player start when loading in
+	public float playerStartPositionX = 0.0f; // Position on the X-axis at which the player starts when loading in
+	public float playerStartPositionY = 0.0f; // Position on the Y-axis at which the player starts when loading in
+	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
 	//public Sprite levelImage;
 	public System.DateTime dateTime; // Date and time
 	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
@@ -24,6 +25,7 @@ public class Game
 	{
 		// The first level of the game
 		level = "MainScene";
+		cameraStartPositionX = -15.0f;
 	}
 
 	public void PrintGameVariables()

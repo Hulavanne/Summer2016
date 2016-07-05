@@ -80,7 +80,6 @@ public class MenuController : MonoBehaviour
 	{
 		if (transform.name == "OptionsOverlay")
 		{
-			SetSliderValues();
 			optionsOverlay = transform.gameObject;
 			transform.gameObject.SetActive(false);
 		}
@@ -152,20 +151,26 @@ public class MenuController : MonoBehaviour
 
 	public void ActivateOptionsOverlay()
 	{
+		// Load values
+		optionsOverlay.GetComponent<MenuController>().SetOptionsValues();
+
 		optionsOverlay.SetActive(true);
 		menu.SetActive(false);
 	}
 
 	public void DectivateOptionsOverlay()
 	{
+		// Saving the settings
+		AudioManager.instance.SaveAudioSettings();
+		GameManager.instance.SaveGraphicalSettings();
+
 		menu.SetActive(true);
 		optionsOverlay.SetActive(false);
 	}
 
 	public void PlayButtonSoundEffect()
 	{
-		AudioManager audioManager = AudioManager.instance;
-		audioManager.PlayRandomizedSoundEffect(audioManager.buttonSoundEffect);
+		AudioManager.instance.PlayRandomizedSoundEffect(buttonSoundEffect);
 	}
 
 	//---------------------MAIN MENU---------------------
@@ -341,51 +346,56 @@ public class MenuController : MonoBehaviour
 
 	//----------------------OPTIONS----------------------
 
-	public void SetSliderValues()
+	public void SetOptionsValues()
 	{
 		Slider masterVolumeSlider = transform.FindChild("MasterVolumeSlider").GetComponent<Slider>();
 		Slider musicVolumeSlider = transform.FindChild("MusicVolumeSlider").GetComponent<Slider>();
 		Slider soundEffectsVolumeSlider = transform.FindChild("SoundEffectsVolumeSlider").GetComponent<Slider>();
 		Slider gammaSlider = transform.FindChild("GammaSlider").GetComponent<Slider>();
+		GameObject mutedImage = transform.FindChild("MuteButton").FindChild("MutedImage").gameObject;
 
-		masterVolumeSlider.value = 1.0f;
-		musicVolumeSlider.value = 1.0f;
-		soundEffectsVolumeSlider.value = 1.0f;
-		gammaSlider.value = 1.0f;
+		masterVolumeSlider.value = AudioManager.masterVolume;
+		musicVolumeSlider.value = AudioManager.musicVolume;
+		soundEffectsVolumeSlider.value = AudioManager.soundEffectsVolume;
+		gammaSlider.value = GameManager.gammaValue;
+		mutedImage.SetActive(AudioManager.audioMuted);
 
-		SetMasterVolume(masterVolumeSlider);
-		SetMusicVolume(musicVolumeSlider);
-		SetSoundEffectsVolume(soundEffectsVolumeSlider);
-		SetGamma(gammaSlider);
+		//SetMasterVolume(masterVolumeSlider);
+		//SetMusicVolume(musicVolumeSlider);
+		//SetSoundEffectsVolume(soundEffectsVolumeSlider);
+		//SetGamma(gammaSlider);
 	}
 
 	public void ToggleMute()
 	{
-		Debug.Log("Mute Toggled");
+		AudioManager.instance.ToggleMute();
+		transform.FindChild("MuteButton").FindChild("MutedImage").gameObject.SetActive(AudioManager.audioMuted);
 	}
 
 	public void SetMasterVolume(Slider slider)
 	{
-		Debug.Log("Master Volume Changed");
-		AudioManager.masterVolume = slider.value;
+		AudioManager.instance.SetMasterVolume(slider.value);
 	}
 
 	public void SetMusicVolume(Slider slider)
 	{
-		Debug.Log("Music Volume Changed");
-		AudioManager.musicVolume = slider.value;
+		AudioManager.instance.SetMusicVolume(slider.value);
 	}
 
 	public void SetSoundEffectsVolume(Slider slider)
 	{
-		Debug.Log("Sound Effects Volume Changed");
-		AudioManager.soundEffectsVolume = slider.value;
+		AudioManager.instance.SetSoundEffectsVolume(slider.value);
+
+		if (gameObject.activeSelf)
+		{
+			AudioManager.instance.PlaySoundEffect(buttonSoundEffect);
+			//AudioManager.instance.PlayPitchedSoundEffect(buttonSoundEffect, 1.0f, 2.5f);
+		}
 	}
 
 	public void SetGamma(Slider slider)
 	{
-		Debug.Log("Gamma Changed");
-		RenderSettings.ambientLight = new Color(slider.value, slider.value, slider.value);
+		GameManager.instance.SetGamma(slider.value);
 	}
 
 	public void DisplayCredits()

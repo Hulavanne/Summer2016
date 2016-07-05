@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance = null;
 
+	public static float gammaValue = 0.5f;
+
 	public GameObject collidingSavepoint; // Savepoint that the player is colliding currently
 	public System.DateTime dateTime; // Date and time
 	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
@@ -20,20 +22,23 @@ public class GameManager : MonoBehaviour
 	}
 	public GameState currentState = GameState.MAIN_MENU;
 
-	float gammaValue = 0.5f;
-
 	void Awake ()
 	{
+		// Get a static reference to this game object
 		if (instance == null)
 		{
 			instance = this;
 		}
+		// Making sure there is only a single AudioManager in the scene
 		else if (instance != this)
 		{
 			Destroy(gameObject);
 		}
 
 		DontDestroyOnLoad(gameObject);
+
+		// Load graphical values
+		LoadGraphicalSettings();
 	}
 
 	void Update ()
@@ -88,5 +93,23 @@ public class GameManager : MonoBehaviour
 		seconds = game.seconds;
 		minutes = game.minutes;
 		hours = game.hours;
+	}
+
+	public void LoadGraphicalSettings()
+	{
+		GameManager.gammaValue = PlayerPrefs.GetFloat("GammaValue", 0.5f);
+		SetGamma(GameManager.gammaValue);
+	}
+
+	public void SaveGraphicalSettings()
+	{
+		PlayerPrefs.SetFloat("GammaValue", GameManager.gammaValue);
+		PlayerPrefs.Save();
+	}
+
+	public void SetGamma(float newValue)
+	{
+		Debug.Log("Gamma Changed");
+		GameManager.gammaValue = newValue;
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour {
     GameObject rightBoundary;
     GameObject leftBoundary;
 
+	public int movingDirection = 1;
     public bool canWalkRight = true;
     public bool canWalkLeft = true;
     public bool canCameraFollow = true;
@@ -84,6 +87,12 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
+		if (Game.current == null)
+		{
+			Game game = new Game ();
+			Game.current = game;
+			Game.currentIndex = -1;
+		}
 
 		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
 		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
@@ -309,7 +318,8 @@ public class PlayerController : MonoBehaviour {
         }
 
         if (canMove)
-        {
+		{
+			movingDirection = -1;
             playerAnim.SetBool("isFacingRight", false);
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);
@@ -342,6 +352,7 @@ public class PlayerController : MonoBehaviour {
 
         if (canMove)
         {
+			movingDirection = 1;
             playerAnim.SetBool("isFacingRight", true);
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);

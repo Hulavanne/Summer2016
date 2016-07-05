@@ -20,8 +20,4 @@ public class IsIntro : MonoBehaviour {
         effects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
 	}
-	
-	void Update () {
-	
-	}
 }

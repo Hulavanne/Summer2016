@@ -40,11 +40,11 @@ public class GameFlowManager : MonoBehaviour {
             {
                 textNumber.textIntroStartLine = 3;
                 textNumber.textIntroEndLine = 4;
-                npcIntroBehav++;
                 player.npcWaitTime = 2.0f;
                 isNPCAutomatic = true;
                 player.isIntro = false;
                 player.canMove = true;
+                npcIntroBehav++;
             }
             else if (npcIntroBehav == 1)
             {
@@ -55,7 +55,7 @@ public class GameFlowManager : MonoBehaviour {
             }
         }
 
-        DestroyNPC(); // destroys the npc if the bool is true
+        DestroyNPC(); // checks and destroys the npc if the bool is true
     }
 
 	void Awake () {

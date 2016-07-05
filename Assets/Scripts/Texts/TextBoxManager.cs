@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
-// To comment this properly, I still have to go through this code so I know how it really works
-// ^ I followed a youtube tutorial, so I'm still kind of unsure of what some things do.
-
 public class TextBoxManager : MonoBehaviour {
 
     public bool isCursorOnActionButton;
@@ -23,16 +19,15 @@ public class TextBoxManager : MonoBehaviour {
     public int[] activateYesNoButtonsAtLines;
     public int[] activateOptButtonsAtLines;
 
-
     public Button yesButton;
     public Button noButton;
     public GameObject yesButtonG;
     public GameObject noButtonG;
 
-    public Button Button1;
-    public Button Button2;
-    public Button Button3;
-    public Button Button4;
+    Button Button1;
+    Button Button2;
+    Button Button3;
+    Button Button4;
 
     public GameObject Button1G;
     public GameObject Button2G;
@@ -68,99 +63,6 @@ public class TextBoxManager : MonoBehaviour {
 
     public float typeSpeed;
 
-    public void OnOptButtonClick()
-    {
-        OptTextBox.SetActive(false);
-        showCurrentOptButtons = false;
-        hasClickedOptButton = true;
-    }
-
-    public void OnOpt1Click()
-    {
-        Debug.Log("Clicked Opt 1 Button.");
-        OnOptButtonClick();
-    }
-    public void OnOpt2Click()
-    {
-        Debug.Log("Clicked Opt 2 Button.");
-        OnOptButtonClick();
-    }
-    public void OnOpt3Click()
-    {
-        Debug.Log("Clicked Opt 3 Button.");
-        OnOptButtonClick();
-    }
-    public void OnOpt4Click()
-    {
-        Debug.Log("Clicked Opt 4 Button.");
-        OnOptButtonClick();
-    }
-
-    public void OnYesClick()
-    {
-        Debug.Log("Has clicked Yes Button!");
-        currentNPC = GameObject.Find(player.NPCName);
-        if (currentNPC.GetComponent<Savepoint>() != null)
-        {
-            currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
-        }
-        if (currentNPC.GetComponent<Savepoint>() == null)
-        {
-            Debug.Log("not saving!");
-        }
-        showCurrentYesNoButtons = false;
-        hasClickedYesNoButton = true;
-    }
-
-    public void OnNoClick()
-    {
-        Debug.Log("Has clicked No Button!");
-        showCurrentYesNoButtons = false;
-        hasClickedYesNoButton = true;
-    }
-    
-    public void GetYesNoButtonLines()
-    {
-        if (showYesNoButtons)
-        {
-            foreach (int lineNum in activateYesNoButtonsAtLines)
-            {
-                if (lineNum == currentLine)
-                {
-                    showCurrentYesNoButtons = true;
-                }
-            }
-        }
-    }
-
-    public void GetOptButtonLines()
-    {
-        if (showOptButtons)
-        {
-            foreach (int lineNum in activateOptButtonsAtLines)
-            {
-                if (lineNum == currentLine)
-                {
-                    OptTextBox.SetActive(true);
-                    showCurrentOptButtons = true;
-                }
-            }
-
-            OptTextBox.SetActive(true);
-        }
-    }
-
-    public void CursorOverButton()
-    {
-        isCursorOnActionButton = true;
-    }
-
-    public void CursorOutsideButton()
-    {
-        isCursorOnActionButton = false;
-        player.hasClickedActionButton = false;
-    }
-
     void Awake()
     {
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
@@ -168,80 +70,26 @@ public class TextBoxManager : MonoBehaviour {
         yesButtonG.SetActive(false);
         noButtonG.SetActive(false);
         OptTextBox.SetActive(false);
-
-        player = FindObjectOfType<PlayerController>();
-
-        if (textFile != null)
-        {
-            textLines = (textFile.text.Split('\n'));
-        }
-
-        if (endAtLine == 0)
-        {
-            endAtLine = textLines.Length - 1;
-        }
-
-        if (isActive)
-        {
-            EnableTextBox();
-        }
-        else
-        {
-            DisableTextBox();
-        }
+        DisableTextBox();
     }
 
     void Update()
     {
-        if (!isActive)
+        if (isActive)
         {
-            return;
-        }
-        
-        if (showCurrentYesNoButtons)
-        {
-            yesButtonG.SetActive(true);
-            noButtonG.SetActive(true);
-        }
+            SetCurrentYesNoButtons(); // sets active or not active
+            SetCurrentOptButtons(); // sets active or not active
 
-        else if (showCurrentYesNoButtons == false)
-        {
-            yesButtonG.SetActive(false);
-            noButtonG.SetActive(false);
-        }
-
-        if (showCurrentOptButtons)
-        {
-            if (Button1G != null) Button1G.SetActive(true);
-            if (Button2G != null) Button2G.SetActive(true);
-            if (Button3G != null) Button3G.SetActive(true);
-            if (Button4G != null) Button4G.SetActive(true);
-        }
-
-        else if (showCurrentOptButtons == false)
-        {
-            if (Button1G != null) Button1G.SetActive(false);
-            if (Button2G != null) Button2G.SetActive(false);
-            if (Button3G != null) Button3G.SetActive(false);
-            if (Button4G != null) Button4G.SetActive(false);
-        }
-
-        if (((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons) // disable click if there are yes/no buttons
-            && (Input.GetMouseButtonDown(0) && !showCurrentOptButtons)) // disable click if there are option buttons
-            || hasClickedYesNoButton || hasClickedOptButton ) // proceed if the player clicked a button
-        {
-            player.talkToNPC = false;
-            hasClickedYesNoButton = false;
-            hasClickedOptButton = false;
-            showCurrentOptButtons = false;
-            showCurrentYesNoButtons = false;
-
-            if (showCurrentYesNoButtons == false || showOptButtons == false)
+            if ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons
+                 && !showCurrentOptButtons) || hasClickedYesNoButton || hasClickedOptButton)
             {
+                // executes every click without buttons, or every successful button press
+                player.talkToNPC = false;
+                hasClickedYesNoButton = false;
+                hasClickedOptButton = false;
                 if (!isTyping)
                 {
                     currentLine++;
-
                     if (currentLine > endAtLine)
                     {
                         DisableTextBox();
@@ -259,113 +107,220 @@ public class TextBoxManager : MonoBehaviour {
         }
     }
 
-    private IEnumerator TextScroll (string lineOfText)
+    private IEnumerator TextScroll(string lineOfText)
     {
-        int letter = 0;
+        int letter = 0; // int for the number of letters
         theText.text = "";
 
         isTyping = true;
         cancelTyping = false;
 
-        while(isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
+        while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
         {
-            theText.text += lineOfText[letter];
-            letter += 1;
-            yield return new WaitForSeconds(typeSpeed);
+            theText.text += lineOfText[letter]; // adds one letter to the textBox
+            letter += 1; // adds 1 to letter variable
+            yield return new WaitForSeconds(typeSpeed); // waits for an amount of time
         }
-        
-        GetYesNoButtonLines();
+        // the loop ends if the line has reached its end
 
-        GetOptButtonLines();
+        GetYesNoButtonLines(); // checks the display of buttons
+        GetOptButtonLines(); // checks the display of buttons
 
-        theText.text = lineOfText;
+        theText.text = lineOfText; // adds one line of text if it exists
         isTyping = false;
         cancelTyping = false;
     }
 
-    public void EnableTextBox()
+    public void OnOptButtonClick()
+    {
+        OptTextBox.SetActive(false);
+        showCurrentOptButtons = false;
+        hasClickedOptButton = true;
+    }
+
+    public void OnOpt1Click()
+    {
+        // > check current NPC
+        // > do something specific
+        OnOptButtonClick();
+    }
+    public void OnOpt2Click()
+    {
+        // > check current NPC
+        // > do something specific
+        OnOptButtonClick();
+    }
+    public void OnOpt3Click()
+    {
+        // > check current NPC
+        // > do something specific
+        OnOptButtonClick();
+    }
+    public void OnOpt4Click()
+    {
+        // > check current NPC
+        // > do something specific
+        OnOptButtonClick();
+    }
+
+    public void OnYesClick()
+    {
+        currentNPC = GameObject.Find(player.NPCName);
+
+        // getting save component
+        if (currentNPC.GetComponent<Savepoint>() != null)
+        {
+            currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
+        }
+        if (currentNPC.GetComponent<Savepoint>() == null)
+        {
+            Debug.Log("not saving!");
+        }
+        showCurrentYesNoButtons = false;
+        hasClickedYesNoButton = true;
+    }
+
+    public void OnNoClick()
+    {
+        showCurrentYesNoButtons = false;
+        hasClickedYesNoButton = true;
+    }
+    
+    public void GetYesNoButtonLines()
+    {
+        if (showYesNoButtons)
+        {
+            foreach (int lineNum in activateYesNoButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    // checks if there are yes/no buttons to be shown in current dialogue
+                    showCurrentYesNoButtons = true;
+                }
+            }
+        }
+    }
+
+    public void GetOptButtonLines()
+    {
+        if (showOptButtons)
+        {
+            foreach (int lineNum in activateOptButtonsAtLines)
+            {
+                if (lineNum == currentLine)
+                {
+                    // checks if there are option buttons to be shown in current dialogue
+                    OptTextBox.SetActive(true);
+                    showCurrentOptButtons = true;
+                }
+            }
+
+            OptTextBox.SetActive(true);
+        }
+    }
+
+    public void CursorOverButton()
+    {
+        isCursorOnActionButton = true;
+        //need to make playercontroller function to walk/stop
+        player.playerAnim.SetBool("isWalking", false);
+        player.playerAnim.SetBool("isRunning", false);
+        player.playerAnim.SetBool("isIdle", true);
+    }
+
+    public void CursorOutsideButton()
+    {
+        isCursorOnActionButton = false;
+        player.hasClickedActionButton = false;
+    }
+    
+    void SetCurrentOptButtons()
+    {
+        if (Button1G != null) Button1G.SetActive(showCurrentOptButtons);
+        if (Button2G != null) Button2G.SetActive(showCurrentOptButtons);
+        if (Button3G != null) Button3G.SetActive(showCurrentOptButtons);
+        if (Button4G != null) Button4G.SetActive(showCurrentOptButtons);
+    }
+
+    void SetCurrentYesNoButtons()
+    {
+        yesButtonG.SetActive(showCurrentYesNoButtons);
+        noButtonG.SetActive(showCurrentYesNoButtons);
+    }
+
+    public void EnableTextBox() // activates all text output, disables player movement
     {
         if (player.canTalkToNPC)
         {
-            OptTextBox.SetActive(true); // activating button text box here
-
+            OptTextBox.SetActive(true);
             textBox.SetActive(true);
             isActive = true;
-
-            if (stopPlayerMovement)
-            {
-                player.canMove = false;
-            }
-            else
-            {
-                player.canMove = true;
-            }
-
-            #region Insert Variables
-
-            #endregion
+            player.canMove = false;
 
             StartCoroutine(TextScroll(textLines[currentLine]));
         }
     }
 
-    public void DisableTextBox()
+    public void DisableTextBox() // deactivates all text output, enables player movement
     {
         OptTextBox.SetActive(false);
         textBox.SetActive(false);
         isActive = false;
         player.canMove = true;
-        gameFlow.ChangeNPCBehaviour();
+        gameFlow.ChangeNPCBehaviour(); // changes something everytime you finish talking to a NPC
+    }
+
+    public void ResetButtons()
+    {
+        int x = 0;
+        
+        foreach (int num in activateYesNoButtonsAtLines)
+        {
+            activateYesNoButtonsAtLines[x] = -1; // resetting buttons
+            x++;
+        }
+        x = 0;
+
+        foreach (int num in activateOptButtonsAtLines)
+        {
+            activateOptButtonsAtLines[x] = -1;  // resetting buttons
+            x++;
+        }
+        x = 0;
     }
 
     public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines,
         ActivateTextAtLine reference, int getCurrentLine, int endLine)
     {
-        currentLine = getCurrentLine;
-        endAtLine = endLine;
+        currentLine = getCurrentLine; // current line in text
+        endAtLine = endLine; // current line you want to finish the text
 
-        textFile = newText;
-        textRef = reference;
+        textFile = newText; // inserts texts (from textlist) into this file
+        textRef = reference; // gets reference of ActivateTextAtLine component
 
         if (textFile != null)
         {
-            textLines = (textFile.text.Split('\n'));
+            textLines = (textFile.text.Split('\n')); // splits the text every endLine
         }
 
         if (newText != null)
         {
-            textLines = new string[1];
-            textLines = (newText.text.Split('\n'));
+            textLines = new string[1]; // checks if the next letter after current is an endLine
+            textLines = (newText.text.Split('\n')); // ands splits it if it is
+
+            ResetButtons();
 
             int x = 0;
 
-            //reset numbers
-
-            foreach (int num in activateYesNoButtonsAtLines)
-            {
-                activateYesNoButtonsAtLines[x] = -1;
-                x++;
-            }
-            x = 0;
-
-            foreach (int num in activateOptButtonsAtLines)
-            {
-                activateOptButtonsAtLines[x] = -1;
-                x++;
-            }
-            x = 0;
-
-            // cast buttons into this script
-
             foreach (int num in buttonsYesNoAtLines)
             {
-                activateYesNoButtonsAtLines[x] = num;
+                activateYesNoButtonsAtLines[x] = num; // casting yes no buttons into this script if they exist
                 x++;
             }
             x = 0;                                                                                                                         
             foreach (int num in buttonsOptAtLines)
             {
-                activateOptButtonsAtLines[x] = num;
+                activateOptButtonsAtLines[x] = num; // casting opt buttons into this script if they exist
                 x++;
             }
             x = 0;
@@ -375,10 +330,11 @@ public class TextBoxManager : MonoBehaviour {
     public void ReloadButtons (Button btn1, Button btn2, Button btn3, Button btn4,
         GameObject Button1G, GameObject Button2G, GameObject Button3G, GameObject Button4G)
     {
-        Button1 = btn1;
-        Button2 = btn2;
-        Button3 = btn3;
-        Button4 = btn4;
+        // loads any custom button prefabs (max.4)
+        Button1 = Button1G.GetComponent<Button>();
+        Button2 = Button2G.GetComponent<Button>();
+        Button3 = Button3G.GetComponent<Button>();
+        Button4 = Button4G.GetComponent<Button>();
 
         this.Button1G = Button1G;
         this.Button2G = Button2G;

@@ -27,8 +27,6 @@ public class TouchInput_Diogo : MonoBehaviour
     (Check GetMouseButtonDown(0) and GetMouseButtonUp(0) and TouchPhase events.)
     */
 
-    public float minSwipeDistY; // minimum swipe distance to prevent accidental touch input
-    
 	void Awake()
 	{
 		playerController = transform.GetComponent<PlayerController>();
@@ -131,23 +129,34 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
-				if (playerController.canMove)
+                if (!playerController.textRef.isCursorOnActionButton)
                 {
-                    playerAnim.SetBool("isFacingRight", false);
-                    playerAnim.SetBool("isWalking", true);
+                    if (playerController.canMove)
+                    {
+                        playerAnim.SetBool("isFacingRight", false);
+                        playerAnim.SetBool("isWalking", true);
+                    }
+                    playerController.GoLeft();
                 }
-				playerController.GoLeft();
             }
 
             else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
             {
-				if (playerController.canMove)
+                if (!playerController.textRef.isCursorOnActionButton)
                 {
-                    playerAnim.SetBool("isFacingRight", true);
-                    playerAnim.SetBool("isWalking", true);
-					playerController.GoRight();
+                    if (playerController.canMove)
+                    {
+                        playerAnim.SetBool("isFacingRight", true);
+                        playerAnim.SetBool("isWalking", true);
+                        playerController.GoRight();
+                    }
                 }
             }
+        }
+
+        if (playerController.textRef.isCursorOnActionButton || !playerController.canMove)
+        {
+            runValue = 0;
         }
 
         if (Input.GetMouseButtonDown(0))

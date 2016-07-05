@@ -5,7 +5,7 @@ using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
-	public static AudioManager instance = null;
+	public static AudioManager current = null;
 
 	public static bool audioMuted = false;
 	public static float masterVolume = 1.0f;
@@ -21,12 +21,12 @@ public class AudioManager : MonoBehaviour
 	void Awake()
 	{
 		// Get a static reference to this game object
-		if (instance == null)
+		if (current == null)
 		{
-			instance = this;
+			current = this;
 		}
 		// Making sure there is only a single AudioManager in the scene
-		else if (instance != this)
+		else if (current != this)
 		{
 			Destroy(gameObject);
 		}

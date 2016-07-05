@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour {
 
@@ -12,7 +14,9 @@ public class LevelManager : MonoBehaviour {
         LEVEL4,
     };
 
-    Level thisLevel;
+	public static Level currentLevel;
+	public static int currentLevelIndex;
+	public List<GameObject> levels = new List<GameObject>();
     
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
@@ -35,11 +39,12 @@ public class LevelManager : MonoBehaviour {
     public PlayerController player;
     public GameObject playerG;
     public GameObject QuestionMark;
-    
-    public int goNextLevel = 0; // goes down one level if true, goes down one level if false
 
-    void Awake() {
-        thisLevel = Level.LEVEL1;
+    void Awake()
+	{
+        currentLevel = Level.LEVEL1;
+		currentLevelIndex = 0;
+
         LightAmount = lightLevel1;
         cameraComponent = Camera.main;
         cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
@@ -116,45 +121,52 @@ public class LevelManager : MonoBehaviour {
     public void ChangeLevel()
     {
         GameObject door;
-        switch (thisLevel)
+
+        switch (currentLevel)
         {
             case Level.LEVEL1:
                 if (player.doorName == "Door_1>2")
                 {
-                    thisLevel = Level.LEVEL2;
+                    currentLevel = Level.LEVEL2;
+					currentLevelIndex = 1;
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>1");
-                    player.transform.position = new Vector3 (door.transform.position.x, player.transform.position.y, player.transform.position.z);
-                    //cameraScript.JoinPlayer();
+					player.transform.position = new Vector3 (door.transform.position.x, player.transform.position.y, player.transform.position.z);
+					CameraFollowAndEffects.current.AdjustToLevel(levels[currentLevelIndex]);
                 }
             
                 break;
+
             case Level.LEVEL2:
                 if (player.doorName == "Door_2>3")
                 {
-                    thisLevel = Level.LEVEL3;
+                    currentLevel = Level.LEVEL3;
+					currentLevelIndex = 2;
                     LightAmount = lightLevel3;
                     door = GameObject.Find("Door_3>2");
                     player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
-                    //cameraScript.JoinPlayer();
+					CameraFollowAndEffects.current.AdjustToLevel(levels[currentLevelIndex]);
                 }
                 else if (player.doorName == "Door_2>1")
                 {
-                    thisLevel = Level.LEVEL1;
+                    currentLevel = Level.LEVEL1;
+					currentLevelIndex = 0;
                     LightAmount = lightLevel1;
                     door = GameObject.Find("Door_1>2");
                     player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
-                    //cameraScript.JoinPlayer();
+					CameraFollowAndEffects.current.AdjustToLevel(levels[currentLevelIndex]);
                 }
                 break;
+
             case Level.LEVEL3:
                 if (player.doorName == "Door_3>2")
                 {
-                    thisLevel = Level.LEVEL2;
+                    currentLevel = Level.LEVEL2;
+					currentLevelIndex = 1;
                     LightAmount = lightLevel2;
                     door = GameObject.Find("Door_2>3");
                     player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
-                    //cameraScript.JoinPlayer();
+					CameraFollowAndEffects.current.AdjustToLevel(levels[currentLevelIndex]);
                 }
                 break;
 

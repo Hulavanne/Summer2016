@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-	public static GameManager instance = null;
+	public static GameManager current = null;
 
 	public static float gammaValue = 0.5f;
 
@@ -25,12 +25,12 @@ public class GameManager : MonoBehaviour
 	void Awake ()
 	{
 		// Get a static reference to this game object
-		if (instance == null)
+		if (current == null)
 		{
-			instance = this;
+			current = this;
 		}
 		// Making sure there is only a single AudioManager in the scene
-		else if (instance != this)
+		else if (current != this)
 		{
 			Destroy(gameObject);
 		}

@@ -98,7 +98,7 @@ public class MenuController : MonoBehaviour
 			// If current game exists, load its variables into the game manager
 			if (Game.current != null)
 			{
-				GameManager.instance.LoadCurrentGameVariables();
+				GameManager.current.LoadCurrentGameVariables();
 			}
 		}
 
@@ -161,8 +161,8 @@ public class MenuController : MonoBehaviour
 	public void DectivateOptionsOverlay()
 	{
 		// Saving the settings
-		AudioManager.instance.SaveAudioSettings();
-		GameManager.instance.SaveGraphicalSettings();
+		AudioManager.current.SaveAudioSettings();
+		GameManager.current.SaveGraphicalSettings();
 
 		menu.SetActive(true);
 		optionsOverlay.SetActive(false);
@@ -170,7 +170,7 @@ public class MenuController : MonoBehaviour
 
 	public void PlayButtonSoundEffect()
 	{
-		AudioManager.instance.PlayRandomizedSoundEffect(buttonSoundEffect);
+		AudioManager.current.PlayRandomizedSoundEffect(buttonSoundEffect);
 	}
 
 	//---------------------MAIN MENU---------------------
@@ -368,34 +368,34 @@ public class MenuController : MonoBehaviour
 
 	public void ToggleMute()
 	{
-		AudioManager.instance.ToggleMute();
+		AudioManager.current.ToggleMute();
 		transform.FindChild("MuteButton").FindChild("MutedImage").gameObject.SetActive(AudioManager.audioMuted);
 	}
 
 	public void SetMasterVolume(Slider slider)
 	{
-		AudioManager.instance.SetMasterVolume(slider.value);
+		AudioManager.current.SetMasterVolume(slider.value);
 	}
 
 	public void SetMusicVolume(Slider slider)
 	{
-		AudioManager.instance.SetMusicVolume(slider.value);
+		AudioManager.current.SetMusicVolume(slider.value);
 	}
 
 	public void SetSoundEffectsVolume(Slider slider)
 	{
-		AudioManager.instance.SetSoundEffectsVolume(slider.value);
+		AudioManager.current.SetSoundEffectsVolume(slider.value);
 
 		if (gameObject.activeSelf)
 		{
-			AudioManager.instance.PlaySoundEffect(buttonSoundEffect);
+			AudioManager.current.PlaySoundEffect(buttonSoundEffect);
 			//AudioManager.instance.PlayPitchedSoundEffect(buttonSoundEffect, 1.0f, 2.5f);
 		}
 	}
 
 	public void SetGamma(Slider slider)
 	{
-		GameManager.instance.SetGamma(slider.value);
+		GameManager.current.SetGamma(slider.value);
 	}
 
 	public void DisplayCredits()

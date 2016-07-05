@@ -43,7 +43,7 @@ public class Savepoint : MonoBehaviour
         if (isOverlappingPlayer)
         {
             MenuController.savingGame = true;
-			GameManager.instance.collidingSavepoint = transform.gameObject;
+			GameManager.current.collidingSavepoint = transform.gameObject;
 			textManager.DisableTextBox();
             menuController.OpenLoadMenu();
         }

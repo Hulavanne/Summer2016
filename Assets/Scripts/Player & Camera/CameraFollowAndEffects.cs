@@ -2,7 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class CameraFollowAndEffects : MonoBehaviour {
+public class CameraFollowAndEffects : MonoBehaviour
+{
+	public static CameraFollowAndEffects current;
 
     public BoxCollider2D rightBoundary;
     public BoxCollider2D leftBoundary;
@@ -19,12 +21,21 @@ public class CameraFollowAndEffects : MonoBehaviour {
     public PlayerController playerController;
     public TouchInput_Diogo playerMotion;
 
-	Camera cameraComponent;
-
 	public float pathHeight = 1.65f;
+
+	Camera cameraComponent;
+	BoxCollider2D cameraCollider;
+
+	bool adjustingCamera = false;
+	int direction = 0;
+
+	bool boundaryColliding = false;
+	BoxCollider2D collidingBoundary;
 
 	void Awake()
 	{
+		current = this;
+
 		darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("DarkScreen").gameObject;
 		darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
 		
@@ -34,9 +45,11 @@ public class CameraFollowAndEffects : MonoBehaviour {
 			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 			playerMotion = player.GetComponent<TouchInput_Diogo>();
         }
-		cameraComponent = transform.GetComponent<Camera>();
 
-        transform.position = new Vector3(transform.position.x, player.transform.position.y - pathHeight + cameraComponent.orthographicSize, transform.position.z);
+		cameraComponent = transform.GetComponent<Camera>();
+		cameraCollider = transform.GetComponent<BoxCollider2D>();
+
+        transform.position = new Vector3(transform.position.x, -18, transform.position.z);
 
         // JoinPlayer(); // Initially joins player
         // fadeToBlack = true;
@@ -46,92 +59,119 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
 	void Update ()
 	{
-        if (fadeToBlack)
-        {
-            if (opacity <= 1)
-            {
-				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
-            }
-        }
-        else
-        {
-            if (opacity >= 0)
-            {
-                opacity -= 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
-            }
-        }
-
-        darkScreenRenderer.SetAlpha(opacity);
-
-        opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
-                                                               // darkScreenRenderer.material.color = opacityManager; // and puts it in the material
+		AdjustCameraSize();
+		FadingToBlack();
 
 		// Make the camera follow the player
         if (playerController.canCameraFollow)
         {
-			float x = player.transform.position.x;
-			transform.position = new Vector3(x, transform.position.y, transform.position.z);
+			float nextPositionX = player.transform.position.x;
+
+			if (!boundaryColliding)
+			{
+				Debug.Log(boundaryColliding);
+				transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
+			}
+			else
+			{
+				if (playerController.movingDirection == 1)
+				{
+					if (collidingBoundary.transform.position.x + (player.transform.position.x - (collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x)) >= cameraCollider.bounds.extents.x)
+					{
+						//transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
+						boundaryColliding = false;
+					}
+				}
+				else
+				{
+					if (collidingBoundary.transform.position.x + (player.transform.position.x - (collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x)) <= cameraCollider.bounds.extents.x)
+					{
+						//transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
+						boundaryColliding = false;
+					}
+				}
+			}
         }
 
-		//GetDistance();
-		//JumpToPlayer();
-            
-        // ^ this makes the camera follow the player in x axis, and specific y+2 axis
-        // Alternatively, just parent the camera to the player, add 2 to y, and delete this
 
-		// Adjusting the size of the camera to fit the current screen resolution
-		float ratio = (float)Screen.height / (float)Screen.width;
-		float screenWidth = 1920.0f;
-		float screenHeight = screenWidth * ratio;
-		float size = screenHeight / 150.0f;
-
-		cameraComponent.orthographicSize = size;
     }
 
-	public void JoinPlayer()
+	void OnTriggerStay2D(Collider2D other)
 	{
-		//transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2, transform.position.z);
-	}
-
-	public void JumpToPlayer()
-	{
-		if ((xDistanceToPlayer >= 2.0f) || (xDistanceToPlayer <= -2.0f))
+		if (other.gameObject.tag == "CameraBoundary")
 		{
-			if (playerPos > cameraPos)
-			{
-				// transform.position = new Vector3(player.transform.position.x - 3, transform.position.y, transform.position.z);
-				transform.position = new Vector3(player.transform.position.x - 2.0f, transform.position.y, transform.position.z);
-			}
-
-			else if (playerPos < cameraPos)
-			{
-				// transform.position = new Vector3(player.transform.position.x + 3, transform.position.y, transform.position.z);
-				transform.position = new Vector3(player.transform.position.x + 2.0f, transform.position.y, transform.position.z);
-			}
-		}
-
-		else
-		{
-			transform.position = new Vector3(transform.position.x, player.transform.position.y + 2.0f, transform.position.z);
+			boundaryColliding = true;
+			collidingBoundary = (BoxCollider2D)other;
 		}
 	}
 
-	void GetDistance()
+	void OnTriggerExit2D(Collider2D other)
 	{
-		playerPos = player.transform.position.x;
-		cameraPos = transform.position.x;
+		if (other.gameObject.tag == "CameraBoundary")
+		{
+			boundaryColliding = false;
+		}
+	}
 
-		if (playerPos > cameraPos)
-			xDistanceToPlayer = (playerPos - cameraPos);
-		else
-			xDistanceToPlayer = (cameraPos - playerPos);
+	public void AdjustToLevel(GameObject level)
+	{
+		Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
 
-		xDistanceToPlayer = (transform.position.x) - (player.transform.position.x);
+		if (Mathf.Abs(level.transform.position.x - boundary.position.x) < Mathf.Abs(level.transform.position.x - boundary.GetChild(0).position.x))
+		{
+			boundary = boundary.GetChild(0);
+		}
+
+		int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
+		float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+
+		transform.position = new Vector3(x, transform.position.y, transform.position.z);
+
+		boundaryColliding = true;
+		collidingBoundary = boundary.GetComponent<BoxCollider2D>();
 	}
 
 	public void FadeToBlack()
 	{
 		fadeToBlack = true;
 		opacity = 1.0f;
+	}
+
+	void AdjustCameraSize()
+	{
+		// Adjusting the size of the camera to fit the current screen resolution
+		float ratio = (float)Screen.height / (float)Screen.width;
+		float screenWidth = 1920.0f;
+		float screenHeight = screenWidth * ratio;
+		float size = screenHeight / 150.0f;
+		cameraComponent.orthographicSize = size;
+
+		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;
+		float colliderHeight = size * 2;
+
+		cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
+	}
+
+	void FadingToBlack()
+	{
+		if (fadeToBlack)
+		{
+			if (opacity <= 1)
+			{
+				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
+			}
+		}
+		else
+		{
+			if (opacity >= 0)
+			{
+				opacity -= 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
+			}
+		}
+
+		darkScreenRenderer.SetAlpha(opacity);
+
+		opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
+		// darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 	}
 }

@@ -26,9 +26,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 	Camera cameraComponent;
 	BoxCollider2D cameraCollider;
 
-	bool adjustingCamera = false;
-	int direction = 0;
-
+	bool cameraCanFollow = false;
 	bool boundaryColliding = false;
 	BoxCollider2D collidingBoundary;
 
@@ -49,7 +47,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 		cameraComponent = transform.GetComponent<Camera>();
 		cameraCollider = transform.GetComponent<BoxCollider2D>();
 
-        transform.position = new Vector3(transform.position.x, -18, transform.position.z);
+        transform.position = new Vector3(0.0f, -18.0f, transform.position.z);
 
         // JoinPlayer(); // Initially joins player
         // fadeToBlack = true;
@@ -63,37 +61,34 @@ public class CameraFollowAndEffects : MonoBehaviour
 		FadingToBlack();
 
 		// Make the camera follow the player
-        if (playerController.canCameraFollow)
+        if (cameraCanFollow)
         {
 			float nextPositionX = player.transform.position.x;
 
 			if (!boundaryColliding)
 			{
-				Debug.Log(boundaryColliding);
 				transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
 			}
 			else
 			{
 				if (playerController.movingDirection == 1)
 				{
-					if (collidingBoundary.transform.position.x + (player.transform.position.x - (collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x)) >= cameraCollider.bounds.extents.x)
+					if (player.transform.position.x >= collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x + cameraCollider.bounds.extents.x)
 					{
-						//transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
+						transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
 						boundaryColliding = false;
 					}
 				}
 				else
 				{
-					if (collidingBoundary.transform.position.x + (player.transform.position.x - (collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x)) <= cameraCollider.bounds.extents.x)
+					if (player.transform.position.x <= collidingBoundary.transform.position.x - collidingBoundary.bounds.extents.x - cameraCollider.bounds.extents.x)
 					{
-						//transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
+						transform.position = new Vector3(nextPositionX, transform.position.y, transform.position.z);
 						boundaryColliding = false;
 					}
 				}
 			}
         }
-
-
     }
 
 	void OnTriggerStay2D(Collider2D other)
@@ -105,16 +100,18 @@ public class CameraFollowAndEffects : MonoBehaviour
 		}
 	}
 
-	void OnTriggerExit2D(Collider2D other)
-	{
-		if (other.gameObject.tag == "CameraBoundary")
-		{
-			boundaryColliding = false;
-		}
-	}
-
 	public void AdjustToLevel(GameObject level)
 	{
+		if (level.transform.FindChild("Boundaries").FindChild("FixedCamera") != null)
+		{
+			cameraCanFollow = false;
+			return;
+		}
+		else
+		{
+			cameraCanFollow = true;
+		}
+
 		Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
 
 		if (Mathf.Abs(level.transform.position.x - boundary.position.x) < Mathf.Abs(level.transform.position.x - boundary.GetChild(0).position.x))

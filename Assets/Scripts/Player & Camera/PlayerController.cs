@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour {
 	public int movingDirection = 1;
     public bool canWalkRight = true;
     public bool canWalkLeft = true;
-    public bool canCameraFollow = true;
+    //public bool canCameraFollow = true;
 
     public bool isRoomFixed;
     public bool isHidden;
@@ -227,18 +227,18 @@ public class PlayerController : MonoBehaviour {
 
         if (other.tag == "FixedBoundary")
         {
-            canCameraFollow = false;
+            //canCameraFollow = false;
             isRoomFixed = true;
         }
 
         else if (other.tag == "RightBoundary")
         {
             rightBoundary = other.gameObject;
-            canCameraFollow = false;
+            //canCameraFollow = false;
             if (transform.position.x > rightBoundary.transform.position.x)
             {
                 canWalkRight = false;
-                canCameraFollow = false;
+                //canCameraFollow = false;
             }
             else if (transform.position.x <= rightBoundary.transform.position.x)
             {
@@ -248,11 +248,11 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "LeftBoundary")
         {
             leftBoundary = other.gameObject;
-            canCameraFollow = false;
+            //canCameraFollow = false;
             if (transform.position.x < leftBoundary.transform.position.x)
             {
                 canWalkLeft = false;
-                canCameraFollow = false;
+                //canCameraFollow = false;
             }
             else if (transform.position.x >= leftBoundary.transform.position.x)
             {
@@ -268,7 +268,7 @@ public class PlayerController : MonoBehaviour {
 
         if (other.tag == "FixedBoundary")
         {
-            canCameraFollow = true;
+            //canCameraFollow = true;
             isRoomFixed = false;
         }
 
@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour {
             canWalkRight = true;
             if (!isRoomFixed)
             {
-                canCameraFollow = true;
+                //canCameraFollow = true;
             }
         }
         else if (other.tag == "LeftBoundary")
@@ -285,7 +285,7 @@ public class PlayerController : MonoBehaviour {
             canWalkLeft = true;
             if (!isRoomFixed)
             {
-                canCameraFollow = true;
+                //canCameraFollow = true;
             }
         }
     }

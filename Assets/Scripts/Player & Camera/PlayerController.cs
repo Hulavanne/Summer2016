@@ -101,8 +101,8 @@ public class PlayerController : MonoBehaviour {
 		noButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonNo").GetComponent<Button>();
 		cameraComponent = Camera.main;
 		cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
-
-		if (Game.current != null)
+        
+        if (Game.current != null)
 		{
 			if (Game.current.playerStartPositionX != 0.0f)
 			{
@@ -112,13 +112,12 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		canShowGameOverButtons = true;
+        canMove = true;
+        canShowGameOverButtons = true;
 
 		staminaBar.value = 100.0f;
 		questionMark.SetActive(false); // Activates once the player reaches a clickable object
-
-		canMove = true;
-        isIntro = true;
+        
 	}
 
     public void TalkToNPC()
@@ -316,11 +315,6 @@ public class PlayerController : MonoBehaviour {
             playerAnim.SetBool("isIdle", false);
         }
 
-        //if (canCameraFollow)
-		//{
-		//	cameraScript.JumpToPlayer();
-		//}
-
         if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
             return;
@@ -352,12 +346,6 @@ public class PlayerController : MonoBehaviour {
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);
         }
-
-        //if (canCameraFollow)
-		//{
-        //	cameraScript.JumpToPlayer();
-		//}
-		
 
         if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
@@ -399,8 +387,4 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void OnUserClick()
-    {
-       
-    }
 }

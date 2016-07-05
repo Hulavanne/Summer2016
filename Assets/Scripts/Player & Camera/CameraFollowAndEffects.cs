@@ -38,8 +38,8 @@ public class CameraFollowAndEffects : MonoBehaviour {
 
         transform.position = new Vector3(transform.position.x, player.transform.position.y - pathHeight + cameraComponent.orthographicSize, transform.position.z);
 
-        //JoinPlayer(); // Initially joins player
-        fadeToBlack = true;
+        // JoinPlayer(); // Initially joins player
+        // fadeToBlack = true;
 		opacity = 1.0f;
         
 	}

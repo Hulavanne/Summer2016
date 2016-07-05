@@ -50,11 +50,6 @@ public class npcBehaviour : MonoBehaviour {
         gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
-
-        if (gameObject.name == "NPC_1")
-        {
-            gameflow.isNPCAutomatic = true;
-        }
 	}
 	
 	void Update ()

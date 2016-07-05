@@ -17,7 +17,8 @@ public class GameFlowManager : MonoBehaviour {
 
     public bool isNPCAutomatic;
     public int npcIntroBehav = 0;
-    public int npc1Behav = 0;
+    public int npc4Behav = 0;
+    public int npc5Behav = 0;
 
     public void DestroyNPC()
     {
@@ -29,7 +30,8 @@ public class GameFlowManager : MonoBehaviour {
             destroyNPC = false;
         }
     }
-    
+
+    //this function only gets called after speaking with an NPC
     public void ChangeNPCBehaviour()
     {
         if (npcName == "Intro_NPC")
@@ -53,18 +55,6 @@ public class GameFlowManager : MonoBehaviour {
             }
         }
 
-        else if (npcName == "NPC_1")
-        {
-            if (npc1Behav == 0)
-            {
-
-            }
-            else if (npc1Behav == 1)
-            {
-
-            }
-        }
-
         DestroyNPC(); // destroys the npc if the bool is true
     }
 
@@ -73,8 +63,7 @@ public class GameFlowManager : MonoBehaviour {
         {
             //darkScreen = true;
         }
-
-        isNPCAutomatic = true;
+        
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();

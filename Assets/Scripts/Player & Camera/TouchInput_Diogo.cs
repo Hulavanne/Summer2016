@@ -95,12 +95,7 @@ public class TouchInput_Diogo : MonoBehaviour
         // For unity editor
 
 #if (UNITY_EDITOR || UNITY_STANDALONE)
-
-        if (Input.GetMouseButtonDown(0))
-        {
-			playerController.OnUserClick();
-        }
-
+        
         //Running Input
         //Decreasing the value once the touch is pressed
 

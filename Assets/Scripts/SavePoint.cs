@@ -6,7 +6,7 @@ public class Savepoint : MonoBehaviour
 {
 	MenuController menuController;
     PlayerController player;
-    GameObject textManager;
+    TextBoxManager textManager;
 
 	bool isOverlappingPlayer;
 
@@ -21,9 +21,9 @@ public class Savepoint : MonoBehaviour
 			player = GameObject.Find("Player").GetComponent<PlayerController>();
 
 		}
-		if (GameObject.Find("TextBoxManager"))
+		if (GameObject.Find("InGameUI"))
 		{
-			textManager = GameObject.Find("TextBoxManager");
+			textManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
 		}
     }
 
@@ -44,7 +44,7 @@ public class Savepoint : MonoBehaviour
         {
             MenuController.savingGame = true;
 			GameManager.instance.collidingSavepoint = transform.gameObject;
-			textManager.GetComponent<TextBoxManager>().DisableTextBox();
+			textManager.DisableTextBox();
             menuController.OpenLoadMenu();
         }
     }

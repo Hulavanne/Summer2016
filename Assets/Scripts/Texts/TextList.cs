@@ -35,6 +35,18 @@ public class TextList : MonoBehaviour {
     public int[] buttonsYesNo3 = { -1, -1 };
     public int[] buttonsOpt3 = { -1, -1 };
 
+    public int[] buttonsYesNo4 = { -1, -1 };
+    public int[] buttonsOpt4 = { -1, -1 };
+
+    public int[] buttonsYesNo5 = { -1, -1 };
+    public int[] buttonsOpt5 = { -1, -1 };
+
+    public int[] buttonsYesNo6 = { -1, -1 };
+    public int[] buttonsOpt6 = { -1, -1 };
+
+    public int[] buttonsYesNo7 = { -1, -1 };
+    public int[] buttonsOpt7 = { -1, -1 };
+
     public int[] buttonsYesNoSave = { -1, -1 };
     public int[] buttonsOptSave = { -1, -1 };
 
@@ -49,6 +61,18 @@ public class TextList : MonoBehaviour {
 
     public int text3StartLine = 3;
     public int text3EndLine = 4;
+
+    public int text4StartLine = 0;
+    public int text4EndLine = 0;
+
+    public int text5StartLine = 0;
+    public int text5EndLine = 0;
+
+    public int text6StartLine = 0;
+    public int text6EndLine = 0;
+
+    public int text7StartLine = 0;
+    public int text7EndLine = 0;
 
     public int textSavStartLine = 0;
     public int textSavEndLine = 0;

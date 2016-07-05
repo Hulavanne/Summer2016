@@ -1,9 +1,0 @@
-this is a test being displayed on the thingy. One piece of thing and text and everyone is being texted.
-Number of Apples : 
-toodles!
-i'm doneee!
-
-one
-two
-three
-End Line.

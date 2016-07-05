@@ -104,6 +104,10 @@ public class TextBoxManager : MonoBehaviour {
         {
             currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
         }
+        if (currentNPC.GetComponent<Savepoint>() == null)
+        {
+            Debug.Log("not saving!");
+        }
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
     }
@@ -154,6 +158,7 @@ public class TextBoxManager : MonoBehaviour {
     public void CursorOutsideButton()
     {
         isCursorOnActionButton = false;
+        player.hasClickedActionButton = false;
     }
 
     void Awake()
@@ -225,7 +230,6 @@ public class TextBoxManager : MonoBehaviour {
             && (Input.GetMouseButtonDown(0) && !showCurrentOptButtons)) // disable click if there are option buttons
             || hasClickedYesNoButton || hasClickedOptButton ) // proceed if the player clicked a button
         {
-            Debug.Log("working!");
             player.talkToNPC = false;
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;

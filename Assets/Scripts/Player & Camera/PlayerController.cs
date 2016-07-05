@@ -104,10 +104,10 @@ public class PlayerController : MonoBehaviour {
 
 		if (Game.current != null)
 		{
-			if (Game.current.startingPositionX != 0.0f)
+			if (Game.current.playerStartPositionX != 0.0f)
 			{
 				Vector2 startingPosition = transform.position;
-				startingPosition = new Vector2(Game.current.startingPositionX, Game.current.startingPositionY);
+				startingPosition = new Vector2(Game.current.playerStartPositionX, Game.current.playerStartPositionY);
 				transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
 			}
 		}

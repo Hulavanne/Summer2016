@@ -21,9 +21,11 @@ public class MenuController : MonoBehaviour
 
 	GameObject menu;
 	GameObject pauseOverlay;
-	GameObject optionsOverlay;
 	GameObject loadMenu;
+	GameObject optionsOverlay;
+	GameObject creditsOverlay;
 
+	string gameScene = "MainScene";
 	string pickSaveSlotString = "Pick a Save Slot";
 	string loadGameString = "Load Game";
     
@@ -57,35 +59,47 @@ public class MenuController : MonoBehaviour
 			inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
 			pauseOverlay.SetActive(false);
 		}
-		if (transform.name != "OptionsOverlay" && transform.name != "LoadMenu")
+		if (transform.name != "LoadMenu" && transform.name != "OptionsOverlay" && transform.name != "CreditsOverlay")
 		{
 			menu = transform.gameObject;
 
-			if (GameObject.Find("OptionsOverlay") != null)
-			{
-				optionsOverlay = GameObject.Find("OptionsOverlay");
-				optionsOverlay.GetComponent<MenuController>().menu = menu;
-				//optionsOverlay.SetActive(false);
-			}
 			if (GameObject.Find("LoadMenu") != null)
 			{
 				loadMenu = GameObject.Find("LoadMenu");
 				loadMenu.GetComponent<MenuController>().menu = menu;
-				//loadMenu.SetActive(false);
+			}
+			if (GameObject.Find("OptionsOverlay") != null)
+			{
+				optionsOverlay = GameObject.Find("OptionsOverlay");
+				optionsOverlay.GetComponent<MenuController>().menu = menu;
+			}
+			if (GameObject.Find("CreditsOverlay") != null)
+			{
+				creditsOverlay = GameObject.Find("CreditsOverlay");
+				creditsOverlay.GetComponent<MenuController>().menu = menu;
+			}
+		}
+		else
+		{
+			if (GameObject.Find("LoadMenu") != null)
+			{
+				loadMenu = GameObject.Find("LoadMenu");
+			}
+			if (GameObject.Find("OptionsOverlay") != null)
+			{
+				optionsOverlay = GameObject.Find("OptionsOverlay");
+			}
+			if (GameObject.Find("CreditsOverlay") != null)
+			{
+				creditsOverlay = GameObject.Find("CreditsOverlay");
 			}
 		}
 	}
 
 	void Start()
 	{
-		if (transform.name == "OptionsOverlay")
+		if (transform.name == "OptionsOverlay" || transform.name == "LoadMenu" || transform.name == "CreditsOverlay")
 		{
-			optionsOverlay = transform.gameObject;
-			transform.gameObject.SetActive(false);
-		}
-		else if (transform.name == "LoadMenu")
-		{
-			loadMenu = transform.gameObject;
 			transform.gameObject.SetActive(false);
 		}
 	}
@@ -104,6 +118,42 @@ public class MenuController : MonoBehaviour
 
 		SceneManager.LoadSceneAsync("LoadingScene");
 		SceneManager.LoadSceneAsync(sceneName);
+	}
+
+	public void ActivateOptionsOverlay()
+	{
+		// Load values
+		optionsOverlay.GetComponent<MenuController>().SetOptionsValues();
+
+		optionsOverlay.SetActive(true);
+		menu.SetActive(false);
+	}
+
+	public void DectivateOptionsOverlay()
+	{
+		// Saving the settings
+		AudioManager.current.SaveAudioSettings();
+		GameManager.current.SaveGraphicalSettings();
+
+		menu.SetActive(true);
+		optionsOverlay.SetActive(false);
+	}
+
+	public void ActivateCreditsOverlay()
+	{
+		creditsOverlay.SetActive(true);
+		optionsOverlay.SetActive(false);
+	}
+
+	public void DectivateCreditsOverlay()
+	{
+		optionsOverlay.SetActive(true);
+		creditsOverlay.SetActive(false);
+	}
+
+	public void PlayButtonSoundEffect()
+	{
+		AudioManager.current.PlayRandomizedSoundEffect(buttonSoundEffect);
 	}
 
 	//----------------------IN-GAME----------------------
@@ -149,31 +199,7 @@ public class MenuController : MonoBehaviour
 
 	}
 
-	public void ActivateOptionsOverlay()
-	{
-		// Load values
-		optionsOverlay.GetComponent<MenuController>().SetOptionsValues();
-
-		optionsOverlay.SetActive(true);
-		menu.SetActive(false);
-	}
-
-	public void DectivateOptionsOverlay()
-	{
-		// Saving the settings
-		AudioManager.current.SaveAudioSettings();
-		GameManager.current.SaveGraphicalSettings();
-
-		menu.SetActive(true);
-		optionsOverlay.SetActive(false);
-	}
-
-	public void PlayButtonSoundEffect()
-	{
-		AudioManager.current.PlayRandomizedSoundEffect(buttonSoundEffect);
-	}
-
-	//---------------------MAIN MENU---------------------
+	//---------------------LOAD MENU---------------------
 
 	public void NewGame()
 	{
@@ -181,7 +207,7 @@ public class MenuController : MonoBehaviour
 		Game.current = game;
 		Game.currentIndex = -1;
 
-		GoToScene(game.level);
+		GoToScene(gameScene);
 	}
 
 	public void OpenLoadMenu()
@@ -331,7 +357,7 @@ public class MenuController : MonoBehaviour
 		Game.current = SavingAndLoading.savedGames[gameIndex];
 		Game.currentIndex = gameIndex;
 
-		GoToScene(Game.current.level);
+		GoToScene(gameScene);
 	}
 
 	public void CloseLoadMenu()
@@ -396,10 +422,5 @@ public class MenuController : MonoBehaviour
 	public void SetGamma(Slider slider)
 	{
 		GameManager.current.SetGamma(slider.value);
-	}
-
-	public void DisplayCredits()
-	{
-		Debug.Log("Displaying Credits");
 	}
 }

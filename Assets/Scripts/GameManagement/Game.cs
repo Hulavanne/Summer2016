@@ -24,8 +24,8 @@ public class Game
 	public Game()
 	{
 		// The first level of the game
-		level = "MainScene";
-		cameraStartPositionX = -15.0f;
+		level = "Level1";
+		cameraStartPositionX = 0.0f;
 	}
 
 	public void PrintGameVariables()

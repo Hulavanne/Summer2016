@@ -42,7 +42,12 @@ public class AudioManager : MonoBehaviour
 
 	void Update()
 	{
-		
+		Debug.Log(PlayerPrefs.GetInt("AudioMuted") + " | " + PlayerPrefs.GetFloat("MasterVolume") + " | " + PlayerPrefs.GetFloat("SoundEffectsVolume") + " | " + PlayerPrefs.GetFloat("MusicVolume"));
+
+		PlayerPrefs.SetInt("AudioMuted", System.Convert.ToInt32(AudioManager.audioMuted));
+		PlayerPrefs.SetFloat("MasterVolume", AudioManager.masterVolume);
+		PlayerPrefs.SetFloat("SoundEffectsVolume", AudioManager.soundEffectsVolume);
+		PlayerPrefs.SetFloat("MusicVolume", AudioManager.musicVolume);
 	}
 
 	public void PlaySoundEffect(AudioClip clip)
@@ -82,14 +87,16 @@ public class AudioManager : MonoBehaviour
 		AudioManager.soundEffectsVolume = PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
 		AudioManager.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
 
+		Debug.Log(PlayerPrefs.GetFloat("MasterVolume", 1.0f));
+
 		// Update mute audio
 		effectsSource.mute = AudioManager.audioMuted;
 		musicSource.mute = AudioManager.audioMuted;
 
 		// Update volumes
 		SetMasterVolume(AudioManager.masterVolume);
-		SetMusicVolume(AudioManager.soundEffectsVolume);
-		SetSoundEffectsVolume(AudioManager.musicVolume);
+		SetSoundEffectsVolume(AudioManager.soundEffectsVolume);
+		SetMusicVolume(AudioManager.musicVolume);
 	}
 
 	public void SaveAudioSettings()

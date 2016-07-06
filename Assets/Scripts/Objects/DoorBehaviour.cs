@@ -6,15 +6,34 @@ public class DoorBehaviour : MonoBehaviour {
     // This code will activate the question box once it triggers the collider 
     // and de-activate it once it leaves it.
 
-    public bool goesDown = true;
+    public LevelManager.Levels thisDoorLevel;
+    public float thisDoorLight;
+
     public bool AutomaticDoor;
 
 	public LevelManager levelManager;
     public PlayerController player;
     public GameObject questionMark;
+    
+    public GameObject nextDoor;
+    public GameObject thisDoor;
+    public bool isNextDoorParent;
 
 	void Awake()
 	{
+        thisDoor = gameObject;
+
+        if (gameObject.transform.FindChild("Door") != null)
+        {
+            nextDoor = gameObject.transform.FindChild("Door").gameObject;
+            isNextDoorParent = false;
+        }
+        else
+        {
+            nextDoor = transform.parent.gameObject;
+            isNextDoorParent = true;
+        }
+
 		if (GameObject.Find("LevelManager") != null)
 		{
 			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
@@ -30,20 +49,18 @@ public class DoorBehaviour : MonoBehaviour {
     {
 		if ((AutomaticDoor) && (other.transform.parent.tag == "Player"))
         {
+            levelManager.currentDoor = thisDoor;
+            levelManager.nextDoor = nextDoor;
             player.switchingLevel = true;
-            //if (goesDown) manageLevel.goNextLevel = true;
-            //else manageLevel.goNextLevel = false;
             player.isOverlappingDoor = true;
-            player.playerAnim.SetBool("isIdle", true);
-            player.playerAnim.SetBool("isRunning", false);
-            player.playerAnim.SetBool("isWalking", false);
+            player.PlayerAnimStop();
         }
 
 		else if (other.transform.parent.tag == "Player")
         {
-            player.isSelectionActive = true;
-            questionMark.SetActive(true);
-            player.selection = PlayerController.Selection.DOOR;
+            levelManager.currentDoor = thisDoor;
+            levelManager.nextDoor = nextDoor;
+            player.ActivateSelection(PlayerController.Selection.DOOR);
             player.isOverlappingDoor = true;
         }
     }
@@ -52,10 +69,9 @@ public class DoorBehaviour : MonoBehaviour {
     {
 		if (other.transform.parent.tag == "Player")
         {
-            player.isSelectionActive = true;
-            questionMark.SetActive(true);
-            player.isOverlappingDoor = true;
-            player.selection = PlayerController.Selection.DOOR;
+            levelManager.currentDoor = thisDoor;
+            levelManager.nextDoor = nextDoor;
+            player.ActivateSelection(PlayerController.Selection.DOOR);
         }
     }
     
@@ -63,10 +79,10 @@ public class DoorBehaviour : MonoBehaviour {
     {
 		if (other.transform.parent.tag == "Player")
         {
-            player.isSelectionActive = false;
-            questionMark.SetActive(false);
+            levelManager.currentDoor = null;
+            levelManager.nextDoor = null;
+            player.DeactivateSelection();
             player.isOverlappingDoor = false;
-            player.selection = PlayerController.Selection.DEFAULT;
         }
     }
 }

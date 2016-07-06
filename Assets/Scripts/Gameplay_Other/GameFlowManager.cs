@@ -38,6 +38,7 @@ public class GameFlowManager : MonoBehaviour {
         {
             if (npcIntroBehav == 0)
             {
+                player.DeactivateSelection();
                 textNumber.textIntroStartLine = 3;
                 textNumber.textIntroEndLine = 4;
                 player.npcWaitTime = 2.0f;
@@ -48,8 +49,7 @@ public class GameFlowManager : MonoBehaviour {
             }
             else if (npcIntroBehav == 1)
             {
-                player.selection = PlayerController.Selection.DEFAULT;
-                player.questionMark.SetActive(false);
+                player.DeactivateSelection();
                 destroyNPC = true;
                 tempGameObject.SetActive(true);
             }

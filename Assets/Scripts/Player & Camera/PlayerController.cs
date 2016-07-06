@@ -59,6 +59,9 @@ public class PlayerController : MonoBehaviour {
     public HideBehaviour selectHide;
     public TextBoxManager textRef;
 
+    public GameObject currentDoor;
+    public GameObject nextDoor;
+
     public bool isOverlappingDoor;
     public bool isClickingButton;
 
@@ -241,6 +244,20 @@ public class PlayerController : MonoBehaviour {
         NPCName = "";
     }
 
+    public void ActivateSelection(Selection currentSelection)
+    {
+        isSelectionActive = true;
+        questionMark.SetActive(true);
+        selection = currentSelection;
+    }
+
+    public void DeactivateSelection()
+    {
+        isSelectionActive = false;
+        questionMark.SetActive(false);
+        selection = Selection.DEFAULT;
+    }
+
     public void OnActionButtonClick()
     {
         Debug.Log("Player has clicked Action Button.");
@@ -264,9 +281,7 @@ public class PlayerController : MonoBehaviour {
     public void TalkToNPC()
     {
         talkToNPC = true;
-        questionMark.SetActive(false);
-        isSelectionActive = false;
-        selection = Selection.DEFAULT;
+        DeactivateSelection();
         hasClickedActionButton = false;
     }
 

@@ -21,6 +21,11 @@ public class LevelManager : MonoBehaviour {
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
 
+    public GameObject currentDoor;
+    public GameObject nextDoor;
+    public DoorBehaviour currentDoorBehav;
+    public DoorBehaviour nextDoorBehav;
+
     Camera cameraComponent;
     CameraFollowAndEffects cameraScript;
 
@@ -128,48 +133,12 @@ public class LevelManager : MonoBehaviour {
 
     public void ChangeLevel()
     {
-        switch (currentLevel)
-        {
-		case Levels.LEVEL1:
-			
-            if (player.doorName == "Door_1>2")
-            {
-				SetLevelVariables(Levels.LEVEL2, lightLevel2, GameObject.Find("Door_2>1"));
-            }
-        
-            break;
-
-        case Levels.LEVEL2:
-			
-            if (player.doorName == "Door_2>3")
-            {
-				SetLevelVariables(Levels.LEVEL3, lightLevel3, GameObject.Find("Door_3>2"));
-            }
-            else if (player.doorName == "Door_2>1")
-            {
-				SetLevelVariables(Levels.LEVEL1, lightLevel1, GameObject.Find("Door_1>2"));
-            }
-            break;
-
-        case Levels.LEVEL3:
-			
-            if (player.doorName == "Door_3>2")
-            {
-				SetLevelVariables(Levels.LEVEL2, lightLevel2, GameObject.Find("Door_2>3"));
-            }
-            break;
-
-	        player.isSelectionActive = true;
-	        QuestionMark.SetActive(true);
-			player.isOverlappingDoor = true;
-        }
+        nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
+        currentLevel = nextDoorBehav.thisDoorLevel;
+        lightAmount = nextDoorBehav.thisDoorLight;
+        player.transform.position = new Vector3(nextDoor.transform.position.x,
+        player.transform.position.y, player.transform.position.z);
+        CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
     }
 
-	void SetLevelVariables(Levels level, float lightValue, GameObject door)
-	{
-		currentLevel = level;
-		lightAmount = lightValue;
-		player.transform.position = new Vector3(door.transform.position.x, player.transform.position.y, player.transform.position.z);
-		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
-	}
 }

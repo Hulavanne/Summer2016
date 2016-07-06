@@ -58,7 +58,6 @@ public class ActivateTextAtLine : MonoBehaviour {
         textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();
         npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
-        
     }
 
     void Update()

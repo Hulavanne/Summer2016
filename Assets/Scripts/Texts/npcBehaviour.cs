@@ -39,9 +39,7 @@ public class npcBehaviour : MonoBehaviour {
         {
             player.isOverlappingNPC = false;
             textLoader.waitForPress = false;
-            player.selection = PlayerController.Selection.DEFAULT;
-            player.isSelectionActive = false;
-            textLoader.selection.SetActive(false);
+            player.DeactivateSelection();
         }
     }
 
@@ -50,10 +48,5 @@ public class npcBehaviour : MonoBehaviour {
         gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
-	}
-	
-	void Update ()
-	{
-	
 	}
 }

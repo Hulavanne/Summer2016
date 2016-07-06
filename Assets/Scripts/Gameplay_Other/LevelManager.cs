@@ -162,17 +162,16 @@ public class LevelManager : MonoBehaviour
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
 		lightAmount = levelScript.levelLightAmount;
 
-		Transform savepoint = LevelManager.current.savepoints[Game.current.savepointIndex].transform;
-		Vector2 startingPosition = new Vector2(savepoint.position.x, savepoint.position.y);
-		Debug.Log(startingPosition);
+		Transform spawnpoint = LevelManager.current.savepoints[Game.current.savepointIndex].transform.GetChild(0);
+		Vector2 startingPosition = new Vector2(spawnpoint.position.x, spawnpoint.position.y);
 		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+
+		Transform mainCamera = CameraFollowAndEffects.current.transform;
+		mainCamera.position = new Vector3(Game.current.cameraStartPositionX, mainCamera.position.y, mainCamera.position.z);
+		CameraFollowAndEffects.current.fixedCamera = levelScript.fixedCamera;
 
 		Transform boundary = CameraFollowAndEffects.current.GetNearestBoundary(levelsList[(int)currentLevel]);
 		CameraFollowAndEffects.current.boundaryColliding = boundary;
-		//CameraFollowAndEffects.current.boundaryColliding = true;
-
-		Transform mainCamera = CameraFollowAndEffects.current.transform;
-		mainCamera.position = new Vector3(Game.current.cameraStartPositionX, mainCamera.position.y, mainCamera.position.z);//AdjustToLevel(levelsList[(int)currentLevel]);
-		CameraFollowAndEffects.current.fixedCamera = levelScript.fixedCamera;
+		CameraFollowAndEffects.current.boundaryColliding = true;
 	}
 }

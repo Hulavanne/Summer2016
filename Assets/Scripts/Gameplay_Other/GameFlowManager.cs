@@ -59,11 +59,6 @@ public class GameFlowManager : MonoBehaviour {
     }
 
 	void Awake () {
-        if (isIntro)
-        {
-            //darkScreen = true;
-        }
-        
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();

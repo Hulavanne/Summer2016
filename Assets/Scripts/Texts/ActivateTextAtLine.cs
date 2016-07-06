@@ -61,6 +61,15 @@ public class ActivateTextAtLine : MonoBehaviour {
         
     }
 
+    void Update()
+    {
+        if (playerController.talkToNPC)
+        {
+            ChooseNPC();
+            playerController.talkToNPC = false;
+        }
+    }
+
     public void ChooseNPC()
     {
         if ((playerController.NPCName == "Intro_NPC") && (npcState.npcIntroBehav == 0)) ReloadTextRefScript(textNumber.IntroText,
@@ -99,15 +108,6 @@ public class ActivateTextAtLine : MonoBehaviour {
         if (playerController.NPCName == "NPC_Parents_Closet") ReloadTextRefScript(textNumber.Text7, textNumber.buttonsYesNo7, textNumber.buttonsOpt7,
             textNumber.text7StartLine, textNumber.text7EndLine);
     }
-
-	void Update ()
-    {
-	    if (playerController.talkToNPC)
-        {
-            ChooseNPC();
-            playerController.talkToNPC = false;
-        }
-	}
 
     public void ReloadTextRefScript(TextAsset currentText,
         int[] currentYesNoButtons, int[] currentOptButtons,

@@ -66,13 +66,10 @@ public class TextBoxManager : MonoBehaviour {
     void Awake()
     {
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
-
-        yesButtonG.SetActive(false);
-        noButtonG.SetActive(false);
-        OptTextBox.SetActive(false);
+        DisableAllButtons();
         DisableTextBox();
     }
-
+    
     void Update()
     {
         if (isActive)
@@ -287,6 +284,13 @@ public class TextBoxManager : MonoBehaviour {
             x++;
         }
         x = 0;
+    }
+
+    void DisableAllButtons()
+    {
+        yesButtonG.SetActive(false);
+        noButtonG.SetActive(false);
+        OptTextBox.SetActive(false);
     }
 
     public void ReloadScript(TextAsset newText, int[] buttonsYesNoAtLines, int[] buttonsOptAtLines,

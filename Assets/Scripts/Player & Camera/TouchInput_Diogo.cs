@@ -11,6 +11,8 @@ public class TouchInput_Diogo : MonoBehaviour
 	public Animator playerAnim;
     public Slider staminaBar;
 
+    public bool isPressing;
+
     public int runValue = 0;
     public float runTouchDelay = 0;
     float runTouchDelayMax = 2;
@@ -33,99 +35,29 @@ public class TouchInput_Diogo : MonoBehaviour
 		playerAnim = transform.GetComponentInChildren<Animator>();
 		staminaBar = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("StaminaBar").GetComponent<Slider>();
 	}
-
+    
     void Update()
     {
-        if ((staminaBar.value < 100) && (runValue != 2))
-        {
-            staminaBar.value += Time.deltaTime * 0.05f;
-        }
+        UpdateStamina();
+        RunCheck();
 
-        if (runValue == 2)
-        {
-            staminaBar.value -= Time.deltaTime * 0.18f;
-        }
-
-        if ((staminaBar.value <= .01f) && (Input.GetMouseButton(0)))
+        if (playerController.textRef.isCursorOnActionButton || !playerController.canMove)
         {
             runValue = 0;
-            playerAnim.SetBool("isIdle", true);
-            playerAnim.SetBool("isWalking", false);
-            playerAnim.SetBool("isRunning", false);
         }
 
-        if ((staminaBar.value <= 0.01f) && runValue > 0)
+        if (playerController.switchingLevel)
         {
-            runValue = 0;
-            playerAnim.SetBool("isIdle", true);
-            playerAnim.SetBool("isWalking", false);
-            playerAnim.SetBool("isRunning", false);
+            playerController.canMove = false;
         }
 
-        // keeps checking if player is touching the first time
-        if (runValue == 1 && (Input.GetMouseButton(0)))
-        {
-            runTouchDelay = 2; // this will always set the timer to 2
-        }
-
-        // checks if the player hasn't touched for a while after the first touched
-        else if (runValue == 1 && runTouchDelay < 0)
-        {
-            runValue = 0; // the value will then reset to 0
-        }
-
-        // subtracts the timer every frame
-        if (runTouchDelay > 0)
-        {
-            runTouchDelay -= Time.deltaTime * 15;
-        }
-
-        // checks every frame if runValue is 2 and sets isRunning
-        if (runValue == 2)
-        {
-			playerController.isRunning = true;
-        }
-        else
-        {
-			playerController.isRunning = false;
-        }
-
-        // For unity editor
+        isPressing = false;
 
 #if (UNITY_EDITOR || UNITY_STANDALONE)
         
-        //Running Input
-        //Decreasing the value once the touch is pressed
-
         if (Input.GetMouseButton(0))
         {
-            // Go Left and Right Input
-
-			if (playerController.switchingLevel)
-            {
-				playerController.canMove = false;
-            }
-
-            #region OtherMovementInput
-            // this piece of code is an optimized version of movement that's not being used
-            /*
-            Camera camera = mainCamera.GetComponent<Camera>();
-            Vector3 screenMousePosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, camera.transform.position.z));
-
-            if ((screenMousePosition.x >= player.transform.position.x - 0.5) && (screenMousePosition.x <= player.transform.position.x + 0.5))
-            {
-                // do nothing
-            }
-            else if (Input.mousePosition.x >= 0 && (screenMousePosition.x <= player.transform.position.x))
-            {
-                player.GoLeft();
-            }
-            else if ((Input.mousePosition.x <= Screen.width) && (screenMousePosition.x > player.transform.position.x))
-            {
-                player.GoRight();
-            }
-            */
-            #endregion
+            isPressing = true;
 
             if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
             {
@@ -144,14 +76,8 @@ public class TouchInput_Diogo : MonoBehaviour
             }
         }
 
-        if (playerController.textRef.isCursorOnActionButton || !playerController.canMove)
-        {
-            runValue = 0;
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
-
             //Running Input
 
             if (runValue == 0)
@@ -171,8 +97,8 @@ public class TouchInput_Diogo : MonoBehaviour
             {
                 if (runTouchDelay > 0)
                 {
-                        // this will check runValue value, and add 1 if its value is either 0, or 1
-                        // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
+                    // this will check runValue value, and add 1 if its value is either 0, or 1
+                    // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
                     if (isTouchingRight)
                     {
                         if (!((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
@@ -186,20 +112,16 @@ public class TouchInput_Diogo : MonoBehaviour
                         {
                             runValue++;
                         }
-                    }
-                            
+                    }    
                 }
             }
 
             runTouchDelay = runTouchDelayMax;
-            // this sets the delay to its max value
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            playerAnim.SetBool("isRunning", false);
-            playerAnim.SetBool("isWalking", false);
-            playerAnim.SetBool("isIdle", true);
+            playerController.PlayerAnimStop();
             // Running Input
             if (runValue == 2)
             {
@@ -208,7 +130,7 @@ public class TouchInput_Diogo : MonoBehaviour
             }
         }
 
-// For touch device
+        // For touch device
 #elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
         // If user is touching the screen
         if (Input.touchCount > 0)
@@ -226,45 +148,135 @@ public class TouchInput_Diogo : MonoBehaviour
                 {
                     case TouchPhase.Began:
 
-                        playerController.OnUserClick();
-                        break;
-
-                    case TouchPhase.Ended:
-
-                        // Insert Running Input Here
-
-                        if (runValue == 2)
-                        {
-                            runValue = 0;
-                        }
+                        //Running Input
 
                         if (runValue == 0)
                         {
                             runValue++;
+
+                            if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
+                            {
+                                isTouchingRight = false;
+                            }
+                            else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
+                            {
+                                isTouchingRight = true;
+                            }
                         }
                         else if (runValue == 1)
                         {
                             if (runTouchDelay > 0)
                             {
-                                runValue++;
+                                // this will check runValue value, and add 1 if its value is either 0, or 1
+                                // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
+                                if (isTouchingRight)
+                                {
+                                    if (!((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
+                                    {
+                                        runValue++;
+                                    }
+                                }
+                                else
+                                {
+                                    if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
+                                    {
+                                        runValue++;
+                                    }
+                                }
+                            
                             }
                         }
+
                         runTouchDelay = runTouchDelayMax;
+
                         break;
+
+                    case TouchPhase.Ended:
+                        
+                        playerController.PlayerAnimStop();
+
+                        if (runValue == 2)
+                        {
+                            // if at any point the player releases the touch while the value is 2, it resets to 0
+                            runValue = 0;
+                        }
+
+                        break;
+
                 }
                 
-                // If user is touching left of screen
-                if (touch.position.x >= 0 && touch.position.x <= Screen.width * 0.5)
+                isPressing = true;
+
+                if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                 {
-					playerController.GoLeft();
+                    if (!playerController.textRef.isCursorOnActionButton)
+                    {
+                        playerController.GoLeft();
+                    }
                 }
-                // If user is touching right of screen
-                else
+
+                else if ((touch.position.x.x <= Screen.width) && (touch.position.x.x > Screen.width / 2))
                 {
-					playerController.GoRight();
+                    if (!playerController.textRef.isCursorOnActionButton)
+                    {
+                        playerController.GoRight();
+                    }
                 }
             }
         }
 #endif
     }
+
+    void UpdateStamina()
+    {
+        if ((staminaBar.value < 100) && (runValue != 2))
+        {
+            staminaBar.value += Time.deltaTime * 0.05f;
+        }
+
+        if (runValue == 2)
+        {
+            staminaBar.value -= Time.deltaTime * 0.18f;
+        }
+
+        if ((staminaBar.value <= .01f && Input.GetMouseButton(0))
+            || (staminaBar.value <= 0.01f && runValue > 0))
+        {
+            runValue = 0;
+            playerController.PlayerAnimStop();
+        }
+    }
+
+    void RunCheck()
+    {
+        // keeps checking if player is touching the first time
+        if (runValue == 1 && (isPressing))
+        {
+            runTouchDelay = 2; // this will always set the timer to 2
+        }
+
+        // checks if the player hasn't touched for a while after the first touched
+        else if (runValue == 1 && runTouchDelay < 0)
+        {
+            runValue = 0; // the value will then reset to 0
+        }
+
+        // subtracts the timer every frame
+        if (runTouchDelay > 0)
+        {
+            runTouchDelay -= Time.deltaTime * 15;
+        }
+
+        // checks every frame if runValue is 2 and sets isRunning
+        if (runValue == 2)
+        {
+            playerController.isRunning = true;
+        }
+        else
+        {
+            playerController.isRunning = false;
+        }
+    }
+
+
 }

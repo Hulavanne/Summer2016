@@ -129,29 +129,9 @@ public class PlayerController : MonoBehaviour {
         
 	}
 
-    public void TalkToNPC()
-    {
-        talkToNPC = true;
-        questionMark.SetActive(false);
-        isSelectionActive = false;
-        selection = Selection.DEFAULT;
-        hasClickedActionButton = false;
-    }
-
 	void Update()
-	{
-		Debug.Log(movementDirection);
-
-        if (npcWaitTime > 0.0f)
-        {
-            canMove = false;
-            npcWaitTime -= Time.deltaTime;
-            canTalkToNPC = false;
-        }
-        else
-        {
-            canTalkToNPC = true;
-        }
+    {
+        CheckNPCWaitTime();
 
 		if ((hasClickedActionButton) && (isSelectionActive))
 		{
@@ -178,13 +158,11 @@ public class PlayerController : MonoBehaviour {
                 TalkToNPC();
 			}
 		}
-
-
+        
 		if (isGameOver)
 		{
 			GameOverSplash();
-			cameraScript.FadeToBlack();// turnBlack = true;
-			//cameraScript.opacity = 1.0f;
+			cameraScript.FadeToBlack();
 			return;
 		}
 
@@ -195,20 +173,17 @@ public class PlayerController : MonoBehaviour {
             cameraScript.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
             switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
         }
-        else
+        else if (!isIntro)
         {
-            if (!isIntro)
-            {
-                cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
-            }
+            cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
         }
-		if (switchingLevelTime >= 1) // note that this 1 is a timer
+        
+		if (switchingLevelTime >= 1) // 1 is a timer
 		{
-			//cameraScript.JoinPlayer();
 			canMove = true;
 			levelManager.ChangeLevel();
 
-			//resetting these variables
+			//resetting variables
 			switchingLevel = false;
 			switchingLevelTime = 0.0f;
 		}
@@ -222,14 +197,13 @@ public class PlayerController : MonoBehaviour {
             doorName = other.gameObject.name;
         }
 
-        if (other.tag == "NPC")
+        else if (other.tag == "NPC")
         {
             NPCName = other.gameObject.name;
         }
 
         if (other.tag == "FixedBoundary")
         {
-            //canCameraFollow = false;
             isRoomFixed = true;
         }
         else if (other.tag == "PlayerBoundary")
@@ -265,35 +239,35 @@ public class PlayerController : MonoBehaviour {
     {
         doorName = "";
         NPCName = "";
-
-        if (other.tag == "FixedBoundary")
-        {
-            //canCameraFollow = true;
-            isRoomFixed = false;
-        }
-
-        if (other.tag == "RightBoundary")
-        {
-            //canWalkRight = true;
-            if (!isRoomFixed)
-            {
-                //canCameraFollow = true;
-            }
-        }
-        else if (other.tag == "LeftBoundary")
-        {
-            //canWalkLeft = true;
-            if (!isRoomFixed)
-            {
-                //canCameraFollow = true;
-            }
-        }
     }
 
     public void OnActionButtonClick()
     {
         Debug.Log("Player has clicked Action Button.");
         hasClickedActionButton = true;
+    }
+
+    void CheckNPCWaitTime()
+    {
+        if (npcWaitTime > 0.0f)
+        {
+            canMove = false;
+            npcWaitTime -= Time.deltaTime;
+            canTalkToNPC = false;
+        }
+        else
+        {
+            canTalkToNPC = true;
+        }
+    }
+
+    public void TalkToNPC()
+    {
+        talkToNPC = true;
+        questionMark.SetActive(false);
+        isSelectionActive = false;
+        selection = Selection.DEFAULT;
+        hasClickedActionButton = false;
     }
 
     void GameOverSplash()
@@ -310,6 +284,23 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void PlayerAnimStop()
+    {
+        playerAnim.SetBool("isRunning", false);
+        playerAnim.SetBool("isWalking", false);
+        playerAnim.SetBool("isIdle", true);
+    }
+
+    public void PlayerAnimWalk(bool isFacingRight)
+    {
+        if (canMove)
+        {
+            playerAnim.SetBool("isFacingRight", isFacingRight);
+            playerAnim.SetBool("isWalking", true);
+            playerAnim.SetBool("isIdle", false);
+        }
+    }
+
     public void GoLeft()
     {
         if(textRef.isCursorOnActionButton)
@@ -319,14 +310,9 @@ public class PlayerController : MonoBehaviour {
 
 		movementDirection = -1;
 
-        if (canMove)
-		{
-            playerAnim.SetBool("isFacingRight", false);
-            playerAnim.SetBool("isWalking", true);
-            playerAnim.SetBool("isIdle", false);
-        }
+        PlayerAnimWalk(false);
 
-        if (!canMove)// || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
+        if (!canMove)// || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears
         {
             return;
         }
@@ -334,7 +320,6 @@ public class PlayerController : MonoBehaviour {
         if (isRunning) // reference for this in TouchInput
         {
             playerAnim.SetBool("isRunning", true);
-            //playeranim is running left
             transform.position -= addXRunPos * Time.deltaTime;
         }
         else
@@ -350,30 +335,23 @@ public class PlayerController : MonoBehaviour {
         {
             return;
         }
-		Debug.Log ("asd");
+
 		movementDirection = 1;
 
-        if (canMove)
-        {
-            playerAnim.SetBool("isFacingRight", true);
-            playerAnim.SetBool("isWalking", true);
-            playerAnim.SetBool("isIdle", false);
-        }
+        PlayerAnimWalk(true);
 
-        if (!canMove)//||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
+        if (!canMove)
         {
             return;
         }
 
-        if (isRunning) // reference for this in TouchInput
+        if (isRunning)
         {
             playerAnim.SetBool("isRunning", true);
-            //playeranim is running right
             transform.position += addXRunPos * Time.deltaTime;
         }
         else
         {
-            //playeranim is walking right
             transform.position += addXPos * Time.deltaTime;
         }
     }

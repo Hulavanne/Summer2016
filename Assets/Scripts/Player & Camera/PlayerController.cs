@@ -82,8 +82,8 @@ public class PlayerController : MonoBehaviour {
     
     public GameObject bckgPlane;
  
-    Vector3 addXPos = new Vector3(2f, 0, 0); // Add X position to player (to move < or >)
-    Vector3 addXRunPos = new Vector3(4f, 0, 0); // same for running
+    Vector3 addXPos = new Vector3(3f, 0, 0); // Add X position to player (to move < or >)
+    Vector3 addXRunPos = new Vector3(5f, 0, 0); // same for running
     Vector3 tempVec; // Vector being used to hide/unhide
     
     #endregion

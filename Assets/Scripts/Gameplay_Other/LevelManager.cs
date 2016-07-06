@@ -8,10 +8,10 @@ public class LevelManager : MonoBehaviour {
 
     public enum Level
     {
-        LEVEL1,
-        LEVEL2,
-        LEVEL3,
-        LEVEL4,
+        LEVEL1 = 0,
+        LEVEL2 = 1,
+        LEVEL3 = 2,
+        LEVEL4 = 3,
     };
 
 	public static Level currentLevel;
@@ -176,7 +176,8 @@ public class LevelManager : MonoBehaviour {
         }
     }
     
-	void Update () {
+	void Update ()
+	{
 	    if (!player.switchingLevel)
         {
             SetLighting();

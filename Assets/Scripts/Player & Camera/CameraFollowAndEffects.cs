@@ -71,7 +71,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 			}
 			else
 			{
-				if (playerController.movingDirection == 1)
+				if (playerController.movementDirection == 1)
 				{
 					if (player.transform.position.x >= collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x + cameraCollider.bounds.extents.x)
 					{

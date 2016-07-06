@@ -48,9 +48,9 @@ public class PlayerController : MonoBehaviour {
     GameObject rightBoundary;
     GameObject leftBoundary;
 
-	public int movingDirection = 1;
-    public bool canWalkRight = true;
-    public bool canWalkLeft = true;
+	public int movementDirection = 1;
+    //public int canWalkRight = true;
+    //public bool canWalkLeft = true;
     //public bool canCameraFollow = true;
 
     public bool isRoomFixed;
@@ -140,6 +140,8 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
 	{
+		Debug.Log(movementDirection);
+
         if (npcWaitTime > 0.0f)
         {
             canMove = false;
@@ -230,33 +232,31 @@ public class PlayerController : MonoBehaviour {
             //canCameraFollow = false;
             isRoomFixed = true;
         }
-
-        else if (other.tag == "RightBoundary")
+        else if (other.tag == "PlayerBoundary")
         {
             rightBoundary = other.gameObject;
-            //canCameraFollow = false;
+
             if (transform.position.x > rightBoundary.transform.position.x)
             {
-                canWalkRight = false;
-                //canCameraFollow = false;
+				if (movementDirection == 1)
+				{
+					canMove = true;
+				}
+				else
+				{
+					canMove = false;
+				}
             }
-            else if (transform.position.x <= rightBoundary.transform.position.x)
+            else if (transform.position.x < rightBoundary.transform.position.x)
             {
-                canWalkRight = true;
-            }
-        }
-        else if (other.tag == "LeftBoundary")
-        {
-            leftBoundary = other.gameObject;
-            //canCameraFollow = false;
-            if (transform.position.x < leftBoundary.transform.position.x)
-            {
-                canWalkLeft = false;
-                //canCameraFollow = false;
-            }
-            else if (transform.position.x >= leftBoundary.transform.position.x)
-            {
-                canWalkLeft = true;
+				if (movementDirection == -1)
+				{
+					canMove = true;
+				}
+				else
+				{
+					canMove = false;
+				}
             }
         }
     }
@@ -274,7 +274,7 @@ public class PlayerController : MonoBehaviour {
 
         if (other.tag == "RightBoundary")
         {
-            canWalkRight = true;
+            //canWalkRight = true;
             if (!isRoomFixed)
             {
                 //canCameraFollow = true;
@@ -282,7 +282,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if (other.tag == "LeftBoundary")
         {
-            canWalkLeft = true;
+            //canWalkLeft = true;
             if (!isRoomFixed)
             {
                 //canCameraFollow = true;
@@ -317,15 +317,16 @@ public class PlayerController : MonoBehaviour {
             return;
         }
 
+		movementDirection = -1;
+
         if (canMove)
 		{
-			movingDirection = -1;
             playerAnim.SetBool("isFacingRight", false);
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);
         }
 
-        if ((!canMove) || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
+        if (!canMove)// || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
             return;
         }
@@ -349,16 +350,17 @@ public class PlayerController : MonoBehaviour {
         {
             return;
         }
+		Debug.Log ("asd");
+		movementDirection = 1;
 
         if (canMove)
         {
-			movingDirection = 1;
             playerAnim.SetBool("isFacingRight", true);
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);
         }
 
-        if ((!canMove)||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
+        if (!canMove)//||(!canWalkRight)) // This is Enabled/Disabled when a dialogue appears (maybe later also GameOver?)
         {
             return;
         }

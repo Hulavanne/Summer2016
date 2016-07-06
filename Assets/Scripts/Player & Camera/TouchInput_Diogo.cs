@@ -131,11 +131,6 @@ public class TouchInput_Diogo : MonoBehaviour
             {
                 if (!playerController.textRef.isCursorOnActionButton)
                 {
-                    if (playerController.canMove)
-                    {
-                        playerAnim.SetBool("isFacingRight", false);
-                        playerAnim.SetBool("isWalking", true);
-                    }
                     playerController.GoLeft();
                 }
             }
@@ -144,12 +139,7 @@ public class TouchInput_Diogo : MonoBehaviour
             {
                 if (!playerController.textRef.isCursorOnActionButton)
                 {
-                    if (playerController.canMove)
-                    {
-                        playerAnim.SetBool("isFacingRight", true);
-                        playerAnim.SetBool("isWalking", true);
-                        playerController.GoRight();
-                    }
+                    playerController.GoRight();
                 }
             }
         }

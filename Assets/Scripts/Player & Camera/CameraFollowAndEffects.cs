@@ -26,7 +26,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 	Camera cameraComponent;
 	BoxCollider2D cameraCollider;
 
-	bool cameraCanFollow = false;
+	bool fixedCamera = true;
 	bool boundaryColliding = false;
 	BoxCollider2D collidingBoundary;
 
@@ -61,7 +61,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 		FadingToBlack();
 
 		// Make the camera follow the player
-        if (cameraCanFollow)
+		if (!fixedCamera)
         {
 			float nextPositionX = player.transform.position.x;
 
@@ -102,14 +102,15 @@ public class CameraFollowAndEffects : MonoBehaviour
 
 	public void AdjustToLevel(GameObject level)
 	{
-		if (level.transform.FindChild("Boundaries").FindChild("FixedCamera") != null)
+		if (level.GetComponent<Level>().fixedCamera)
 		{
-			cameraCanFollow = false;
+			transform.position = new Vector3(level.transform.position.x, transform.position.y, transform.position.z);
+			fixedCamera = true;
 			return;
 		}
 		else
 		{
-			cameraCanFollow = true;
+			fixedCamera = false;
 		}
 
 		Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
@@ -119,13 +120,23 @@ public class CameraFollowAndEffects : MonoBehaviour
 			boundary = boundary.GetChild(0);
 		}
 
-		int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
-		float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+		if (Mathf.Abs(level.transform.position.x - boundary.position.x) >= cameraCollider.bounds.extents.x)
+		{
+			int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
+			float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
 
-		transform.position = new Vector3(x, transform.position.y, transform.position.z);
+			transform.position = new Vector3(x, transform.position.y, transform.position.z);
 
-		boundaryColliding = true;
-		collidingBoundary = boundary.GetComponent<BoxCollider2D>();
+			boundaryColliding = true;
+			collidingBoundary = boundary.GetComponent<BoxCollider2D>();
+		}
+		else
+		{
+			float x = player.transform.position.x;
+			transform.position = new Vector3(x, transform.position.y, transform.position.z);
+
+			boundaryColliding = false;
+		}
 	}
 
 	public void FadeToBlack()
@@ -143,6 +154,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 		float size = screenHeight / 150.0f;
 		cameraComponent.orthographicSize = size;
 
+		// Adjusting the collider to the camera's size
 		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;
 		float colliderHeight = size * 2;
 

@@ -9,9 +9,8 @@ public class Game
 	public static int currentIndex; // Current game's index in the saved games list
 
 	public bool newGame;
-	public string level; // Saved level
-	public float playerStartPositionX = 0.0f; // Position on the X-axis at which the player starts when loading in
-	public float playerStartPositionY = 0.0f; // Position on the Y-axis at which the player starts when loading in
+	public int levelIndex; // Saved level
+	public int savepointIndex = -1; // Index of the savepoint, -1 if there is none
 	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
 	//public Sprite levelImage;
 	public System.DateTime dateTime; // Date and time
@@ -25,13 +24,13 @@ public class Game
 	public Game()
 	{
 		newGame = true;
-		level = "Level1";
+		levelIndex = 0;
 		cameraStartPositionX = 0.0f;
 	}
 
 	public void PrintGameVariables()
 	{
-		Debug.Log("Level: " + level +
+		Debug.Log("Level: " + levelIndex +
 			" | Savepoint: " + dateTime +
 			" | Date and Time: " + dateTime +
 			" | Played Time: " + playedTime +

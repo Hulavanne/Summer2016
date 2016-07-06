@@ -7,7 +7,6 @@ public class DoorBehaviour : MonoBehaviour {
     // and de-activate it once it leaves it.
 
     public LevelManager.Levels thisDoorLevel;
-    public float thisDoorLight;
 
     public bool AutomaticDoor;
 

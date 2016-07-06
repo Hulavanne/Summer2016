@@ -18,12 +18,6 @@ public class NavigationTest : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
 	{
-		if (Game.current.playerStartPositionX != 0.0f)
-		{
-			startingPosition = new Vector2(Game.current.playerStartPositionX, Game.current.playerStartPositionY);
-			transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
-		}
-
 		agent = GetComponentInChildren<NavMeshAgent>();
 		agent.updateRotation = false;
 	}

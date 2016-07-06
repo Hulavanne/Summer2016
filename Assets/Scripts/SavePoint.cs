@@ -4,6 +4,8 @@ using System.Collections;
 //[System.Serializable]
 public class Savepoint : MonoBehaviour
 {
+	public int savepointIndex = 0;
+
 	MenuController menuController;
     PlayerController player;
     TextBoxManager textManager;
@@ -43,7 +45,7 @@ public class Savepoint : MonoBehaviour
         if (isOverlappingPlayer)
         {
             MenuController.savingGame = true;
-			GameManager.current.collidingSavepoint = transform.gameObject;
+			GameManager.current.collidingSavepoint = this;
 			textManager.DisableTextBox();
             menuController.OpenLoadMenu();
         }

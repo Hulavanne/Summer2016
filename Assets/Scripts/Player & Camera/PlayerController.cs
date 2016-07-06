@@ -116,11 +116,9 @@ public class PlayerController : MonoBehaviour {
         
         if (Game.current != null)
 		{
-			if (Game.current.playerStartPositionX != 0.0f)
+			if (!Game.current.newGame)
 			{
-				Vector2 startingPosition = transform.position;
-				startingPosition = new Vector2(Game.current.playerStartPositionX, Game.current.playerStartPositionY);
-				transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+				levelManager.LoadSavedLevel();
 			}
 		}
 

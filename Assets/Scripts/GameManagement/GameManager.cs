@@ -8,19 +8,12 @@ public class GameManager : MonoBehaviour
 
 	public static float gammaValue = 0.5f;
 
-	public GameObject collidingSavepoint; // Savepoint that the player is colliding currently
+	public Savepoint collidingSavepoint; // Savepoint that the player is colliding currently
 	public System.DateTime dateTime; // Date and time
 	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
 	public int seconds = 0; // Seconds spent in-game
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game
-
-	public enum GameState
-	{
-		MAIN_MENU,
-		IN_GAME
-	}
-	public GameState currentState = GameState.MAIN_MENU;
 
 	void Awake ()
 	{
@@ -47,21 +40,13 @@ public class GameManager : MonoBehaviour
 		{
 			if (SceneManager.GetActiveScene().name != "MainMenu")
 			{
-				currentState = GameManager.GameState.IN_GAME;
-			}
-			else
-			{
-				currentState = GameManager.GameState.MAIN_MENU;
-			}
-
-			if (currentState == GameState.IN_GAME)
-			{
 				Game game = Game.current;
+
+				game.levelIndex = (int)LevelManager.current.currentLevel;
 
 				if (collidingSavepoint != null)
 				{
-					game.playerStartPositionX = collidingSavepoint.transform.position.x;
-					game.playerStartPositionY = collidingSavepoint.transform.position.y;
+					game.savepointIndex = collidingSavepoint.savepointIndex;
 					game.cameraStartPositionX = Camera.main.transform.position.x;
 				}
 

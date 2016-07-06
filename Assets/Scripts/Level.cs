@@ -4,6 +4,7 @@ using System.Collections;
 public class Level : MonoBehaviour
 {
 	public bool fixedCamera = false;
+	public float levelLightAmount;
 
 	LevelManager levelManager;
 

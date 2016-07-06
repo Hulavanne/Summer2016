@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager : MonoBehaviour
+{
+	public static LevelManager current;
 
     public enum Levels
     {
@@ -14,9 +16,9 @@ public class LevelManager : MonoBehaviour {
         LEVEL4 = 3,
     };
 
-	public Levels currentLevel;
-	//public static int currentLevelIndex;
+	public Levels currentLevel = Levels.LEVEL1;
 	public List<GameObject> levelsList = new List<GameObject>();
+	public List<Savepoint> savepoints = new List<Savepoint>();
     
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
@@ -47,8 +49,17 @@ public class LevelManager : MonoBehaviour {
 
     void Awake()
 	{
-        currentLevel = Levels.LEVEL1;
-		//currentLevelIndex = 0;
+		current = this;
+		List<GameObject> npcs = GameObject.FindGameObjectsWithTag("NPC").ToList();
+
+		foreach (GameObject npc in npcs)
+		{
+			if (npc.GetComponent<Savepoint>() != null)
+			{
+				savepoints.Add(npc.GetComponent<Savepoint>());
+				npc.GetComponent<Savepoint>().savepointIndex = savepoints.Count - 1;
+			}
+		}
 
         lightAmount = lightLevel1;
         cameraComponent = Camera.main;
@@ -134,11 +145,34 @@ public class LevelManager : MonoBehaviour {
     public void ChangeLevel()
     {
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
+
         currentLevel = nextDoorBehav.thisDoorLevel;
-        lightAmount = nextDoorBehav.thisDoorLight;
+		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
+
         player.transform.position = new Vector3(nextDoor.transform.position.x,
-        player.transform.position.y, player.transform.position.z);
+			player.transform.position.y, player.transform.position.z);
+		
         CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
     }
 
+	public void LoadSavedLevel()
+	{
+		currentLevel = (Levels)Game.current.levelIndex;
+
+		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
+		lightAmount = levelScript.levelLightAmount;
+
+		Transform savepoint = LevelManager.current.savepoints[Game.current.savepointIndex].transform;
+		Vector2 startingPosition = new Vector2(savepoint.position.x, savepoint.position.y);
+		Debug.Log(startingPosition);
+		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, transform.position.z);
+
+		Transform boundary = CameraFollowAndEffects.current.GetNearestBoundary(levelsList[(int)currentLevel]);
+		CameraFollowAndEffects.current.boundaryColliding = boundary;
+		//CameraFollowAndEffects.current.boundaryColliding = true;
+
+		Transform mainCamera = CameraFollowAndEffects.current.transform;
+		mainCamera.position = new Vector3(Game.current.cameraStartPositionX, mainCamera.position.y, mainCamera.position.z);//AdjustToLevel(levelsList[(int)currentLevel]);
+		CameraFollowAndEffects.current.fixedCamera = levelScript.fixedCamera;
+	}
 }

@@ -301,7 +301,7 @@ public class MenuController : MonoBehaviour
 		// Format the date into yyyy-mm-dd and exclude the time
 		string formattedDateTime = string.Format("{0:yyyy-MM-dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
 
-		return SavingAndLoading.savedGames[savedGamesIndex].level + "\n" +
+		return SavingAndLoading.savedGames[savedGamesIndex].levelIndex + "\n" +
 			formattedDateTime + "\n" +
 			SavingAndLoading.savedGames[savedGamesIndex].hours + " hours " +
 			SavingAndLoading.savedGames[savedGamesIndex].minutes + " minutes\n" +

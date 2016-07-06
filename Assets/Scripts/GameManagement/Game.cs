@@ -8,6 +8,7 @@ public class Game
 	public static Game current; // Current game
 	public static int currentIndex; // Current game's index in the saved games list
 
+	public bool newGame;
 	public string level; // Saved level
 	public float playerStartPositionX = 0.0f; // Position on the X-axis at which the player starts when loading in
 	public float playerStartPositionY = 0.0f; // Position on the Y-axis at which the player starts when loading in
@@ -23,7 +24,7 @@ public class Game
 
 	public Game()
 	{
-		// The first level of the game
+		newGame = true;
 		level = "Level1";
 		cameraStartPositionX = 0.0f;
 	}

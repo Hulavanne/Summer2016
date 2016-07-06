@@ -8,15 +8,19 @@ public class IsIntro : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.transform.parent.name == "Player")
+		if (col.gameObject.transform.parent.name == "Player" && Game.current.newGame)
         {
+			Game.current.newGame = false;
             gameFlow.isIntro = true;
             gameFlow.isNPCAutomatic = true;
             effects.FadeToBlack();
         }
+		else
+			Debug.Log(Game.current.newGame);
     }
 
-	void Start () {
+	void Start ()
+	{
         effects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
 	}

@@ -47,7 +47,9 @@ public class CameraFollowAndEffects : MonoBehaviour
 		cameraComponent = transform.GetComponent<Camera>();
 		cameraCollider = transform.GetComponent<BoxCollider2D>();
 
-        transform.position = new Vector3(0.0f, -18.0f, transform.position.z);
+
+
+		transform.position = new Vector3(0.0f, -20f + cameraComponent.orthographicSize, transform.position.z);
 
         // JoinPlayer(); // Initially joins player
         // fadeToBlack = true;
@@ -154,10 +156,12 @@ public class CameraFollowAndEffects : MonoBehaviour
 		float size = screenHeight / 150.0f;
 		cameraComponent.orthographicSize = size;
 
+		// Making sure the camera is bound to the bottom of the background
+		transform.position = new Vector3(transform.position.x, -25.25f + cameraComponent.orthographicSize, transform.position.z);
+
 		// Adjusting the collider to the camera's size
 		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;
 		float colliderHeight = size * 2;
-
 		cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
 	}
 

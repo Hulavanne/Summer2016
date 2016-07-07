@@ -215,7 +215,7 @@ public class TouchInput_Diogo : MonoBehaviour
                     }
                 }
 
-                else if ((touch.position.x.x <= Screen.width) && (touch.position.x.x > Screen.width / 2))
+                else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                 {
                     if (!playerController.textRef.isCursorOnActionButton)
                     {

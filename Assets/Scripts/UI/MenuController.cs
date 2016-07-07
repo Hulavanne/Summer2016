@@ -116,6 +116,8 @@ public class MenuController : MonoBehaviour
 			}
 		}
 
+        gamePaused = false;
+
 		SceneManager.LoadSceneAsync("LoadingScene");
 		SceneManager.LoadSceneAsync(sceneName);
 	}

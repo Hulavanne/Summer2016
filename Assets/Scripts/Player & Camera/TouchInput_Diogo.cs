@@ -38,6 +38,11 @@ public class TouchInput_Diogo : MonoBehaviour
     
     void Update()
     {
+        if (MenuController.gamePaused)
+        {
+            return;
+        }
+
         UpdateStamina();
         RunCheck();
 
@@ -54,7 +59,7 @@ public class TouchInput_Diogo : MonoBehaviour
         isPressing = false;
 
 #if (UNITY_EDITOR || UNITY_STANDALONE)
-        
+
         if (Input.GetMouseButton(0))
         {
             isPressing = true;

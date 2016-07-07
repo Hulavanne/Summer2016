@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour {
 	public float opacity = 0.0f;
     public GameObject reloadSaveButton;
     public GameObject backToMenuButton;
+    public TouchInput_Diogo touchRun;
 
     GameObject rightBoundary;
     GameObject leftBoundary;
@@ -100,6 +101,7 @@ public class PlayerController : MonoBehaviour {
 		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
 		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
+        touchRun = GetComponent<TouchInput_Diogo>();
 		levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		playerAnim = transform.GetComponentInChildren<Animator>();
 		questionMark = transform.FindChild ("QuestionMark").gameObject;
@@ -220,7 +222,8 @@ public class PlayerController : MonoBehaviour {
 				else
 				{
 					canMove = false;
-				}
+                    PlayerAnimStop();
+                }
             }
             else if (transform.position.x < rightBoundary.transform.position.x)
             {
@@ -231,7 +234,8 @@ public class PlayerController : MonoBehaviour {
 				else
 				{
 					canMove = false;
-				}
+                    PlayerAnimStop();
+                }
             }
         }
     }

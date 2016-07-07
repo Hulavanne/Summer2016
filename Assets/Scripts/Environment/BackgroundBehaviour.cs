@@ -11,9 +11,6 @@ public class BackgroundBehaviour : MonoBehaviour {
     public LevelManager.Levels thisLevelValue;
     public float playerInitPos;
     public bool playerStart = true;
-    public float distanceFromStart;
-    public bool movesAlone;
-    public float moveAloneSpeed;
 
     void Start ()
     {
@@ -24,25 +21,20 @@ public class BackgroundBehaviour : MonoBehaviour {
 
     void Update()
     {
+        Debug.Log("Working0");
         if (playerControl.levelManager.currentLevel == thisLevelValue)
         {
-            if (movesAlone)
+            Debug.Log("Working1");
+
+            if (playerStart)
             {
-                moveAloneSpeed += 0.0005f;
-                transform.position = new Vector3(transform.position.x + moveAloneSpeed,
-                    transform.position.y, transform.position.z);
+                thisLevelPos.transform.position = new Vector3 (thisLevelPos.transform.position.x, thisLevelPos.transform.position.y, thisLevelPos.transform.position.z);
+                playerStart = false;
             }
 
-            else
-            {
-                if (playerStart)
-                {
-                    thisLevelPos.transform.position = new Vector3(mainCamera.transform.position.x, thisLevelPos.transform.position.y, thisLevelPos.transform.position.z);
-                    playerStart = false;
-                }
-                transform.position = new Vector3(mainCamera.transform.position.x * backgroundSpeed,
-                transform.position.y, transform.position.z);
-            }
+            transform.position = new Vector3(thisLevelPos.transform.position.x + 
+            (player.transform.position.x - thisLevelPos.transform.position.x) * backgroundSpeed,
+            transform.position.y, transform.position.z);
         }
     }
 }

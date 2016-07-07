@@ -82,8 +82,6 @@ public class AudioManager : MonoBehaviour
 		AudioManager.soundEffectsVolume = PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
 		AudioManager.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
 
-		Debug.Log(PlayerPrefs.GetFloat("MasterVolume", 1.0f));
-
 		// Update mute audio
 		effectsSource.mute = AudioManager.audioMuted;
 		musicSource.mute = AudioManager.audioMuted;
@@ -106,7 +104,6 @@ public class AudioManager : MonoBehaviour
 
 	public void ToggleMute()
 	{
-		Debug.Log("Mute Toggled to " + !AudioManager.audioMuted);
 		AudioManager.audioMuted = !AudioManager.audioMuted;
 
 		// Update mute audio
@@ -116,7 +113,6 @@ public class AudioManager : MonoBehaviour
 
 	public void SetMasterVolume(float newValue)
 	{
-		Debug.Log("Master Volume Changed");
 		AudioManager.masterVolume = newValue;
 
 		// Update volumes
@@ -126,7 +122,6 @@ public class AudioManager : MonoBehaviour
 
 	public void SetMusicVolume(float newValue)
 	{
-		Debug.Log("Music Volume Changed");
 		AudioManager.musicVolume = newValue;
 
 		// Update volume
@@ -135,7 +130,6 @@ public class AudioManager : MonoBehaviour
 
 	public void SetSoundEffectsVolume(float newValue)
 	{
-		Debug.Log("Sound Effects Volume Changed");
 		AudioManager.soundEffectsVolume = newValue;
 
 		// Update volume

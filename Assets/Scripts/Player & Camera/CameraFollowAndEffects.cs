@@ -6,12 +6,10 @@ public class CameraFollowAndEffects : MonoBehaviour
 {
 	public static CameraFollowAndEffects current;
 
-
-
     public GameObject darkScreen; // reference for the actual black plane
     public CanvasRenderer darkScreenRenderer; // reference for its renderer
     public Color opacityManager; // a color for (0 > red, 0 > green, 0 > blue, 0~1 > opacity)
-    public float opacity = 0.0f; // the changeable opacity variable
+    public float opacity = 1.0f; // the changeable opacity variable
     public bool fadeToBlack; // once this is true, the plane gradually turns black
 
     public float cameraPos = 0.0f, playerPos = 0.0f;
@@ -23,8 +21,8 @@ public class CameraFollowAndEffects : MonoBehaviour
 	Camera cameraComponent;
 	BoxCollider2D cameraCollider;
 
-	public bool fixedCamera = true;
-	public bool boundaryColliding = false;
+	bool fixedCamera = true;
+	bool boundaryColliding = false;
 	BoxCollider2D collidingBoundary;
 
 	void Awake()
@@ -44,14 +42,8 @@ public class CameraFollowAndEffects : MonoBehaviour
 		cameraComponent = transform.GetComponent<Camera>();
 		cameraCollider = transform.GetComponent<BoxCollider2D>();
 
-
-
+		AdjustCameraSize();
 		transform.position = new Vector3(0.0f, -20f + cameraComponent.orthographicSize, transform.position.z);
-
-        // JoinPlayer(); // Initially joins player
-        // fadeToBlack = true;
-		opacity = 1.0f;
-        
 	}
 
 	void Update ()
@@ -114,15 +106,25 @@ public class CameraFollowAndEffects : MonoBehaviour
 
 		Transform boundary = GetNearestBoundary(level);
 
-		if (Mathf.Abs(level.transform.position.x - boundary.position.x) >= cameraCollider.bounds.extents.x)
+		if (boundary != null)
 		{
-			int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
-			float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+			if (Mathf.Abs(level.transform.position.x - boundary.position.x) >= cameraCollider.bounds.extents.x)
+			{
+				int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
+				float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
 
-			transform.position = new Vector3(x, transform.position.y, transform.position.z);
+				transform.position = new Vector3(x, transform.position.y, transform.position.z);
 
-			boundaryColliding = true;
-			collidingBoundary = boundary.GetComponent<BoxCollider2D>();
+				boundaryColliding = true;
+				collidingBoundary = boundary.GetComponent<BoxCollider2D>();
+			}
+			else
+			{
+				float x = player.transform.position.x;
+				transform.position = new Vector3(x, transform.position.y, transform.position.z);
+
+				boundaryColliding = false;
+			}
 		}
 		else
 		{
@@ -135,14 +137,22 @@ public class CameraFollowAndEffects : MonoBehaviour
 
 	public Transform GetNearestBoundary(GameObject level)
 	{
-		Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
-
-		if (Mathf.Abs(level.transform.position.x - boundary.position.x) < Mathf.Abs(level.transform.position.x - boundary.GetChild(0).position.x))
+		if (level.transform.FindChild("Boundaries").FindChild("CameraBoundary") != null)
 		{
-			boundary = boundary.GetChild(0);
-		}
+			Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
 
-		return boundary;
+			if (Mathf.Abs(level.transform.position.x - boundary.position.x) < Mathf.Abs(level.transform.position.x - boundary.GetChild(0).position.x))
+			{
+				boundary = boundary.GetChild(0);
+			}
+
+			return boundary;
+		}
+		else
+		{
+			Debug.LogError("Boundary null!");
+			return null;
+		}
 	}
 
 	public void FadeToBlack()

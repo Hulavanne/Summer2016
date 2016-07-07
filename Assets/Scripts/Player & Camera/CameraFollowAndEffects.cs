@@ -43,7 +43,6 @@ public class CameraFollowAndEffects : MonoBehaviour
 		cameraCollider = transform.GetComponent<BoxCollider2D>();
 
 		AdjustCameraSize();
-		transform.position = new Vector3(0.0f, -20f + cameraComponent.orthographicSize, transform.position.z);
 	}
 
 	void Update ()
@@ -171,7 +170,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 		cameraComponent.orthographicSize = size;
 
 		// Making sure the camera is bound to the bottom of the background
-		transform.position = new Vector3(transform.position.x, -25.25f + cameraComponent.orthographicSize, transform.position.z);
+		transform.position = new Vector3(transform.position.x, -25.2375f + cameraComponent.orthographicSize, transform.position.z);
 
 		// Adjusting the collider to the camera's size
 		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;

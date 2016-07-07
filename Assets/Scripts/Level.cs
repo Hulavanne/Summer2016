@@ -18,7 +18,7 @@ public class Level : MonoBehaviour
         {
             boundaries = transform.FindChild("Boundaries").gameObject;
         }
-        else
+        /*else
         {
             boundaries = new GameObject("Boundaries");
             boundaries.transform.parent = transform;
@@ -33,7 +33,7 @@ public class Level : MonoBehaviour
         {
             playerBoundaries = (GameObject)Instantiate(playerBoundaries, transform.position, transform.rotation);
             playerBoundaries.transform.parent = boundaries.transform;
-        }
+        }*/
 
         // Camera boundaries
         if (boundaries.transform.FindChild("CameraBoundary") != null)
@@ -42,8 +42,8 @@ public class Level : MonoBehaviour
         }
         else
         {
-            cameraBoundaries = (GameObject)Instantiate(cameraBoundaries, transform.position, transform.rotation);
-            cameraBoundaries.transform.parent = boundaries.transform;
+            //cameraBoundaries = (GameObject)Instantiate(cameraBoundaries, transform.position, transform.rotation);
+            //cameraBoundaries.transform.parent = boundaries.transform;
         }
 
         if (transform.FindChild("Background").transform.FindChild("BackStatic") != null)
@@ -56,10 +56,5 @@ public class Level : MonoBehaviour
             cameraBoundaries.transform.position = new Vector3(leftX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
             cameraBoundaries.transform.GetChild(0).position = new Vector3(rightX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
         }
-	}
-
-	void Update()
-	{
-		
 	}
 }

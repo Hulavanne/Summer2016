@@ -1,10 +1,12 @@
 fileFormatVersion: 2
 guid: 3101a5b8bded5184aa0dae65193e7d97
-timeCreated: 1467789298
+timeCreated: 1467880124
 licenseType: Pro
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - playerBoundaries: {fileID: 123884, guid: 2bf4c8b0fbdada04d94b693f121a6cc3, type: 2}
+  - cameraBoundaries: {fileID: 198708, guid: 704ce355effb58949a5cab027a042360, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

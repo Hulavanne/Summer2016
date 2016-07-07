@@ -50,7 +50,14 @@ public class LevelManager : MonoBehaviour
     void Awake()
 	{
 		current = this;
+
+		Transform levelsParent = GameObject.Find("Levels").transform;
 		List<GameObject> npcs = GameObject.FindGameObjectsWithTag("NPC").ToList();
+
+		for (int i = 0; i < levelsParent.childCount; ++i)
+		{
+			levelsList.Add(levelsParent.GetChild(i).gameObject);
+		}
 
 		foreach (GameObject npc in npcs)
 		{
@@ -146,11 +153,15 @@ public class LevelManager : MonoBehaviour
     {
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
 
+		Debug.Log(currentLevel + " | " + player.transform.position);
+
         currentLevel = nextDoorBehav.thisDoorLevel;
 		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x,
 			player.transform.position.y, player.transform.position.z);
+
+		Debug.Log(currentLevel + " | " + player.transform.position);
 		
         CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
     }

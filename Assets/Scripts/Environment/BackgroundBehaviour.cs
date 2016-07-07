@@ -21,7 +21,7 @@ public class BackgroundBehaviour : MonoBehaviour {
 
     void Update()
     {
-        Debug.Log("Working0");
+        //Debug.Log("Working0");
         if (playerControl.levelManager.currentLevel == thisLevelValue)
         {
             Debug.Log("Working1");

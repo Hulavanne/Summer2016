@@ -89,7 +89,7 @@ public class LevelManager : MonoBehaviour
 	}
 
 	void Update()
-	{
+    {
 		if (!player.switchingLevel)
 		{
 			SetLighting();
@@ -183,10 +183,10 @@ public class LevelManager : MonoBehaviour
 		lightAmount = levelScript.levelLightAmount;
 
 		Transform spawnPoint = savepoints[Game.current.savepointIndex].transform.GetChild(0);
-		Vector2 startingPosition = new Vector2(spawnPoint.position.x, spawnPoint.position.y);
+        Vector2 startingPosition = spawnPoint.position;
 		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
 
-		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+		//CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 
 	public void TestStart()

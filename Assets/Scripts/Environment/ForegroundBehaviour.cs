@@ -14,8 +14,16 @@ public class ForegroundBehaviour : MonoBehaviour {
 
     void Start()
     {
-        sprite1 = transform.FindChild("sprite1").GetComponent<SpriteRenderer>();
-        sprite2 = transform.FindChild("sprite2").GetComponent<SpriteRenderer>();
+        if (transform.FindChild("sprite1") != null)
+        {
+            sprite1 = transform.FindChild("sprite1").GetComponent<SpriteRenderer>();
+        }
+
+        if (transform.FindChild("sprite2") != null)
+        {
+            sprite2 = transform.FindChild("sprite2").GetComponent<SpriteRenderer>();
+        }
+
         player = GameObject.Find("Player");
         mainCamera = GameObject.Find("MainCamera");
         playerControl = player.GetComponent<PlayerController>();
@@ -27,9 +35,12 @@ public class ForegroundBehaviour : MonoBehaviour {
         {
             if (isStart)
             {
-                sprite1.enabled = true;
-                sprite2.enabled = true;
-                transform.position = new Vector3(mainCamera.transform.position.x * (-1), transform.position.y, transform.position.z);
+                if (sprite1 != null && sprite2 != null)
+                {
+                    sprite1.enabled = true;
+                    sprite2.enabled = true;
+                }
+                    transform.position = new Vector3(mainCamera.transform.position.x * (-1), transform.position.y, transform.position.z);
                 distance = mainCamera.transform.position.x - transform.position.x;
                 transform.position = new Vector3(distance, transform.position.y, transform.position.z);
                 isStart = false;
@@ -39,8 +50,11 @@ public class ForegroundBehaviour : MonoBehaviour {
         else
         {
             isStart = true;
-            sprite1.enabled = false;
-            sprite2.enabled = false;
+            if (sprite1 != null && sprite2 != null)
+            {
+                sprite1.enabled = false;
+                sprite2.enabled = false;
+            }
         }
     }
 }

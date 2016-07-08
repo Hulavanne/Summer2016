@@ -16,16 +16,12 @@ public class Savepoint : MonoBehaviour
 	{
 		if (GameObject.Find("InGameUI") != null)
 		{
-			menuController = GameObject.Find("InGameUI").gameObject.GetComponent<MenuController>();
+			menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();
+            textManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
 		}
 		if (GameObject.Find("Player").GetComponent<PlayerController>() != null)
 		{
 			player = GameObject.Find("Player").GetComponent<PlayerController>();
-
-		}
-		if (GameObject.Find("InGameUI"))
-		{
-			textManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
 		}
     }
 

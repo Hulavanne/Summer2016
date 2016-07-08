@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
 	public Savepoint collidingSavepoint; // Savepoint that the player is colliding currently
 	public System.DateTime dateTime; // Date and time
-	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
+    public double playedTime = 0.0f; // Seconds (with decimals) spent in-game
 	public int seconds = 0; // Seconds spent in-game
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game
@@ -40,34 +40,51 @@ public class GameManager : MonoBehaviour
 		{
 			if (SceneManager.GetActiveScene().name != "MainMenu")
 			{
-				Game game = Game.current;
-
-				game.levelIndex = (int)LevelManager.current.currentLevel;
-
-				if (collidingSavepoint != null)
-				{
-					game.savepointIndex = collidingSavepoint.savepointIndex;
-					game.cameraStartPositionX = Camera.main.transform.position.x;
-				}
-
-				// Update date and time, both in the manager and in the current game
+				// Update date and time in the manager
 				dateTime = System.DateTime.Now;
-				game.dateTime = dateTime;
 
-				// Update played time, both in the manager and in the current game
+				// Update played time in the manager
 				playedTime += Time.deltaTime;
-				game.playedTime = playedTime;
 
-				// Update seconds, minutes and hours, both in the manager and in the current game
-				seconds = game.seconds = (int)playedTime % 60;
-				minutes = game.minutes = ((int)playedTime / 60) % 60;
-				hours = game.hours = ((int)playedTime / 3600) % 24;
-
-				// Update the items in the player's inventory of the current game
-				game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
+				// Update seconds, minutes and hours in the manager
+				seconds = (int)playedTime % 60;
+				minutes = ((int)playedTime / 60) % 60;
+				hours = ((int)playedTime / 3600);
 			}
 		}
 	}
+
+    public void UpdateCurrentGameVariables()
+    {
+        if (Game.current != null)
+        {
+            Game game = Game.current;
+
+            // Get the index of the level
+            game.levelIndex = (int)LevelManager.current.currentLevel;
+
+            // Get the index of the current savepoint and the position of the camera
+            if (collidingSavepoint != null)
+            {
+                game.savepointIndex = collidingSavepoint.savepointIndex;
+                game.cameraStartPositionX = Camera.main.transform.position.x;
+            }
+
+            // Update date and time in the current game
+            game.dateTime = dateTime;
+
+            // Update played time in the current game
+            game.playedTime = playedTime;
+
+            // Update seconds, minutes and hours in the current game
+            game.seconds = seconds;
+            game.minutes = minutes;
+            game.hours = hours;
+
+            // Update the items in the player's inventory of the current game
+            game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
+        }
+    }
 
 	public void LoadCurrentGameVariables()
 	{

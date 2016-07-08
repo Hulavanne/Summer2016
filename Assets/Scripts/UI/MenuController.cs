@@ -326,7 +326,21 @@ public class MenuController : MonoBehaviour
 
 	public void SaveGame(int saveSlotIndex)
 	{
-		Game game = Game.current;
+        Game game;
+
+        if (Game.current != null)
+        {
+            game = Game.current;
+        }
+        else
+        {
+            game = new Game();
+            Game.current = game;
+            Game.currentIndex = -1;
+        }
+
+        GameManager.current.UpdateCurrentGameVariables();
+        game.newGame = false;
 
 		if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
 		{

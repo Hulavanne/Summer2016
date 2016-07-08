@@ -14,7 +14,7 @@ public class Game
 	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
 	//public Sprite levelImage;
 	public System.DateTime dateTime; // Date and time
-	public float playedTime = 0.0f; // Seconds (with decimals) spent in-game
+    public double playedTime = 0.0f; // Seconds (with decimals) spent in-game
 	public int seconds = 0; // Seconds spent in-game
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game

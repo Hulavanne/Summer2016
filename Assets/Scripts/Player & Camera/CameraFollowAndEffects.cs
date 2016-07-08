@@ -105,9 +105,12 @@ public class CameraFollowAndEffects : MonoBehaviour
 
 		Transform boundary = GetNearestBoundary(level);
 
+        //Debug.Log(Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x);
+        //Debug.Log(cameraCollider.bounds.extents.x);
+
 		if (boundary != null)
 		{
-			if (Mathf.Abs(level.transform.position.x - boundary.position.x) >= cameraCollider.bounds.extents.x)
+            if (Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x < cameraCollider.bounds.extents.x)
 			{
 				int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
 				float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
@@ -118,7 +121,8 @@ public class CameraFollowAndEffects : MonoBehaviour
 				collidingBoundary = boundary.GetComponent<BoxCollider2D>();
 			}
 			else
-			{
+            {
+                Debug.Log("asd1");
 				float x = player.transform.position.x;
 				transform.position = new Vector3(x, transform.position.y, transform.position.z);
 
@@ -127,6 +131,7 @@ public class CameraFollowAndEffects : MonoBehaviour
 		}
 		else
 		{
+            Debug.Log("asd2");
 			float x = player.transform.position.x;
 			transform.position = new Vector3(x, transform.position.y, transform.position.z);
 
@@ -138,10 +143,12 @@ public class CameraFollowAndEffects : MonoBehaviour
 	{
 		if (level.transform.FindChild("Boundaries").FindChild("CameraBoundary") != null)
 		{
-			Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
+            Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
+            Debug.Log(Mathf.Abs(boundary.position.x - player.transform.position.x) + " | " + Mathf.Abs(boundary.GetChild(0).position.x - player.transform.position.x));
 
-			if (Mathf.Abs(level.transform.position.x - boundary.position.x) < Mathf.Abs(level.transform.position.x - boundary.GetChild(0).position.x))
+            if (Mathf.Abs(boundary.position.x - player.transform.position.x) >= Mathf.Abs(boundary.GetChild(0).position.x - player.transform.position.x))
 			{
+                Debug.Log("hreerrtt");
 				boundary = boundary.GetChild(0);
 			}
 

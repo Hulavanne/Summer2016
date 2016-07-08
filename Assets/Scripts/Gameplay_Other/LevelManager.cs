@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
 
 	public Levels currentLevel = Levels.LEVEL1;
 	public List<GameObject> levelsList = new List<GameObject>();
-	public List<Savepoint> savepoints = new List<Savepoint>();
+	public List<Savepoint> savepointsList = new List<Savepoint>();
     
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
@@ -57,21 +57,18 @@ public class LevelManager : MonoBehaviour
 		current = this;
 
 		Transform levelsParent = GameObject.Find("Levels").transform;
-		List<GameObject> npcs = GameObject.FindGameObjectsWithTag("NPC").ToList();
+        Transform savepointsParent = GameObject.Find("Savepoints").transform;
 
 		for (int i = 0; i < levelsParent.childCount; ++i)
 		{
 			levelsList.Add(levelsParent.GetChild(i).gameObject);
 		}
 
-		foreach (GameObject npc in npcs)
-		{
-			if (npc.GetComponent<Savepoint>() != null)
-			{
-				savepoints.Add(npc.GetComponent<Savepoint>());
-				npc.GetComponent<Savepoint>().savepointIndex = savepoints.Count - 1;
-			}
-		}
+        for (int i = 0; i < savepointsParent.childCount; ++i)
+        {
+            savepointsList.Add(savepointsParent.GetChild(i).GetComponent<Savepoint>());
+            savepointsList[i].savepointIndex = i;
+        }
 
         lightAmount = lightLevel1;
         cameraComponent = Camera.main;
@@ -81,11 +78,30 @@ public class LevelManager : MonoBehaviour
 
 	void Start()
 	{
-		// For starting a new game from somewhere else than level 1
-		if (currentLevel != Levels.LEVEL1)
-		{
-			TestStart();
-		}
+        if (Game.current != null)
+        {
+            // If current isn't a new game, load saved level
+            if (!Game.current.newGame)
+            {
+                LoadSavedLevel();
+            }
+            else
+            {
+                // For starting a new game from somewhere else than level 1
+                if (currentLevel != Levels.LEVEL1)
+                {
+                    TestStart();
+                }
+            }
+        }
+        else
+        {
+            // For starting a new game from somewhere else than level 1
+            if (currentLevel != Levels.LEVEL1)
+            {
+                TestStart();
+            }
+        }
 	}
 
 	void Update()
@@ -182,11 +198,11 @@ public class LevelManager : MonoBehaviour
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
 		lightAmount = levelScript.levelLightAmount;
 
-		Transform spawnPoint = savepoints[Game.current.savepointIndex].transform.GetChild(0);
+        Transform spawnPoint = savepointsList[Game.current.savepointIndex].transform.GetChild(0);
         Vector2 startingPosition = spawnPoint.position;
 		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
 
-		//CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 
 	public void TestStart()

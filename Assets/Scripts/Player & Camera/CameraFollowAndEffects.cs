@@ -112,17 +112,18 @@ public class CameraFollowAndEffects : MonoBehaviour
 		{
             if (Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x < cameraCollider.bounds.extents.x)
 			{
-				int direction = (int)Mathf.Clamp(level.transform.position.x - boundary.position.x, -1, 1);
-				float x = direction * (boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
-
-				transform.position = new Vector3(x, transform.position.y, transform.position.z);
-
+                int direction = (int)Mathf.Clamp(player.transform.position.x - boundary.position.x, -1, 1);
+                Debug.Log(direction);
+                float x = boundary.position.x + direction * (boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+                Debug.Log(boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+                transform.position = new Vector3(x, transform.position.y, transform.position.z);
+                Debug.Log(transform.position);
 				boundaryColliding = true;
 				collidingBoundary = boundary.GetComponent<BoxCollider2D>();
+
 			}
 			else
             {
-                Debug.Log("asd1");
 				float x = player.transform.position.x;
 				transform.position = new Vector3(x, transform.position.y, transform.position.z);
 
@@ -131,7 +132,6 @@ public class CameraFollowAndEffects : MonoBehaviour
 		}
 		else
 		{
-            Debug.Log("asd2");
 			float x = player.transform.position.x;
 			transform.position = new Vector3(x, transform.position.y, transform.position.z);
 

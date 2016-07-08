@@ -8,8 +8,9 @@ public class IsIntro : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D col)
     {
-		if (col.gameObject.transform.parent.name == "Player" && Game.current.newGame)
+		if (col.gameObject.transform.parent.name == "Player")
         {
+            gameFlow.player.isIntro = true;
             gameFlow.isIntro = true;
             gameFlow.isNPCAutomatic = true;
             effects.FadeToBlack();

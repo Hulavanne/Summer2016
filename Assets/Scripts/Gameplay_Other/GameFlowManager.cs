@@ -9,7 +9,7 @@ public class GameFlowManager : MonoBehaviour {
     public TextBoxManager textBoxManager;
     public CameraFollowAndEffects cameraEffects;
 
-    public GameObject tempGameObject;
+    // public GameObject tempGameObject;
 
     public bool isIntro = true;
     public bool destroyNPC;
@@ -48,7 +48,6 @@ public class GameFlowManager : MonoBehaviour {
             {
                 player.DeactivateSelection();
                 destroyNPC = true;
-                tempGameObject.SetActive(true);
             }
         }
 

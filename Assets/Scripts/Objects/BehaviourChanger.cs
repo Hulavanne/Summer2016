@@ -9,10 +9,11 @@ public class BehaviourChanger : MonoBehaviour {
     public GameObject doorKitchenNPC;
     public NpcBehaviour npcKitchen;
 
-	void Start () {
-        npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
+	void Awake ()
+    {
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
+        npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
         doorKitchenNPC = GameObject.Find("NPC_FrontDoor");
 	}
 
@@ -25,7 +26,7 @@ public class BehaviourChanger : MonoBehaviour {
 
             Destroy(doorKitchenNPC);
             doorKitchen.SetActive(true);
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
 }

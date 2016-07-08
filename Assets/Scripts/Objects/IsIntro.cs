@@ -10,14 +10,10 @@ public class IsIntro : MonoBehaviour {
     {
 		if (col.gameObject.transform.parent.name == "Player" && Game.current.newGame)
         {
-			Game.current.newGame = false;
             gameFlow.isIntro = true;
             gameFlow.isNPCAutomatic = true;
             effects.FadeToBlack();
-            Debug.Log("working0");
         }
-		else
-			Debug.Log(Game.current.newGame);
     }
 
 	void Start ()

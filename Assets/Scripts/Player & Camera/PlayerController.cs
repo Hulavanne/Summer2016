@@ -91,13 +91,6 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
-		if (Game.current == null)
-		{
-			Game game = new Game ();
-			Game.current = game;
-			Game.currentIndex = -1;
-		}
-
 		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
 		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
@@ -115,14 +108,6 @@ public class PlayerController : MonoBehaviour {
 		noButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonNo").GetComponent<Button>();
 		cameraComponent = Camera.main;
 		cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
-        
-        if (Game.current != null)
-		{
-			if (!Game.current.newGame)
-			{
-				levelManager.LoadSavedLevel();
-			}
-		}
 
         canMove = true;
         canShowGameOverButtons = true;

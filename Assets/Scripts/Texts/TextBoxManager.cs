@@ -9,6 +9,7 @@ public class TextBoxManager : MonoBehaviour {
 
     public static GameObject currentNPC;
     public bool hasClickedYesButton;
+    public bool isTalkingToNPC;
 
     public bool showCurrentYesNoButtons;
     public bool showCurrentOptButtons;
@@ -253,7 +254,7 @@ public class TextBoxManager : MonoBehaviour {
             textBox.SetActive(true);
             isActive = true;
             player.canMove = false;
-
+            isTalkingToNPC = true;
             StartCoroutine(TextScroll(textLines[currentLine]));
         }
     }
@@ -264,6 +265,7 @@ public class TextBoxManager : MonoBehaviour {
         textBox.SetActive(false);
         isActive = false;
         player.canMove = true;
+        isTalkingToNPC = false;
         gameFlow.ChangeNPCBehaviour(); // changes something everytime you finish talking to a NPC
     }
 
@@ -299,7 +301,7 @@ public class TextBoxManager : MonoBehaviour {
         currentLine = getCurrentLine; // current line in text
         endAtLine = endLine; // current line you want to finish the text
 
-        textFile = newText; // inserts texts (from textlist) into this file
+        textFile = newText;
         textRef = reference; // gets reference of ActivateTextAtLine component
 
         if (textFile != null)

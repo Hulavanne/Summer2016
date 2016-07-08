@@ -14,6 +14,7 @@ public class IsIntro : MonoBehaviour {
             gameFlow.isIntro = true;
             gameFlow.isNPCAutomatic = true;
             effects.FadeToBlack();
+            Debug.Log("working0");
         }
 		else
 			Debug.Log(Game.current.newGame);

@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class npcBehaviour : MonoBehaviour {
+public class NpcBehaviour : MonoBehaviour {
 
     public PlayerController player;
     public ActivateTextAtLine textLoader;
     public GameFlowManager gameflow;
+
+    public TextAsset text;
+    public int[] buttonsYesNo = {-1, -1};
+    public int[] buttonsOpt = {-1, -1};
+    public int textStartLine;
+    public int textEndLine;
 
     void OnTriggerStay2D(Collider2D other)
     {

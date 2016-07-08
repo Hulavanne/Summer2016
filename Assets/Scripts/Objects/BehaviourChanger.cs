@@ -7,26 +7,21 @@ public class BehaviourChanger : MonoBehaviour {
     public ActivateTextAtLine textActivate;
     public GameObject doorKitchen; // not activated, set this in inspector
     public GameObject doorKitchenNPC;
-    public TextList textNumber;
+    public NpcBehaviour npcKitchen;
 
 	void Start () {
+        npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         doorKitchenNPC = GameObject.Find("NPC_FrontDoor");
-        textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();
 	}
 
     void OnTriggerStay2D(Collider2D col)
     {
-        if (col.transform.parent.name == "Player")
+        if (col.transform.parent.name == "Player" && transform.name == "NPC_Changer1")
         {
-            textNumber.text4StartLine = 1;
-            textNumber.text4EndLine = 1;
-            gameFlow.npc4Behav = 1;
-
-            textNumber.text5StartLine = 1;
-            textNumber.text5EndLine = 1;
-            gameFlow.npc5Behav = 1;
+            npcKitchen.textStartLine = 1;
+            npcKitchen.textEndLine = 1;
 
             Destroy(doorKitchenNPC);
             doorKitchen.SetActive(true);

@@ -7,7 +7,6 @@ public class GameFlowManager : MonoBehaviour {
     public PlayerController player;
     public ActivateTextAtLine textActivate;
     public TextBoxManager textBoxManager;
-    public TextList textNumber;
     public CameraFollowAndEffects cameraEffects;
 
     public GameObject tempGameObject;
@@ -17,8 +16,6 @@ public class GameFlowManager : MonoBehaviour {
 
     public bool isNPCAutomatic;
     public int npcIntroBehav = 0;
-    public int npc4Behav = 0;
-    public int npc5Behav = 0;
 
     public void DestroyNPC()
     {
@@ -39,8 +36,8 @@ public class GameFlowManager : MonoBehaviour {
             if (npcIntroBehav == 0)
             {
                 player.DeactivateSelection();
-                textNumber.textIntroStartLine = 3;
-                textNumber.textIntroEndLine = 4;
+                textActivate.npcBehav.textStartLine = 3;
+                textActivate.npcBehav.textEndLine = 4;
                 player.npcWaitTime = 2.0f;
                 isNPCAutomatic = true;
                 player.isIntro = false;
@@ -61,7 +58,6 @@ public class GameFlowManager : MonoBehaviour {
 	void Awake () {
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
-        textNumber = GameObject.Find("InGameUI").GetComponent<TextList>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textBoxManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
         cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();

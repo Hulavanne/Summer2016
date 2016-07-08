@@ -215,7 +215,7 @@ public class PlayerController : MonoBehaviour {
 
             if (transform.position.x > rightBoundary.transform.position.x)
             {
-				if (movementDirection == 1)
+				if (movementDirection == 1 && !textRef.isTalkingToNPC)
 				{
 					canMove = true;
 				}
@@ -227,7 +227,7 @@ public class PlayerController : MonoBehaviour {
             }
             else if (transform.position.x < rightBoundary.transform.position.x)
             {
-				if (movementDirection == -1)
+				if (movementDirection == -1 && !textRef.isTalkingToNPC)
 				{
 					canMove = true;
 				}

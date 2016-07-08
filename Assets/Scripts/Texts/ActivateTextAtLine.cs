@@ -46,7 +46,6 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     void Awake()
     {
-
         if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>() != null)
         {
             playerController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>();

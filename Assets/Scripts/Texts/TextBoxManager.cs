@@ -63,6 +63,7 @@ public class TextBoxManager : MonoBehaviour {
     private bool cancelTyping = false;
 
     public float typeSpeed;
+    public bool isDialogueActive;
 
     void Awake()
     {

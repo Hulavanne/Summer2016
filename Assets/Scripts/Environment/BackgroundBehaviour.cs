@@ -11,6 +11,7 @@ public class BackgroundBehaviour : MonoBehaviour
     public float backgroundSpeed;
     public LevelManager.Levels thisLevelValue;
     public bool playerStart = true;
+    public bool playerStart1 = true;
     public float distanceFromStart;
     public float distanceBetweenSprites;
     public bool movesAlone;

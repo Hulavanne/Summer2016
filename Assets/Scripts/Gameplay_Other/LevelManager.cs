@@ -10,13 +10,17 @@ public class LevelManager : MonoBehaviour
 
     public enum Levels
     {
-        LEVEL1 = 0,
-        LEVEL2 = 1,
-        LEVEL3 = 2,
-        LEVEL4 = 3,
+        CIERAN_BEDROOM = 0,
+        KITCHEN = 1,
+        PARENTS_BEDROOM = 2,
+        YARD = 3,
+        FORESTOPENING = 4,
+        FOREST_RIGHT_BELLADONA = 5,
+        FOREST_LEFT = 6,
+        DEER_AREA = 7,
     };
 
-	public Levels currentLevel = Levels.LEVEL1;
+	public Levels currentLevel = Levels.CIERAN_BEDROOM;
 	public List<GameObject> levelsList = new List<GameObject>();
 	public List<Savepoint> savepointsList = new List<Savepoint>();
     
@@ -88,7 +92,7 @@ public class LevelManager : MonoBehaviour
             else
             {
                 // For starting a new game from somewhere else than level 1
-                if (currentLevel != Levels.LEVEL1)
+                if (currentLevel != Levels.CIERAN_BEDROOM)
                 {
                     TestStart();
                 }
@@ -97,7 +101,7 @@ public class LevelManager : MonoBehaviour
         else
         {
             // For starting a new game from somewhere else than level 1
-            if (currentLevel != Levels.LEVEL1)
+            if (currentLevel != Levels.CIERAN_BEDROOM)
             {
                 TestStart();
             }

@@ -129,9 +129,8 @@ public class ItemSlideMenu : MonoBehaviour
 			Debug.LogError("ItemSlideMenu -> InputBegan : Invalid inputType: '" + inputType + "'");
 		}
 
-		// Reset cursorDistanceMoved and set variables for the slides of the inventory
+		// Reset cursorDistanceMoved
 		cursorDistanceMoved = 0.0f;
-		inventoryManager.SetSlideVariables();
 	}
 
 	void InputMoving(string inputType)

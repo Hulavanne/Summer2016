@@ -81,8 +81,17 @@ public class GameManager : MonoBehaviour
             game.minutes = minutes;
             game.hours = hours;
 
+            // Update the items in the scene
+            game.itemsInScene.Clear();
+
+            for (int i = 0; i < InventoryManager.current.sceneItems.Count; ++i)
+            {
+                game.itemsInScene.Add(InventoryManager.current.sceneItems[i].itemData);
+                Debug.Log("sceneitems");
+            }
+
             // Update the items in the player's inventory of the current game
-            game.items = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().items;
+            game.itemsInInventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().itemsData;
         }
     }
 
@@ -111,7 +120,7 @@ public class GameManager : MonoBehaviour
 
 	public void SetGamma(float newValue)
 	{
-		Debug.Log("Gamma Changed");
+		//Debug.Log("Gamma Changed");
 		GameManager.gammaValue = newValue;
 	}
 }

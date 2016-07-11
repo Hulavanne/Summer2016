@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class ItemData : MonoBehaviour
+[System.Serializable]
+public class ItemData
 {
-	public string displayName;
-	public Sprite icon;
-	public string description;
+    public int index;
+    public bool used;
 
-	public Item item;
-
-	void Awake()
+    public ItemData(int indexNumber, bool isUsed)
 	{
-		item = new Item(displayName, icon.name, description);
+        index = indexNumber;
+        used = isUsed;
 	}
 }

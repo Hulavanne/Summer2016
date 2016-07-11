@@ -19,7 +19,8 @@ public class Game
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game
 
-	public List<Item> items = new List<Item>();
+    public List<ItemData> itemsInScene = new List<ItemData>();
+    public List<ItemData> itemsInInventory = new List<ItemData>();
 
 	public Game()
 	{

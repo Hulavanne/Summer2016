@@ -4,8 +4,11 @@ using UnityEngine.UI;
 
 public class InventoryItemSlots : MonoBehaviour
 {
+    public AudioClip useItemSuccessSound;
+    public AudioClip useItemFailureSound;
+
 	public List<GameObject> itemSlots = new List<GameObject>();
-	public List<Item> itemsInSlots = new List<Item>();
+    public List<Item> itemsInSlots = new List<Item>();
 	public GameObject itemDescriptionObject;
 
 	static public bool inspectingItem = false;
@@ -52,7 +55,7 @@ public class InventoryItemSlots : MonoBehaviour
 	{
 		for (int i = 0; i < itemsInSlots.Count; ++i)
 		{
-			Item itemData = itemsInSlots[i];
+            Item item = itemsInSlots[i];
 
 			itemSlotOccupied[i] = true;
 			ActivateItemSlot(i);
@@ -61,23 +64,11 @@ public class InventoryItemSlots : MonoBehaviour
 			{
 				if (child.name == "ItemImage")
 				{
-					Sprite[] sprites = Resources.FindObjectsOfTypeAll<Sprite>();
-					Sprite icon = null;
-
-					for (int j = 0; j < sprites.Length; ++j)
-					{
-						if (sprites[j].name == itemData.iconName)
-						{
-							icon = sprites[j];
-							j = 100;
-						}
-					}
-
-					child.GetComponent<Image>().sprite = icon;
+                    child.GetComponent<Image>().sprite = item.icon;
 				}
 				else if (child.name == "ItemNameText")
 				{
-					child.GetComponent<Text>().text = itemData.name;
+					child.GetComponent<Text>().text = item.name;
 				}
 			}
 		}
@@ -87,15 +78,6 @@ public class InventoryItemSlots : MonoBehaviour
 			DeactivateItemSlot(i);
 		}
 		itemDescriptionObject.SetActive(false);
-	}
-
-	public void ClearItemSlots()
-	{
-		for (int i = 0; i < itemsInSlots.Count; ++i)
-		{
-			itemSlotOccupied[i] = false;
-			DeactivateItemSlot(i);
-		}
 	}
 
 	public void ActivateItemSlot(int index)
@@ -109,6 +91,15 @@ public class InventoryItemSlots : MonoBehaviour
 			itemSlots[index].GetComponent<Button>().interactable = true;
 		}
 	}
+
+    public void ClearItemSlots()
+    {
+        for (int i = 0; i < itemsInSlots.Count; ++i)
+        {
+            itemSlotOccupied[i] = false;
+            DeactivateItemSlot(i);
+        }
+    }
 
 	public void DeactivateItemSlot(int index)
 	{
@@ -188,19 +179,28 @@ public class InventoryItemSlots : MonoBehaviour
 
 	public void UseItem()
 	{
-		Debug.Log("Using item '" + itemsInSlots[inspectedItemIndex].name + "'");
+        // If the item can be used
+        if (itemsInSlots[inspectedItemIndex].usable)
+        {
+            // Set this item's "used"-boolean to true
+            itemsInSlots[inspectedItemIndex].itemData.used = true;
 
-		if (inspectedItemIndex == 0)
-		{
-			
-		}
-		else if (inspectedItemIndex == 1)
-		{
-			
-		}
-		else if (inspectedItemIndex == 2)
-		{
-			
-		}
+            // Remove the item from inventory
+            Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
+            inventory.RemoveItemFromInventory(itemsInSlots[inspectedItemIndex].index);
+
+            // Stop the inspection and resume game
+            StopInspectingItem();
+            transform.parent.parent.parent.GetComponent<MenuController>().ResumeGame();
+
+            // Play sound effect for successfully using the item
+            AudioManager.current.PlayRandomizedSoundEffect(useItemSuccessSound);
+        }
+        // If the item can't be used
+        else
+        {
+            // Play sound effect for failing to use the item
+            AudioManager.current.PlayRandomizedSoundEffect(useItemFailureSound);
+        }
 	}
 }

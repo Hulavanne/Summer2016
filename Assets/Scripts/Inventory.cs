@@ -5,22 +5,13 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
-	public List<Item> items = new List<Item>();
-
-	void Awake()
-	{
-		// Load in the items of the current game
-		if (Game.current != null)
-		{
-			items = Game.current.items;
-		}
-	}
+    public List<ItemData> itemsData = new List<ItemData>();
 
 	void Update()
 	{
-		if (Input.GetKeyDown (KeyCode.S))
+		if (Input.GetKeyDown(KeyCode.S))
 		{
-			UseItem(items.Count - 1);
+            //RemoveItemFromInventory(itemIndices.Count - 1);
 		}
 	}
 
@@ -35,12 +26,24 @@ public class Inventory : MonoBehaviour
 
 	void AddItemToInventory(GameObject item)
 	{
-		items.Add(item.GetComponent<ItemData>().item);
-		Destroy(item.gameObject);
+        itemsData.Add(item.GetComponent<Item>().itemData);
+        item.SetActive(false);
 	}
 
-	void UseItem(int index)
+	public void RemoveItemFromInventory(int itemIndex)
 	{
-		items.Remove(items[index]);
+        Debug.Log("Removed item");
+        Debug.Log(itemIndex);
+
+        List<Item> sceneItems = InventoryManager.current.sceneItems;
+
+        for (int i = 0; i < sceneItems.Count; ++i)
+        {
+            if (itemIndex == sceneItems[i].index)
+            {
+                itemsData.Remove(sceneItems[i].itemData);
+                break;
+            }
+        }
 	}
 }

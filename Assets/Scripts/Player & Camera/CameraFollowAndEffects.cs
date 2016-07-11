@@ -113,11 +113,11 @@ public class CameraFollowAndEffects : MonoBehaviour
             if (Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x < cameraCollider.bounds.extents.x)
 			{
                 int direction = (int)Mathf.Clamp(player.transform.position.x - boundary.position.x, -1, 1);
-                Debug.Log(direction);
+
                 float x = boundary.position.x + direction * (boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
-                Debug.Log(boundary.position.x + boundary.GetComponent<BoxCollider2D>().bounds.extents.x + cameraCollider.bounds.extents.x);
+
                 transform.position = new Vector3(x, transform.position.y, transform.position.z);
-                Debug.Log(transform.position);
+
 				boundaryColliding = true;
 				collidingBoundary = boundary.GetComponent<BoxCollider2D>();
 
@@ -148,7 +148,6 @@ public class CameraFollowAndEffects : MonoBehaviour
 
             if (Mathf.Abs(boundary.position.x - player.transform.position.x) >= Mathf.Abs(boundary.GetChild(0).position.x - player.transform.position.x))
 			{
-                Debug.Log("hreerrtt");
 				boundary = boundary.GetChild(0);
 			}
 

@@ -93,6 +93,5 @@ public class ActivateTextAtLine : MonoBehaviour {
             GetComponent<ActivateTextAtLine>(), npcStartLine, npcEndLine);       
         
         theTextBox.EnableTextBox();
-        Debug.Log("working0");
     }
 }

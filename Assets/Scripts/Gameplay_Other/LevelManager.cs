@@ -15,9 +15,9 @@ public class LevelManager : MonoBehaviour
         PARENTS_BEDROOM = 2,
         YARD = 3,
         FORESTOPENING = 4,
-        FOREST_RIGHT_BELLADONA = 5,
-        FOREST_LEFT = 6,
-        DEER_AREA = 7,
+        FOREST_LEFT = 5,
+        FOREST_RIGHT_BELLADONA = 6,
+        FOREST_DEER = 7,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;

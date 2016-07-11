@@ -11,6 +11,7 @@ public class ForegroundBehaviour : MonoBehaviour {
     public bool isStart = true;
     public SpriteRenderer sprite1;
     public SpriteRenderer sprite2;
+    public SpriteRenderer sprite3;
 
     void Start()
     {
@@ -24,6 +25,11 @@ public class ForegroundBehaviour : MonoBehaviour {
             sprite2 = transform.FindChild("sprite2").GetComponent<SpriteRenderer>();
         }
 
+        if (transform.FindChild("sprite3") != null)
+        {
+            sprite3 = transform.FindChild("sprite3").GetComponent<SpriteRenderer>();
+        }
+
         player = GameObject.Find("Player");
         mainCamera = GameObject.Find("MainCamera");
         playerControl = player.GetComponent<PlayerController>();
@@ -35,10 +41,11 @@ public class ForegroundBehaviour : MonoBehaviour {
         {
             if (isStart)
             {
-                if (sprite1 != null && sprite2 != null)
+                if (sprite1 != null && sprite2 != null && sprite3 != null)
                 {
                     sprite1.enabled = true;
                     sprite2.enabled = true;
+                    sprite3.enabled = true;
                 }
                     transform.position = new Vector3(mainCamera.transform.position.x * (-1), transform.position.y, transform.position.z);
                 distance = mainCamera.transform.position.x - transform.position.x;
@@ -54,6 +61,7 @@ public class ForegroundBehaviour : MonoBehaviour {
             {
                 sprite1.enabled = false;
                 sprite2.enabled = false;
+                sprite3.enabled = false;
             }
         }
     }

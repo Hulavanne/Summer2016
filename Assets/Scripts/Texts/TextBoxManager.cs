@@ -334,9 +334,15 @@ public class TextBoxManager : MonoBehaviour {
     }
 
     public void ReloadButtons (Button btn1, Button btn2, Button btn3, Button btn4,
-        GameObject Button1G, GameObject Button2G, GameObject Button3G, GameObject Button4G)
+        GameObject Button1G, GameObject Button2G, GameObject Button3G, GameObject Button4G /*,
+        string button1Text, string button2Text, string button3Text, string button4Text*/)
     {
-        // loads any custom button prefabs (max.4)
+        /*
+        Button1G.transform.FindChild("Text").GetComponent<Text>().text = button1Text;
+        Button2G.transform.FindChild("Text").GetComponent<Text>().text = button2Text;
+        Button3G.transform.FindChild("Text").GetComponent<Text>().text = button3Text;
+        Button4G.transform.FindChild("Text").GetComponent<Text>().text = button4Text;
+        */
         Button1 = Button1G.GetComponent<Button>();
         Button2 = Button2G.GetComponent<Button>();
         Button3 = Button3G.GetComponent<Button>();

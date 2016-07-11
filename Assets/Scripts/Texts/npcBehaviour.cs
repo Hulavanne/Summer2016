@@ -8,10 +8,11 @@ public class NpcBehaviour : MonoBehaviour {
     public GameFlowManager gameflow;
 
     public TextAsset text;
-    public int[] buttonsYesNo = {-1, -1};
-    public int[] buttonsOpt = {-1, -1};
+    public int[] buttonsYesNo;
+    public int[] buttonsOpt;
     public int textStartLine;
     public int textEndLine;
+    public string button1Text, button2Text, button3Text, button4Text;
 
     void OnTriggerStay2D(Collider2D other)
     {

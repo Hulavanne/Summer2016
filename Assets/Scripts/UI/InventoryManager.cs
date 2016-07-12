@@ -33,23 +33,63 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // Load in the items of the current game
+        // Search for saved scene items
+        for (int i = 0; i < sceneItems.Count; ++i)
+        {
+            bool initialized = false;
+
+            if (Game.current != null)
+            {
+                // If current game is a loaded game
+                if (!Game.current.newGame)
+                {
+                    // Load in the items of the current game
+                    List<ItemData> savedData = Game.current.itemsDataScene;
+
+                    for (int j = 0; j < savedData.Count; ++j)
+                    {
+                        // If saved items are found, set itemData to what was found and deactivate gameObject
+                        if (sceneItems[i].id == savedData[j].id)
+                        {
+                            sceneItems[i].itemData = savedData[j];
+                            initialized = true;
+                            break;
+                        }
+                    }
+
+                    if (!initialized)
+                    {
+                        Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
+                    }
+                    else
+                    {
+                        if (sceneItems[i].itemData.collected)
+                        {
+                            if (sceneItems[i].gameObject.GetComponent<SpriteRenderer>() != null)
+                            {
+                                sceneItems[i].gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                            }
+                            if (sceneItems[i].gameObject.GetComponent<BoxCollider2D>() != null)
+                            {
+                                sceneItems[i].gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!initialized)
+            {
+                sceneItems[i].itemData = new ItemData(sceneItems[i].id, false);
+            }
+        }
+
         if (Game.current != null)
         {
-            inventory.itemsData = Game.current.itemsInInventory;
-
             // If current game is a loaded game
             if (!Game.current.newGame)
             {
-                // Search for saved scene items
-                for (int i = 0; i < Game.current.itemsInScene.Count; ++i)
-                {
-                    // If saved items are found, set itemData to what was found and deactivate gameObject
-                    if (Game.current.itemsInScene[i].index == sceneItems[i].index)
-                    {
-                        sceneItems[i].itemData = Game.current.itemsInScene[i];
-                    }
-                }
+                inventory.itemsData = Game.current.itemsDataInventory;
             }
         }
 
@@ -60,7 +100,7 @@ public class InventoryManager : MonoBehaviour
 
             for (int i = 0; i < itemsParent.childCount; ++i)
             {
-                sceneItems[i].GetComponent<Item>().SetupData(i);
+                //sceneItems[i].GetComponent<Item>().SetupData(i);
             }
         }
 	}
@@ -71,7 +111,13 @@ public class InventoryManager : MonoBehaviour
 
         for (int i = 0; i < inventory.itemsData.Count; ++i)
         {
-            data.Add(sceneItems[inventory.itemsData[i].index]);
+            for (int j = 0; j < sceneItems.Count; ++j)
+            {
+                if (inventory.itemsData[i].id == sceneItems[j].id)
+                {
+                    data.Add(sceneItems[j]);
+                }
+            }
         }
 
         return data;

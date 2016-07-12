@@ -182,12 +182,9 @@ public class InventoryItemSlots : MonoBehaviour
         // If the item can be used
         if (itemsInSlots[inspectedItemIndex].usable)
         {
-            // Set this item's "used"-boolean to true
-            itemsInSlots[inspectedItemIndex].itemData.used = true;
-
             // Remove the item from inventory
             Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
-            inventory.RemoveItemFromInventory(itemsInSlots[inspectedItemIndex].index);
+            inventory.RemoveItemFromInventory(itemsInSlots[inspectedItemIndex].id);
 
             // Stop the inspection and resume game
             StopInspectingItem();

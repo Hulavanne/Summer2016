@@ -26,20 +26,31 @@ public class Inventory : MonoBehaviour
 
 	void AddItemToInventory(GameObject item)
 	{
-        itemsData.Add(item.GetComponent<Item>().itemData);
-        item.SetActive(false);
+        ItemData itemData = item.GetComponent<Item>().itemData;
+
+        itemsData.Add(itemData);
+        itemData.collected = true;
+
+        if (item.GetComponent<SpriteRenderer>() != null)
+        {
+            item.GetComponent<SpriteRenderer>().enabled = false;
+        }
+        if (item.GetComponent<BoxCollider2D>() != null)
+        {
+            item.GetComponent<BoxCollider2D>().enabled = false;
+        }
 	}
 
-	public void RemoveItemFromInventory(int itemIndex)
+    public void RemoveItemFromInventory(string itemId)
 	{
         Debug.Log("Removed item");
-        Debug.Log(itemIndex);
+        Debug.Log(itemId);
 
         List<Item> sceneItems = InventoryManager.current.sceneItems;
 
         for (int i = 0; i < sceneItems.Count; ++i)
         {
-            if (itemIndex == sceneItems[i].index)
+            if (itemId == sceneItems[i].id)
             {
                 itemsData.Remove(sceneItems[i].itemData);
                 break;

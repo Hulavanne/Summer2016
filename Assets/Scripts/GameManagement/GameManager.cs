@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
 	public int seconds = 0; // Seconds spent in-game
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game
+
+    public List<string> itemIds = new List<string>();
 
 	void Awake ()
 	{
@@ -36,6 +39,8 @@ public class GameManager : MonoBehaviour
 
 	void Update ()
 	{
+        UpdateItemIds();
+
 		if (SceneManager.GetActiveScene().name != "LoadingScene")
 		{
 			if (SceneManager.GetActiveScene().name != "MainMenu")
@@ -82,16 +87,16 @@ public class GameManager : MonoBehaviour
             game.hours = hours;
 
             // Update the items in the scene
-            game.itemsInScene.Clear();
+            game.itemsDataScene.Clear();
 
             for (int i = 0; i < InventoryManager.current.sceneItems.Count; ++i)
             {
-                game.itemsInScene.Add(InventoryManager.current.sceneItems[i].itemData);
-                Debug.Log("sceneitems");
+                game.itemsDataScene.Add(InventoryManager.current.sceneItems[i].itemData);
+                Debug.Log("Scene Item " + i + " added");
             }
 
             // Update the items in the player's inventory of the current game
-            game.itemsInInventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().itemsData;
+            game.itemsDataInventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().itemsData;
         }
     }
 
@@ -123,4 +128,14 @@ public class GameManager : MonoBehaviour
 		//Debug.Log("Gamma Changed");
 		GameManager.gammaValue = newValue;
 	}
+
+    void UpdateItemIds()
+    {
+        itemIds.Clear();
+
+        foreach (string id in UniqueIdRegistry.Mapping.Keys)
+        {
+            itemIds.Add(id);
+        }
+    }
 }

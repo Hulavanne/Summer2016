@@ -144,7 +144,6 @@ public class CameraFollowAndEffects : MonoBehaviour
 		if (level.transform.FindChild("Boundaries").FindChild("CameraBoundary") != null)
 		{
             Transform boundary = level.transform.FindChild("Boundaries").FindChild("CameraBoundary");
-            Debug.Log(Mathf.Abs(boundary.position.x - player.transform.position.x) + " | " + Mathf.Abs(boundary.GetChild(0).position.x - player.transform.position.x));
 
             if (Mathf.Abs(boundary.position.x - player.transform.position.x) >= Mathf.Abs(boundary.GetChild(0).position.x - player.transform.position.x))
 			{

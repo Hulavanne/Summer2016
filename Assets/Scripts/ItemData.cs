@@ -4,12 +4,12 @@ using System.Collections;
 [System.Serializable]
 public class ItemData
 {
-    public int index;
-    public bool used;
+    public string id;
+    public bool collected;
 
-    public ItemData(int indexNumber, bool isUsed)
+    public ItemData(string itemID, bool isCollected)
 	{
-        index = indexNumber;
-        used = isUsed;
+        id = itemID;
+        collected = isCollected;
 	}
 }

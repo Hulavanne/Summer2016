@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour {
 
     #region declarations
 
+    public static PlayerController current;
+
     public enum Selection
     {
         DOOR,
@@ -21,7 +23,7 @@ public class PlayerController : MonoBehaviour {
 
     public float npcWaitTime = 0.0f;
     public bool canTalkToNPC;
-    public string NPCName;
+    public GameObject overlappingNpc;
 
     public string doorName;
 
@@ -91,6 +93,8 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
+        current = this;
+
 		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
 		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
@@ -187,7 +191,7 @@ public class PlayerController : MonoBehaviour {
 
         else if (other.tag == "NPC")
         {
-            NPCName = other.gameObject.name;
+            overlappingNpc = other.gameObject;
         }
 
         if (other.tag == "FixedBoundary")
@@ -228,7 +232,7 @@ public class PlayerController : MonoBehaviour {
     void OnTriggerExit2D(Collider2D other)
     {
         doorName = "";
-        NPCName = "";
+        overlappingNpc = null;
     }
 
     public void ActivateSelection(Selection currentSelection)

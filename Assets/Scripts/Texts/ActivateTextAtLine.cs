@@ -71,7 +71,7 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     public void ChooseNPC()
     {
-        currentNPC = GameObject.Find(playerController.NPCName);
+        currentNPC = GameObject.Find(playerController.overlappingNpc.name);
         npcBehav = currentNPC.GetComponent<NpcBehaviour>();
 
         ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,

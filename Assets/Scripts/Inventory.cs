@@ -5,14 +5,12 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
+    public List<Item> items = new List<Item>();
     public List<ItemData> itemsData = new List<ItemData>();
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.S))
-		{
-            //RemoveItemFromInventory(itemIndices.Count - 1);
-		}
+        
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -26,8 +24,10 @@ public class Inventory : MonoBehaviour
 
 	void AddItemToInventory(GameObject item)
 	{
-        ItemData itemData = item.GetComponent<Item>().itemData;
+        Item itemScript = item.GetComponent<Item>();
+        ItemData itemData = itemScript.itemData;
 
+        items.Add(itemScript);
         itemsData.Add(itemData);
         itemData.collected = true;
 
@@ -53,6 +53,7 @@ public class Inventory : MonoBehaviour
             if (itemId == sceneItems[i].id)
             {
                 itemsData.Remove(sceneItems[i].itemData);
+                items.Remove(sceneItems[i]);
                 break;
             }
         }

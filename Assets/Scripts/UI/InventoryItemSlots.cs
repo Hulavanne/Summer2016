@@ -182,6 +182,7 @@ public class InventoryItemSlots : MonoBehaviour
         // If the item can be used
         if (itemsInSlots[inspectedItemIndex].usable)
         {
+            // Use the item
             itemsInSlots[inspectedItemIndex].GetComponent<Item>().UseItem();
 
             // Remove the item from inventory

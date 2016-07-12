@@ -216,7 +216,7 @@ public class TextBoxManager : MonoBehaviour {
 
     public void OnYesClick()
     {
-        currentNPC = GameObject.Find(player.NPCName);
+        currentNPC = GameObject.Find(player.overlappingNpc.name);
 
         // getting save component
         if (currentNPC.GetComponent<Savepoint>() != null)

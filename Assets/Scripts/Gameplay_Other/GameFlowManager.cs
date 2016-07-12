@@ -54,7 +54,8 @@ public class GameFlowManager : MonoBehaviour {
         DestroyNPC(); // checks and destroys the npc if the bool is true
     }
 
-	void Awake () {
+	void Awake()
+    {
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
@@ -62,7 +63,11 @@ public class GameFlowManager : MonoBehaviour {
         cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
 	}
 	
-	void Update () {
-        npcName = player.NPCName;
+	void Update()
+    {
+        if (player.overlappingNpc != null)
+        {
+            npcName = player.overlappingNpc.name;
+        }
 	}
 }

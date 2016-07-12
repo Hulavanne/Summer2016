@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NpcBehaviour : MonoBehaviour {
+public class NpcBehaviour : MonoBehaviour
+{
+    public Item.type requiredItemType = Item.type.GLOVES;
 
-    public PlayerController player;
-    public ActivateTextAtLine textLoader;
-    public GameFlowManager gameflow;
-    public MonoBehaviour behaviour;
+    public enum actionType
+    {
+        DEACTIVATE
+    };
+    public actionType action = actionType.DEACTIVATE;
 
     public TextAsset text;
     public int[] buttonsYesNo;
@@ -15,17 +18,30 @@ public class NpcBehaviour : MonoBehaviour {
     public int textEndLine;
     public string button1Text, button2Text, button3Text, button4Text;
 
+    PlayerController player;
+    ActivateTextAtLine textLoader;
+    GameFlowManager gameflow;
+    Inventory inventory;
+
+    void Awake()
+    {
+        gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
+        textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
+        inventory = player.GetComponentInChildren<Inventory>();
+    }
+
     void OnTriggerStay2D(Collider2D other)
     {
         if (other.transform.parent.tag == "Player")
         {
             player.isOverlappingNPC = true;
-            player.isSelectionActive = true;
-            textLoader.selection.SetActive(true);
-            player.selection = PlayerController.Selection.NPC;
+            player.ActivateSelection(PlayerController.Selection.NPC);
 
             player.playerAnim.SetBool("isIdle", true);
             player.playerAnim.SetBool("isWalking", false);
+
+            SetItemsUsability(true);
 
             if (textLoader.requireButtonPress)
             {
@@ -45,19 +61,30 @@ public class NpcBehaviour : MonoBehaviour {
     {
         if (other.transform.parent.tag == "Player")
         {
+            SetItemsUsability(false);
             player.isOverlappingNPC = false;
             textLoader.waitForPress = false;
             player.DeactivateSelection();
         }
     }
 
-    void Awake ()
-	{
-        behaviour = transform.GetComponents<MonoBehaviour>()[1];
-        gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
-        player = GameObject.Find("Player").GetComponent<PlayerController>();
-        textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
+    public void TriggerAction()
+    {
+        if (action == actionType.DEACTIVATE)
+        {
+            Debug.Log("Deactivated");
+            gameObject.SetActive(false);
+        }
+    }
 
-        
-	}
+    void SetItemsUsability(bool usable)
+    {
+        for (int i = 0; i < inventory.items.Count; ++i)
+        {
+            if (inventory.items[i].itemType == requiredItemType)
+            {
+                inventory.items[i].usable = usable;
+            }
+        }
+    }
 }

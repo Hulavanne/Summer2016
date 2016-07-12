@@ -15,7 +15,7 @@ public class TouchInput_Diogo : MonoBehaviour
 
     public int runValue = 0;
     public float runTouchDelay = 0;
-    float runTouchDelayMax = 2;
+    float runTouchDelayMax = 1;
     public bool isTouchingRight;
     bool isTouching;
 
@@ -87,15 +87,15 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if (runValue == 0)
             {
-                runValue++;
-
                 if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                 {
                     isTouchingRight = false;
+                    runValue++;
                 }
                 else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
                 {
                     isTouchingRight = true;
+                    runValue++;
                 }
             }
             else if (runValue == 1)
@@ -106,9 +106,15 @@ public class TouchInput_Diogo : MonoBehaviour
                     // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
                     if (isTouchingRight)
                     {
-                        if (!((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
                         {
                             runValue++;
+                            runTouchDelay = 0;
+                        }
+                        else
+                        {
+                            runValue--;
+                            runTouchDelay = 0;
                         }
                     }
                     else
@@ -116,6 +122,13 @@ public class TouchInput_Diogo : MonoBehaviour
                         if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
                         {
                             runValue++;
+
+                            runTouchDelay = 0;
+                        }
+                        else
+                        {
+                            runValue--;
+                            runTouchDelay = 0;
                         }
                     }    
                 }
@@ -282,6 +295,4 @@ public class TouchInput_Diogo : MonoBehaviour
             playerController.isRunning = false;
         }
     }
-
-
 }

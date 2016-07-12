@@ -62,6 +62,8 @@ public class TextBoxManager : MonoBehaviour {
     private bool isTyping = false;
     private bool cancelTyping = false;
 
+    public bool canType;
+    public float typeTimer;
     public float typeSpeed;
     public bool isDialogueActive;
 
@@ -74,6 +76,13 @@ public class TextBoxManager : MonoBehaviour {
     
     void Update()
     {
+        typeTimer += 2 * Time.deltaTime;
+        if (typeTimer > 0.2 && !canType)
+        {
+            canType = true;
+            typeTimer = 0;
+        }
+
         if (isActive)
         {
             SetCurrentYesNoButtons(); // sets active or not active
@@ -96,6 +105,7 @@ public class TextBoxManager : MonoBehaviour {
                     else
                     {
                         StartCoroutine(TextScroll(textLines[currentLine]));
+                        //StartCoroutine(TextScroll(textLines[currentLine]));
                     }
                 }
                 else if (isTyping && !cancelTyping)
@@ -104,6 +114,48 @@ public class TextBoxManager : MonoBehaviour {
                 }
             }
         }
+    }
+
+    void TypeLetter(bool type, string textLine, int thisLetter)
+    {
+        /*
+        if (type)
+        {
+            theText.text += textLine[thisLetter]; // adds one letter to the textBox
+            thisLetter += 1; // adds 1 to letter variable
+            return;
+        }
+        else
+        {
+            return;
+        }
+        */
+    }
+
+    void _TextScroll(string lineOfText)
+    {
+        /*
+        int letter = 0; // int for the number of letters
+        theText.text = "";
+
+        isTyping = true;
+        cancelTyping = false;
+
+        while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
+        {
+            theText.text += lineOfText[letter]; // adds one letter to the textBox
+            letter += 1; // adds 1 to letter variable
+            //TypeLetter(canType, lineOfText, letter);    
+        }
+        // the loop ends if the line has reached its end
+
+        GetYesNoButtonLines(); // checks the display of buttons
+        GetOptButtonLines(); // checks the display of buttons
+
+        theText.text = lineOfText; // adds one line of text if it exists
+        isTyping = false;
+        cancelTyping = false;
+        */
     }
 
     private IEnumerator TextScroll(string lineOfText)
@@ -257,6 +309,7 @@ public class TextBoxManager : MonoBehaviour {
             player.canMove = false;
             isTalkingToNPC = true;
             StartCoroutine(TextScroll(textLines[currentLine]));
+            //StartCoroutine(TextScroll(textLines[currentLine]));
         }
     }
 

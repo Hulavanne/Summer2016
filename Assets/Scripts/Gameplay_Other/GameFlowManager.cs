@@ -50,7 +50,7 @@ public class GameFlowManager : MonoBehaviour {
                 destroyNPC = true;
             }
         }
-
+        
         DestroyNPC(); // checks and destroys the npc if the bool is true
     }
 

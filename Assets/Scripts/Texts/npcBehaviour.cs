@@ -6,6 +6,7 @@ public class NpcBehaviour : MonoBehaviour {
     public PlayerController player;
     public ActivateTextAtLine textLoader;
     public GameFlowManager gameflow;
+    public MonoBehaviour behaviour;
 
     public TextAsset text;
     public int[] buttonsYesNo;
@@ -52,8 +53,11 @@ public class NpcBehaviour : MonoBehaviour {
 
     void Awake ()
 	{
+        behaviour = transform.GetComponents<MonoBehaviour>()[1];
         gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
+
+        
 	}
 }

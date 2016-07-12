@@ -182,6 +182,8 @@ public class InventoryItemSlots : MonoBehaviour
         // If the item can be used
         if (itemsInSlots[inspectedItemIndex].usable)
         {
+            itemsInSlots[inspectedItemIndex].GetComponent<Item>().UseItem();
+
             // Remove the item from inventory
             Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
             inventory.RemoveItemFromInventory(itemsInSlots[inspectedItemIndex].id);

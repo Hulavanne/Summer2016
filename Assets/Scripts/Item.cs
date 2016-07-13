@@ -17,7 +17,6 @@ public class Item : MonoBehaviour
     };
     public type itemType = type.WHATEVER;
 
-    public string id1;
     public string id;
     public string displayName;
     public Sprite icon;
@@ -29,15 +28,9 @@ public class Item : MonoBehaviour
     {
         #if UNITY_EDITOR
 
-        if (id1 == "" && !EditorApplication.isPlaying)
-        {
-            Guid guid = Guid.NewGuid();
-            id1 = guid.ToString();
-        }
-
         if (transform.GetComponent<UniqueId>() != null)
         {
-            //id = transform.GetComponent<UniqueId>().uniqueId;
+            id = transform.GetComponent<UniqueId>().uniqueId;
         }
 
         #endif
@@ -54,7 +47,7 @@ public class Item : MonoBehaviour
 
         if (transform.GetComponent<UniqueId>() != null)
         {
-            //id = transform.GetComponent<UniqueId>().uniqueId;
+            id = transform.GetComponent<UniqueId>().uniqueId;
         }
 
         #endif

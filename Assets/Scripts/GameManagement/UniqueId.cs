@@ -13,10 +13,7 @@ public class UniqueId : MonoBehaviour
     [UniqueIdentifier]
     public string uniqueId;
 
-    //public List<string> strings = new List<string>();
-    //public List<int> ints = new List<int>();
-
-    /*void Start ()
+    void Start ()
     {
         #if UNITY_EDITOR
 
@@ -54,18 +51,6 @@ public class UniqueId : MonoBehaviour
             UniqueIdRegistry.Register(uniqueId, GetInstanceID());
         }
 
-        //strings.Clear();
-        //ints.Clear();
-
-        //foreach (string str in UniqueIdRegistry.mapping.Keys)
-        //{
-        //    strings.Add(str);
-        //}
-        //foreach (int integer in UniqueIdRegistry.mapping.Values)
-        //{
-        //    ints.Add(integer);
-        //}
-
         #endif
-    }*/
+    }
 }

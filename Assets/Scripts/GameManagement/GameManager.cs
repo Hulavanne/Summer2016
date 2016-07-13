@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
 
             for (int i = 0; i < InventoryManager.current.sceneItems.Count; ++i)
             {
+                InventoryManager.current.sceneItems[i].itemData.dataStatus = "Modified Data";
                 game.itemsDataScene.Add(InventoryManager.current.sceneItems[i].itemData);
                 Debug.Log("Scene Item " + i + " added");
             }

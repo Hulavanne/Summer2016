@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 public static class UniqueIdRegistry
 {
-    public static Dictionary<string, int> mapping = new Dictionary<string, int>();
+    public static Dictionary<String, int> mapping = new Dictionary<String, int>();
 
-    public static void Deregister(string id)
+    public static void Deregister(String id)
     {
         mapping.Remove(id);
     }
 
-    public static void Register(string id, int value)
+    public static void Register(String id, int value)
     {
         if (!mapping.ContainsKey(id))
         {
@@ -20,7 +20,7 @@ public static class UniqueIdRegistry
         }
     }
 
-    public static int GetInstanceId(string id)
+    public static int GetInstanceId(String id)
     {
         if (mapping.ContainsKey(id))
         {

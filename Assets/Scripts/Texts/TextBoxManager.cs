@@ -117,7 +117,6 @@ public class TextBoxManager : MonoBehaviour
                 }
                 else if (isTyping && !cancelTyping)
                 {
-                    //Debug.Log("CANCEL TYPING");
                     cancelTyping = true;
                 }
             }
@@ -176,11 +175,9 @@ public class TextBoxManager : MonoBehaviour
 
         while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
         {
-            //Debug.Log("BEFORE: " + isTyping + " | " + cancelTyping + " | " + (letter < lineOfText.Length - 1));
             theText.text += lineOfText[letter]; // adds one letter to the textBox
             letter += 1; // adds 1 to letter variable
             yield return new WaitForSeconds(typeSpeed); // waits for an amount of time
-            //Debug.Log("AFTER: " + isTyping + " | " + cancelTyping + " | " + (letter < lineOfText.Length - 1));
         }
         // the loop ends if the line has reached its end
 
@@ -190,7 +187,6 @@ public class TextBoxManager : MonoBehaviour
         theText.text = lineOfText; // adds one line of text if it exists
         isTyping = false;
         cancelTyping = false;
-        //Debug.Log("END");
     }
 
     public void OnOptButtonClick()

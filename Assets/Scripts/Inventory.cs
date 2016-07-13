@@ -43,9 +43,6 @@ public class Inventory : MonoBehaviour
 
     public void RemoveItemFromInventory(string itemId)
 	{
-        Debug.Log("Removed item");
-        Debug.Log(itemId);
-
         List<Item> sceneItems = InventoryManager.current.sceneItems;
 
         for (int i = 0; i < sceneItems.Count; ++i)

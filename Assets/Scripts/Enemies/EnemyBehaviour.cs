@@ -39,7 +39,7 @@ public class EnemyBehaviour : MonoBehaviour {
         REMOVING_PLAYER,
     };
 
-    EnemyBehav currentEnemy;
+    public EnemyBehav currentEnemy;
 
     void Awake()
     {
@@ -50,7 +50,6 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void Update()
     {
-
         switch (currentEnemy)
         {
             case EnemyBehav.PATROLLING:
@@ -83,11 +82,6 @@ public class EnemyBehaviour : MonoBehaviour {
         
         GetDistanceBetweenObjects();
         CheckDistance();
-
-        if ((transform.position.y > playerObj.transform.position.y - 0.2) && (transform.position.y > playerObj.transform.position.y + 0.2))
-        {
-            currentEnemy = EnemyBehav.PATROLLING;
-        }
 
         if (currentEnemy == EnemyBehav.SUSPICIOUS)
         {
@@ -144,33 +138,30 @@ public class EnemyBehaviour : MonoBehaviour {
         Vector3 tempVecX = new Vector3 (movementSpeed, 0, 0); // normal movement
         Vector3 tempVecRunX = new Vector3 (chaseSpeed, 0, 0); // chasing movement
         
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.PATROLLING))
+        if (currentEnemy == EnemyBehav.PATROLLING)
         {
-            transform.position += tempVecX * Time.deltaTime;
-        }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.PATROLLING))
-        {
-            transform.position -= tempVecX * Time.deltaTime;
-        }
-
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.CHASING))
-        {
-            transform.position += tempVecRunX * Time.deltaTime;
-        }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.CHASING))
-        {
-            transform.position -= tempVecRunX * Time.deltaTime;
+            if (playerObj.transform.position.x > transform.position.x)
+            {
+                transform.position += tempVecX * Time.deltaTime;
+            }
+            else if (playerObj.transform.position.x < transform.position.x)
+            {
+                transform.position -= tempVecX * Time.deltaTime;
+            }
         }
 
-        if ((playerObj.transform.position.x > transform.position.x) && (currentEnemy == EnemyBehav.SUSPICIOUS))
+        if (currentEnemy == EnemyBehav.CHASING || currentEnemy == EnemyBehav.SUSPICIOUS)
         {
-            transform.position += tempVecRunX * Time.deltaTime;
+            if (playerObj.transform.position.x > transform.position.x)
+            {
+                transform.position += tempVecRunX * Time.deltaTime;
+            }
+            else if (playerObj.transform.position.x < transform.position.x)
+            {
+                transform.position -= tempVecRunX * Time.deltaTime;
+            }
         }
-        else if ((playerObj.transform.position.x < transform.position.x) && (currentEnemy == EnemyBehav.SUSPICIOUS))
-        {
-            transform.position -= tempVecRunX * Time.deltaTime;
-        }
-
+        
         GetDistanceBetweenObjects();   
     }
 
@@ -184,7 +175,6 @@ public class EnemyBehaviour : MonoBehaviour {
             EnemyMove();
             if ((transform.position.x > playerObj.transform.position.x - 0.05) && (transform.position.x < playerObj.transform.position.x + 0.05))
             {
-                Debug.Log("working!");
                 goToPlayerPos = false;
                 currentEnemy = EnemyBehav.SUSPICIOUS;
                 return;
@@ -232,7 +222,6 @@ public class EnemyBehaviour : MonoBehaviour {
                 if (startChaseTime > 0.5)
                 {
                     currentEnemy = EnemyBehav.CHASING;
-
                     startChaseTime = 0;
                 }
             }

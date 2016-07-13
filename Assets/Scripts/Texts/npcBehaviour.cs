@@ -31,43 +31,6 @@ public class NpcBehaviour : MonoBehaviour
         inventory = player.GetComponentInChildren<Inventory>();
     }
 
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.transform.parent.tag == "Player")
-        {
-            player.isOverlappingNPC = true;
-            player.ActivateSelection(PlayerController.Selection.NPC);
-
-            player.playerAnim.SetBool("isIdle", true);
-            player.playerAnim.SetBool("isWalking", false);
-
-            SetItemsUsability(true);
-
-            if (textLoader.requireButtonPress)
-            {
-                textLoader.waitForPress = true;
-                return;
-            }
-
-            if ((gameflow.isNPCAutomatic) && (player.npcWaitTime <= 0.0f))
-            {
-                player.TalkToNPC();
-                gameflow.isNPCAutomatic = false;
-            }
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.transform.parent.tag == "Player")
-        {
-            SetItemsUsability(false);
-            player.isOverlappingNPC = false;
-            textLoader.waitForPress = false;
-            player.DeactivateSelection();
-        }
-    }
-
     public void TriggerAction()
     {
         if (action == actionType.DEACTIVATE)
@@ -77,7 +40,7 @@ public class NpcBehaviour : MonoBehaviour
         }
     }
 
-    void SetItemsUsability(bool usable)
+    public void SetItemsUsability(bool usable)
     {
         for (int i = 0; i < inventory.items.Count; ++i)
         {

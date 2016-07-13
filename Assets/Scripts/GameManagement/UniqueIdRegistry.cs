@@ -5,21 +5,30 @@ using System.Collections.Generic;
 
 public static class UniqueIdRegistry
 {
-    public static Dictionary<String, Int32> Mapping = new Dictionary<String, int>();
+    public static Dictionary<string, int> mapping = new Dictionary<string, int>();
 
-    public static void Deregister(String id)
+    public static void Deregister(string id)
     {
-        Mapping.Remove(id);
+        mapping.Remove(id);
     }
 
-    public static void Register(String id, Int32 value)
+    public static void Register(string id, int value)
     {
-        if (!Mapping.ContainsKey(id))
-            Mapping.Add(id, value);
+        if (!mapping.ContainsKey(id))
+        {
+            mapping.Add(id, value);
+        }
     }
 
-    public static Int32 GetInstanceId(string id)
+    public static int GetInstanceId(string id)
     {
-        return Mapping[id];
+        if (mapping.ContainsKey(id))
+        {
+            return mapping[id];
+        }
+        else
+        {
+            return -1;
+        }
     }
 }

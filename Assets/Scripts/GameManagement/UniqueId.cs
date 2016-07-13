@@ -13,15 +13,18 @@ public class UniqueId : MonoBehaviour
     [UniqueIdentifier]
     public string uniqueId;
 
-    void Start ()
+    //public List<string> strings = new List<string>();
+    //public List<int> ints = new List<int>();
+
+    /*void Start ()
     {
         #if UNITY_EDITOR
 
-        if (String.IsNullOrEmpty(this.uniqueId))
+        if (String.IsNullOrEmpty(uniqueId))
         {
             uniqueId = Guid.NewGuid().ToString();
         }
-        UniqueIdRegistry.Register(this.uniqueId, this.GetInstanceID());
+        UniqueIdRegistry.Register(uniqueId, GetInstanceID());
 
         #endif
     }
@@ -30,7 +33,7 @@ public class UniqueId : MonoBehaviour
     {
         #if UNITY_EDITOR
 
-        UniqueIdRegistry.Deregister(this.uniqueId);
+        UniqueIdRegistry.Deregister(uniqueId);
 
         #endif
     }
@@ -39,12 +42,30 @@ public class UniqueId : MonoBehaviour
     {
         #if UNITY_EDITOR
 
-        if (this.GetInstanceID() != UniqueIdRegistry.GetInstanceId(this.uniqueId))
+        if(EditorApplication.isPlaying )
         {
-            uniqueId = Guid.NewGuid().ToString();
-            UniqueIdRegistry.Register(this.uniqueId, this.GetInstanceID());
+            return;
         }
 
+        if (GetInstanceID() != UniqueIdRegistry.GetInstanceId(uniqueId))
+        {
+            Debug.Log("NULL or EMPTY");
+            uniqueId = Guid.NewGuid().ToString();
+            UniqueIdRegistry.Register(uniqueId, GetInstanceID());
+        }
+
+        //strings.Clear();
+        //ints.Clear();
+
+        //foreach (string str in UniqueIdRegistry.mapping.Keys)
+        //{
+        //    strings.Add(str);
+        //}
+        //foreach (int integer in UniqueIdRegistry.mapping.Values)
+        //{
+        //    ints.Add(integer);
+        //}
+
         #endif
-    }
+    }*/
 }

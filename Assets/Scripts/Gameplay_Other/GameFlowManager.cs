@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameFlowManager : MonoBehaviour {
+public class GameFlowManager : MonoBehaviour
+{   
+    public static GameFlowManager current;
 
     public string npcName;
     public PlayerController player;
@@ -9,11 +11,8 @@ public class GameFlowManager : MonoBehaviour {
     public TextBoxManager textBoxManager;
     public CameraFollowAndEffects cameraEffects;
 
-    // public GameObject tempGameObject;
-
     public bool isIntro = true;
     public bool destroyNPC;
-
     public bool isNPCAutomatic;
     public int npcIntroBehav = 0;
 
@@ -56,6 +55,7 @@ public class GameFlowManager : MonoBehaviour {
 
 	void Awake()
     {
+        current = this;
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();

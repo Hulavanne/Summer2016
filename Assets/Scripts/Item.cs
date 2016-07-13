@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(UniqueId))]
+//[RequireComponent(typeof(UniqueId))]
 public class Item : MonoBehaviour
 {
     public bool usable = false;
@@ -15,6 +17,7 @@ public class Item : MonoBehaviour
     };
     public type itemType = type.WHATEVER;
 
+    public string id1;
     public string id;
     public string displayName;
     public Sprite icon;
@@ -22,11 +25,20 @@ public class Item : MonoBehaviour
 
     public ItemData itemData;
 
-    void Start()
+    void Awake()
     {
         #if UNITY_EDITOR
 
-        id = transform.GetComponent<UniqueId>().uniqueId;
+        if (id1 == "" && !EditorApplication.isPlaying)
+        {
+            Guid guid = Guid.NewGuid();
+            id1 = guid.ToString();
+        }
+
+        if (transform.GetComponent<UniqueId>() != null)
+        {
+            //id = transform.GetComponent<UniqueId>().uniqueId;
+        }
 
         #endif
 
@@ -40,14 +52,17 @@ public class Item : MonoBehaviour
     {
         #if UNITY_EDITOR
 
-        id = transform.GetComponent<UniqueId>().uniqueId;
+        if (transform.GetComponent<UniqueId>() != null)
+        {
+            //id = transform.GetComponent<UniqueId>().uniqueId;
+        }
 
         #endif
     }
 
     public void UseItem()
     {
-        if (PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>() != null)
+        if (PlayerController.current.overlappingNpc != null)
         {
             PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().TriggerAction();
         }

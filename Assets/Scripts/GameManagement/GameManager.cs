@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 	public int hours = 0; // Hours spent in-game
 
     public List<string> itemIds = new List<string>();
+    public List<int> itemInstanceIds = new List<int>();
 
 	void Awake ()
 	{
@@ -132,10 +133,15 @@ public class GameManager : MonoBehaviour
     void UpdateItemIds()
     {
         itemIds.Clear();
+        itemInstanceIds.Clear();
 
-        foreach (string id in UniqueIdRegistry.Mapping.Keys)
+        foreach (string id in UniqueIdRegistry.mapping.Keys)
         {
             itemIds.Add(id);
+        }
+        foreach (int id in UniqueIdRegistry.mapping.Values)
+        {
+            itemInstanceIds.Add(id);
         }
     }
 }

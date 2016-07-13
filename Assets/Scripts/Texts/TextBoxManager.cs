@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-public class TextBoxManager : MonoBehaviour {
+public class TextBoxManager : MonoBehaviour
+{
+    public static TextBoxManager current;
 
     public bool isCursorOnActionButton;
 
@@ -60,7 +62,7 @@ public class TextBoxManager : MonoBehaviour {
     public bool stopPlayerMovement = true;
 
     private bool isTyping = false;
-    private bool cancelTyping = false;
+    public bool cancelTyping = false;
 
     public bool canType;
     public float typeTimer;
@@ -69,6 +71,8 @@ public class TextBoxManager : MonoBehaviour {
 
     void Awake()
     {
+        current = this;
+
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         DisableAllButtons();
         DisableTextBox();
@@ -88,16 +92,20 @@ public class TextBoxManager : MonoBehaviour {
             SetCurrentYesNoButtons(); // sets active or not active
             SetCurrentOptButtons(); // sets active or not active
 
-            if ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons
-                 && !showCurrentOptButtons) || hasClickedYesNoButton || hasClickedOptButton)
+            if (!isCursorOnActionButton &&
+                ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
+                hasClickedYesNoButton ||
+                hasClickedOptButton))
             {
                 // executes every click without buttons, or every successful button press
                 player.talkToNPC = false;
                 hasClickedYesNoButton = false;
                 hasClickedOptButton = false;
+
                 if (!isTyping)
                 {
                     currentLine++;
+
                     if (currentLine > endAtLine)
                     {
                         DisableTextBox();
@@ -105,11 +113,11 @@ public class TextBoxManager : MonoBehaviour {
                     else
                     {
                         StartCoroutine(TextScroll(textLines[currentLine]));
-                        //StartCoroutine(TextScroll(textLines[currentLine]));
                     }
                 }
                 else if (isTyping && !cancelTyping)
                 {
+                    //Debug.Log("CANCEL TYPING");
                     cancelTyping = true;
                 }
             }
@@ -168,9 +176,11 @@ public class TextBoxManager : MonoBehaviour {
 
         while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
         {
+            //Debug.Log("BEFORE: " + isTyping + " | " + cancelTyping + " | " + (letter < lineOfText.Length - 1));
             theText.text += lineOfText[letter]; // adds one letter to the textBox
             letter += 1; // adds 1 to letter variable
             yield return new WaitForSeconds(typeSpeed); // waits for an amount of time
+            //Debug.Log("AFTER: " + isTyping + " | " + cancelTyping + " | " + (letter < lineOfText.Length - 1));
         }
         // the loop ends if the line has reached its end
 
@@ -180,6 +190,7 @@ public class TextBoxManager : MonoBehaviour {
         theText.text = lineOfText; // adds one line of text if it exists
         isTyping = false;
         cancelTyping = false;
+        //Debug.Log("END");
     }
 
     public void OnOptButtonClick()
@@ -218,17 +229,18 @@ public class TextBoxManager : MonoBehaviour {
     {
         currentNPC = GameObject.Find(player.overlappingNpc.name);
 
-        // getting save component
-        if (currentNPC.GetComponent<Savepoint>() != null)
-        {
-            currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
-        }
-        if (currentNPC.GetComponent<Savepoint>() == null)
-        {
-            Debug.Log("not saving!");
-        }
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
+
+        // Getting save component
+        if (currentNPC.GetComponent<Savepoint>() != null)
+        {
+            player.talkToNPC = false;
+            hasClickedYesNoButton = false;
+            hasClickedOptButton = false;
+
+            currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
+        }
     }
 
     public void OnNoClick()
@@ -309,7 +321,6 @@ public class TextBoxManager : MonoBehaviour {
             player.canMove = false;
             isTalkingToNPC = true;
             StartCoroutine(TextScroll(textLines[currentLine]));
-            //StartCoroutine(TextScroll(textLines[currentLine]));
         }
     }
 

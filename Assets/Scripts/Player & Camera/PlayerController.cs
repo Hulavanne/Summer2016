@@ -192,6 +192,23 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject;
+            overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(true);
+
+            isOverlappingNPC = true;
+            ActivateSelection(PlayerController.Selection.NPC);
+            PlayerAnimStop();
+
+            if (ActivateTextAtLine.current.requireButtonPress)
+            {
+                ActivateTextAtLine.current.waitForPress = true;
+                return;
+            }
+
+            if ((GameFlowManager.current.isNPCAutomatic) && (npcWaitTime <= 0.0f))
+            {
+                TalkToNPC();
+                GameFlowManager.current.isNPCAutomatic = false;
+            }
         }
 
         if (other.tag == "FixedBoundary")
@@ -232,7 +249,17 @@ public class PlayerController : MonoBehaviour {
     void OnTriggerExit2D(Collider2D other)
     {
         doorName = "";
-        overlappingNpc = null;
+
+        if (other.transform.tag == "NPC")
+        {
+            overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(false);
+            overlappingNpc = null;
+
+            isOverlappingNPC = false;
+            DeactivateSelection();
+
+            ActivateTextAtLine.current.waitForPress = false;
+        }
     }
 
     public void ActivateSelection(Selection currentSelection)

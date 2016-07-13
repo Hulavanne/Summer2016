@@ -2,7 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class ActivateTextAtLine : MonoBehaviour {
+public class ActivateTextAtLine : MonoBehaviour
+{
+    public static ActivateTextAtLine current;
 
     public string NPCName;
 
@@ -46,6 +48,8 @@ public class ActivateTextAtLine : MonoBehaviour {
 
     void Awake()
     {
+        current = this;
+
         if (GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>() != null)
         {
             playerController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerController>();

@@ -180,6 +180,7 @@ public class MenuController : MonoBehaviour
 		Time.timeScale = 0;
 		MenuController.gamePaused = true;
 
+        //TextBoxManager.current.DisableTextBox();
 		gui.SetActive(false);
 		pauseOverlay.SetActive(true);
 
@@ -194,12 +195,9 @@ public class MenuController : MonoBehaviour
 
 		gui.SetActive(true);
         pauseOverlay.SetActive(false);
+
+        TextBoxManager.current.isCursorOnActionButton = false;
     }
-
-	public void InspectItem(GameObject item)
-	{
-
-	}
 
 	//---------------------LOAD MENU---------------------
 

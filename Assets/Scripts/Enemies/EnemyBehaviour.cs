@@ -7,6 +7,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
     //player references
 
+    public GameObject boundary;
     public GameObject playerObj;
     public PlayerController player;
 
@@ -18,13 +19,13 @@ public class EnemyBehaviour : MonoBehaviour {
     public float areaOfVision = 6.0f; // distance radius to start chasing
 
     //amounts
-    public float movementSpeed = 0.5f; // normal patrolling movement speed
-    public float suspiciousSpeed = 1.0f; // suspicious more speedy movement speed
-    public float chaseSpeed = 2.0f; // chase speed
+    public float movementSpeed = 1.0f; // normal patrolling movement speed
+    public float suspiciousSpeed = 1.8f; // suspicious more speedy movement speed
+    public float chaseSpeed = 4.0f; // chase speed
 
     //timers
     public float turningTime = 0; // this is a Timer that resets everytime it reaches 1  // it will mod (%2) always, and every once in a while (everytime it hits 0.5 or 1) switches direction on enemy
-
+    public int movementDirection = 0;
     public float waitTime;
     public float suspicionTime;
     public float touchPlayerTime = 0.0f; // this will end the game if the enemy touches the player for too long
@@ -50,6 +51,15 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void Update()
     {
+        if ((turningTime % 1.0f) > 0.5f && turningTime >= 0.0f)
+        {
+            movementDirection = 1;
+        }
+        else
+        {
+            movementDirection = -1;
+        }
+
         switch (currentEnemy)
         {
             case EnemyBehav.PATROLLING:
@@ -59,12 +69,12 @@ public class EnemyBehaviour : MonoBehaviour {
                 }
             case EnemyBehav.SUSPICIOUS:
                 {
-                    areaOfVision = 8.0f;
+                    areaOfVision = 9.0f;
                     break;
                 }
             case EnemyBehav.CHASING:
                 {
-                    areaOfVision = 12.0f;
+                    areaOfVision = 15.0f;
                     break;
                 }
         }
@@ -97,11 +107,10 @@ public class EnemyBehaviour : MonoBehaviour {
             EnemyMove();
         }
     }
-
+    
     void UnhidePlayer()
     {
         if (((currentEnemy == EnemyBehav.SUSPICIOUS) || (currentEnemy == EnemyBehav.CHASING)) && (!goToPlayerPos))
-            // if everything is right, the enemy won't be needing to follow the player by this time
         {
             unhidePlayerTime += Time.deltaTime;
             if (unhidePlayerTime > 1.0f)
@@ -112,8 +121,24 @@ public class EnemyBehaviour : MonoBehaviour {
         }
     }
 
-    void OnTriggerStay2D(Collider2D col) // touching player
+    void OnTriggerStay2D(Collider2D col)
     {
+        Debug.Log("works0");
+        if (col.tag == "PlayerBoundary")
+        {
+            Debug.Log("works1");
+            if (movementDirection == 1)
+            {
+                movementDirection = -1;
+                turningTime = -5.0f;
+            }
+            else
+            {
+                movementDirection = 1;
+                turningTime = -5.0f;
+            }
+        }
+
         if (col.gameObject.transform.parent.tag == "Player")
         {
             touchPlayerTime += Time.deltaTime;
@@ -182,7 +207,7 @@ public class EnemyBehaviour : MonoBehaviour {
         }
         else
         {
-            if ((turningTime % 1.0f) > 0.5f) // getting even/uneven number here
+            if (movementDirection == 1)
             {
                 transform.position += tempVecX * Time.deltaTime;
             }

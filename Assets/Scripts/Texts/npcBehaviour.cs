@@ -37,6 +37,7 @@ public class NpcBehaviour : MonoBehaviour
         {
             Debug.Log("Deactivated");
             gameObject.SetActive(false);
+            player.canMove = true;
         }
     }
 

@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
             // Get the index of the current savepoint and the position of the camera
             if (collidingSavepoint != null)
             {
-                game.savepointIndex = collidingSavepoint.savepointIndex;
+                game.savepointId = collidingSavepoint.gameObject.GetComponent<UniqueId>().uniqueId;
                 game.cameraStartPositionX = Camera.main.transform.position.x;
             }
 

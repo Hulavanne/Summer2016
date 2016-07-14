@@ -22,7 +22,7 @@ public class LevelManager : MonoBehaviour
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
 	public List<GameObject> levelsList = new List<GameObject>();
-	public List<Savepoint> savepointsList = new List<Savepoint>();
+    public List<GameObject> savepointsList = new List<GameObject>();
     
     public GameObject ReloadSaveButton;
     public GameObject BackToMenuButton;
@@ -53,25 +53,26 @@ public class LevelManager : MonoBehaviour
 
     void Awake()
 	{
+        current = this;
+
 		// Making sure the game starts from level 1 if playing a build version of the game
 		#if (!UNITY_EDITOR)
         currentLevel = Levels.CIERAN_BEDROOM;
 		#endif
 
-		current = this;
-
 		Transform levelsParent = GameObject.Find("Levels").transform;
-        Transform savepointsParent = GameObject.Find("Savepoints").transform;
+        GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
 
 		for (int i = 0; i < levelsParent.childCount; ++i)
 		{
 			levelsList.Add(levelsParent.GetChild(i).gameObject);
-		}
-
-        for (int i = 0; i < savepointsParent.childCount; ++i)
+        }
+        for (int i = 0; i < npcs.Count(); ++i)
         {
-            savepointsList.Add(savepointsParent.GetChild(i).GetComponent<Savepoint>());
-            savepointsList[i].savepointIndex = i;
+            if (npcs[i].GetComponent<Savepoint>() != null)
+            {
+                savepointsList.Add(npcs[i]);
+            }
         }
 
         lightAmount = lightLevel1;
@@ -202,10 +203,18 @@ public class LevelManager : MonoBehaviour
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
 		lightAmount = levelScript.levelLightAmount;
 
-        Transform spawnPoint = savepointsList[Game.current.savepointIndex].transform.GetChild(0);
-        Vector2 startingPosition = spawnPoint.position;
-		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
+        Vector2 startingPosition = new Vector2(0, 0);
 
+        foreach (GameObject savepoint in savepointsList)
+        {
+            if (savepoint.GetComponent<UniqueId>().uniqueId == Game.current.savepointId)
+            {
+                startingPosition = savepoint.transform.GetChild(0).position;
+                break;
+            }
+        }
+
+		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
 		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//[System.Serializable]
+[RequireComponent(typeof(UniqueId))]
 public class Savepoint : MonoBehaviour
 {
 	public int savepointIndex = 0;

@@ -10,7 +10,6 @@ using System.Collections.Generic;
 public class UniqueIdentifierAttribute : PropertyAttribute { }
 
 [ExecuteInEditMode]
-[RequireComponent (typeof (Item))]
 public class UniqueId : MonoBehaviour
 {
     [UniqueIdentifier]

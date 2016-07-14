@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -22,15 +23,11 @@ public class InventoryManager : MonoBehaviour
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
         itemSlideMenu = transform.GetComponent<ItemSlideMenu>();
 
-        // Get all items in the scene into a list
-        if (GameObject.Find("Items") != null)
-        {
-            Transform itemsParent = GameObject.Find("Items").transform;
+        GameObject[] itemObjects = GameObject.FindGameObjectsWithTag("Item");
 
-            for (int i = 0; i < itemsParent.childCount; ++i)
-            {
-                sceneItems.Add(itemsParent.GetChild(i).GetComponent<Item>());
-            }
+        foreach (GameObject item in itemObjects)
+        {
+            sceneItems.Add(item.GetComponent<Item>());
         }
 
         // Search for saved scene items

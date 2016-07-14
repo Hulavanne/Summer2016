@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [ExecuteInEditMode]
-//[RequireComponent(typeof(UniqueId))]
+[RequireComponent(typeof(UniqueId))]
 public class Item : MonoBehaviour
 {
     public bool usable = false;

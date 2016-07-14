@@ -10,7 +10,7 @@ public class Game
 
 	public bool newGame;
 	public int levelIndex; // Saved level
-	public int savepointIndex = -1; // Index of the savepoint, -1 if there is none
+    public string savepointId; // Index of the savepoint, -1 if there is none
 	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
 	//public Sprite levelImage;
 	public System.DateTime dateTime; // Date and time
@@ -26,6 +26,7 @@ public class Game
 	{
 		newGame = true;
 		levelIndex = 0;
+        savepointId = "";
 		cameraStartPositionX = 0.0f;
 	}
 

@@ -55,7 +55,7 @@ public class LevelManager : MonoBehaviour
 	{
 		// Making sure the game starts from level 1 if playing a build version of the game
 		#if (!UNITY_EDITOR)
-		currentLevel = Levels.LEVEL1;
+        currentLevel = Levels.CIERAN_BEDROOM;
 		#endif
 
 		current = this;

@@ -195,8 +195,6 @@ public class MenuController : MonoBehaviour
 
 		gui.SetActive(true);
         pauseOverlay.SetActive(false);
-
-        TextBoxManager.current.isCursorOnActionButton = false;
     }
 
 	//---------------------LOAD MENU---------------------

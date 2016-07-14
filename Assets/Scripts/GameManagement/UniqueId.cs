@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using UnityEngine;
 using System;
 using System.Collections.Generic;
@@ -46,7 +49,6 @@ public class UniqueId : MonoBehaviour
 
         if (GetInstanceID() != UniqueIdRegistry.GetInstanceId(uniqueId))
         {
-            Debug.Log("NULL or EMPTY");
             uniqueId = Guid.NewGuid().ToString();
             UniqueIdRegistry.Register(uniqueId, GetInstanceID());
         }

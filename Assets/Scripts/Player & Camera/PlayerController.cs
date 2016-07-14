@@ -336,11 +336,6 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
-        if(textRef.isCursorOnActionButton)
-        {
-            return;
-        }
-
 		movementDirection = -1;
 
         PlayerAnimWalk(false);
@@ -364,11 +359,6 @@ public class PlayerController : MonoBehaviour {
 
     public void GoRight()
     {
-        if (textRef.isCursorOnActionButton)
-        {
-            return;
-        }
-
 		movementDirection = 1;
 
         PlayerAnimWalk(true);

@@ -46,7 +46,7 @@ public class TouchInput_Diogo : MonoBehaviour
         UpdateStamina();
         RunCheck();
 
-        if (playerController.textRef.isCursorOnActionButton || !playerController.canMove)
+        if (!playerController.canMove)
         {
             runValue = 0;
         }
@@ -60,81 +60,82 @@ public class TouchInput_Diogo : MonoBehaviour
 
 #if (UNITY_EDITOR || UNITY_STANDALONE)
 
-        if (Input.GetMouseButton(0))
+        if (!EventSystem.current.IsPointerOverGameObject(-1))
         {
-            isPressing = true;
-
-            if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
+            if (Input.GetMouseButton(0))
             {
-                if (!playerController.textRef.isCursorOnActionButton)
+                isPressing = true;
+
+                if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                 {
                     playerController.GoLeft();
                 }
-            }
 
-            else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
-            {
-                if (!playerController.textRef.isCursorOnActionButton)
+                else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
                 {
                     playerController.GoRight();
                 }
             }
-        }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            //Running Input
+            if (Input.GetMouseButtonDown(0))
+            {
+                //Running Input
 
-            if (runValue == 0)
-            {
-                if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
+                if (runValue == 0)
                 {
-                    isTouchingRight = false;
-                    runValue++;
-                }
-                else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
-                {
-                    isTouchingRight = true;
-                    runValue++;
-                }
-            }
-            else if (runValue == 1)
-            {
-                if (runTouchDelay > 0)
-                {
-                    // this will check runValue value, and add 1 if its value is either 0, or 1
-                    // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
-                    if (isTouchingRight)
+                    if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                     {
-                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
-                        {
-                            runValue++;
-                            runTouchDelay = 0;
-                        }
-                        else
-                        {
-                            runValue--;
-                            runTouchDelay = 0;
-                        }
+                        isTouchingRight = false;
+                        runValue++;
                     }
-                    else
+                    else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
                     {
-                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                        isTouchingRight = true;
+                        runValue++;
+                    }
+                }
+                else if (runValue == 1)
+                {
+                    if (runTouchDelay > 0)
+                    {
+                        // this will check runValue value, and add 1 if its value is either 0, or 1
+                        // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
+                        if (isTouchingRight)
                         {
-                            runValue++;
-
-                            runTouchDelay = 0;
+                            if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
+                            {
+                                runValue++;
+                                runTouchDelay = 0;
+                            }
+                            else
+                            {
+                                runValue--;
+                                runTouchDelay = 0;
+                            }
                         }
                         else
                         {
-                            runValue--;
-                            runTouchDelay = 0;
-                        }
-                    }    
-                }
-            }
+                            if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                            {
+                                runValue++;
 
-            runTouchDelay = runTouchDelayMax;
+                                runTouchDelay = 0;
+                            }
+                            else
+                            {
+                                runValue--;
+                                runTouchDelay = 0;
+                            }
+                        }    
+                    }
+                }
+
+                runTouchDelay = runTouchDelayMax;
+            }
+        }
+        else
+        {
+            playerController.PlayerAnimStop();
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -150,24 +151,29 @@ public class TouchInput_Diogo : MonoBehaviour
 
         // For touch device
 #elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
+
         // If user is touching the screen
         if (Input.touchCount > 0)
         {
+            // Only allows for one touch input at a time
             Touch touch = Input.touches[0];
+            //Touch touch = Input.GetTouch(0);
             int pointerID = touch.fingerId;
-            // only allows one touch input at a time    
 
             // If user is not touching a button (eg. pause button)
-            if (!EventSystem.current.IsPointerOverGameObject(pointerID))
+            if (EventSystem.current.IsPointerOverGameObject(pointerID))
+            //if (EventSystem.current.currentSelectedGameObject == null)// && EventSystem.current.currentSelectedGameObject.tag == "FireButton") return;
             {
+                playerController.PlayerAnimStop();
+            }
+            else
+            {
+                // Switching basic touchBegin and touchEnd functions
                 switch (touch.phase)
-                // switching basic touchBegin and End functions    
-
                 {
                     case TouchPhase.Began:
 
                         //Running Input
-
                         if (runValue == 0)
                         {
                             runValue++;

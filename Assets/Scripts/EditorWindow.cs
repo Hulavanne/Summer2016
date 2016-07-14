@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor; //using System.Linq;
 
 namespace CarrotOnFire.Assets.Editor
 {
     public class CarrotFindReferencesHelper : MonoBehaviour
     {
+        #if UNITY_EDITOR
+
         [MenuItem("CONTEXT/Component/Find References to Component")]
         private static void FindReferences(MenuCommand data) { Object context = data.context; if (context) { var comp = context as Component; if (comp) FindReferencesTo(comp); } }
 
@@ -74,5 +79,7 @@ namespace CarrotOnFire.Assets.Editor
                 Selection.objects = referencedBy.ToArray();
             else Debug.Log(string.Format("'{0}': no references in scene", toName));
         }
+
+        #endif
     }
 }

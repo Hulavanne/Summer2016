@@ -5,8 +5,6 @@ public class TextBoxManager : MonoBehaviour
 {
     public static TextBoxManager current;
 
-    public bool isCursorOnActionButton;
-
     public GameFlowManager gameFlow;
 
     public static GameObject currentNPC;
@@ -92,10 +90,8 @@ public class TextBoxManager : MonoBehaviour
             SetCurrentYesNoButtons(); // sets active or not active
             SetCurrentOptButtons(); // sets active or not active
 
-            if (!isCursorOnActionButton &&
-                ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
-                hasClickedYesNoButton ||
-                hasClickedOptButton))
+            if ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
+                hasClickedYesNoButton || hasClickedOptButton)
             {
                 // executes every click without buttons, or every successful button press
                 player.talkToNPC = false;
@@ -276,21 +272,6 @@ public class TextBoxManager : MonoBehaviour
 
             OptTextBox.SetActive(true);
         }
-    }
-
-    public void CursorOverButton()
-    {
-        isCursorOnActionButton = true;
-        //need to make playercontroller function to walk/stop
-        player.playerAnim.SetBool("isWalking", false);
-        player.playerAnim.SetBool("isRunning", false);
-        player.playerAnim.SetBool("isIdle", true);
-    }
-
-    public void CursorOutsideButton()
-    {
-        isCursorOnActionButton = false;
-        player.hasClickedActionButton = false;
     }
     
     void SetCurrentOptButtons()

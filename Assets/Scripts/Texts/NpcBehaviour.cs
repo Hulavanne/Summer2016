@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Asdasdasd : MonoBehaviour
+public class NpcBehaviour : MonoBehaviour
 {
     public Item.type requiredItemType = Item.type.GLOVES;
 

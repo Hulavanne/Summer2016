@@ -7,13 +7,13 @@ public class BehaviourChanger : MonoBehaviour {
     public ActivateTextAtLine textActivate;
     public GameObject doorKitchen; // not activated, set this in inspector
     public GameObject doorKitchenNPC;
-    public Asdasdasd npcKitchen;
+    public NpcBehaviour npcKitchen;
 
 	void Awake ()
     {
         gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
-        npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<Asdasdasd>();
+        npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
         doorKitchenNPC = GameObject.Find("NPC_FrontDoor");
 	}
 

@@ -64,17 +64,17 @@ public class EnemyBehaviour : MonoBehaviour {
         {
             case EnemyBehav.PATROLLING:
                 {
-                    areaOfVision = 6.0f;
+                    areaOfVision = 8.0f;
                     break;
                 }
             case EnemyBehav.SUSPICIOUS:
                 {
-                    areaOfVision = 9.0f;
+                    areaOfVision = 12.0f;
                     break;
                 }
             case EnemyBehav.CHASING:
                 {
-                    areaOfVision = 15.0f;
+                    areaOfVision = 18.0f;
                     break;
                 }
         }
@@ -123,19 +123,12 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D col)
     {
-        Debug.Log("works0");
         if (col.tag == "PlayerBoundary")
         {
-            Debug.Log("works1");
             if (movementDirection == 1)
             {
-                movementDirection = -1;
-                turningTime = -5.0f;
-            }
-            else
-            {
-                movementDirection = 1;
-                turningTime = -5.0f;
+                movementDirection *= -1;
+                turningTime = -2.0f;
             }
         }
 
@@ -229,7 +222,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (turningTime > 1.0f)
         {
-            turningTime = 0.0f;
+            turningTime = Random.Range(-2.0f, -1.0f);
         }
     }
 

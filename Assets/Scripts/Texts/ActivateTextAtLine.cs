@@ -40,7 +40,7 @@ public class ActivateTextAtLine : MonoBehaviour
     public bool waitForPress;
 
     public GameObject currentNPC;
-    public NpcBehaviour npcBehav;
+    public Asdasdasd npcBehav;
 
     public bool destroyWhenActivated;
 
@@ -76,7 +76,7 @@ public class ActivateTextAtLine : MonoBehaviour
     public void ChooseNPC()
     {
         currentNPC = GameObject.Find(playerController.overlappingNpc.name);
-        npcBehav = currentNPC.GetComponent<NpcBehaviour>();
+        npcBehav = currentNPC.GetComponent<Asdasdasd>();
 
         ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
             npcBehav.textStartLine, npcBehav.textEndLine);

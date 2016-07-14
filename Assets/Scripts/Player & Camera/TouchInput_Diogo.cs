@@ -233,18 +233,12 @@ public class TouchInput_Diogo : MonoBehaviour
 
                 if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                 {
-                    if (!playerController.textRef.isCursorOnActionButton)
-                    {
-                        playerController.GoLeft();
-                    }
+                     playerController.GoLeft();
                 }
 
                 else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                 {
-                    if (!playerController.textRef.isCursorOnActionButton)
-                    {
-                        playerController.GoRight();
-                    }
+                     playerController.GoRight();
                 }
             }
         }

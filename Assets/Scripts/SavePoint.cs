@@ -1,19 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(UniqueId))]
+[ExecuteInEditMode]
 public class Savepoint : MonoBehaviour
 {
-	public int savepointIndex = 0;
-
-	MenuController menuController;
-    PlayerController player;
-    TextBoxManager textManager;
+    public MenuController menuController;
+    public PlayerController player;
+    public TextBoxManager textManager;
 
 	bool isOverlappingPlayer;
 
 	void Awake()
 	{
+        #if UNITY_EDITOR
+
+        if (transform.GetComponent<UniqueId>() == null)
+        {
+            gameObject.AddComponent<UniqueId>();
+        }
+
+        #endif
+
 		if (GameObject.Find("InGameUI") != null)
 		{
 			menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();

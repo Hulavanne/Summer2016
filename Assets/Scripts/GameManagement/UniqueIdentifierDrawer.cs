@@ -13,8 +13,8 @@ public class UniqueIdentifierDrawer : PropertyDrawer
         // Generate a unique ID, defaults to an empty string if nothing has been serialized yet
         if (prop.stringValue == "")
         {
-            Guid guid = Guid.NewGuid();
-            prop.stringValue = guid.ToString();
+            //Guid guid = Guid.NewGuid();
+            //prop.stringValue = guid.ToString();
         }
 
         // Place a label so it can't be edited by accident

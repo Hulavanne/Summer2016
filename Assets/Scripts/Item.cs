@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+//using UnityEditor;
+#endif
+
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
-[RequireComponent(typeof(UniqueId))]
 public class Item : MonoBehaviour
 {
     public bool usable = false;
+    public int charges = 1;
 
     public enum type
     {
@@ -16,7 +19,6 @@ public class Item : MonoBehaviour
     };
     public type itemType = type.WHATEVER;
 
-    public string id;
     public string displayName;
     public Sprite icon;
     public string description;
@@ -25,15 +27,6 @@ public class Item : MonoBehaviour
 
     void Awake()
     {
-        #if UNITY_EDITOR
-
-        if (transform.GetComponent<UniqueId>() != null)
-        {
-            id = transform.GetComponent<UniqueId>().uniqueId;
-        }
-
-        #endif
-
         if (itemType == type.GLOVES)
         {
             transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
@@ -42,14 +35,7 @@ public class Item : MonoBehaviour
 
     void Update()
     {
-        #if UNITY_EDITOR
-
-        if (transform.GetComponent<UniqueId>() != null)
-        {
-            id = transform.GetComponent<UniqueId>().uniqueId;
-        }
-
-        #endif
+        charges = itemData.charges;
     }
 
     public void UseItem()
@@ -61,6 +47,15 @@ public class Item : MonoBehaviour
         else
         {
             Debug.Log("No NpcBehaviour found");
+        }
+
+        --itemData.charges;
+
+        if (itemData.charges == 0)
+        {
+            // Remove the item from inventory
+            Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
+            inventory.RemoveItemFromInventory(itemData.id);
         }
     }
 }

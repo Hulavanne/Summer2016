@@ -392,10 +392,10 @@ public class MenuController : MonoBehaviour
 		Slider gammaSlider = transform.FindChild("GammaSlider").GetComponent<Slider>();
 		GameObject mutedImage = transform.FindChild("MuteButton").FindChild("MutedImage").gameObject;
 
-		masterVolumeSlider.value = AudioManager.masterVolume;
-		musicVolumeSlider.value = AudioManager.musicVolume;
-		soundEffectsVolumeSlider.value = AudioManager.soundEffectsVolume;
-		gammaSlider.value = GameManager.gammaValue;
+		masterVolumeSlider.value = AudioManager.masterVolume * 100;
+        musicVolumeSlider.value = AudioManager.musicVolume * 100;
+        soundEffectsVolumeSlider.value = AudioManager.soundEffectsVolume * 100;
+        gammaSlider.value = GameManager.gammaValue * 100;
 		mutedImage.SetActive(AudioManager.audioMuted);
 
 		//SetMasterVolume(masterVolumeSlider);
@@ -412,17 +412,20 @@ public class MenuController : MonoBehaviour
 
 	public void SetMasterVolume(Slider slider)
 	{
-		AudioManager.current.SetMasterVolume(slider.value);
+		AudioManager.current.SetMasterVolume(slider.value / 100);
+        slider.transform.FindChild("Percentage").GetComponent<Text>().text = slider.value.ToString() + "%";
 	}
 
 	public void SetMusicVolume(Slider slider)
 	{
-		AudioManager.current.SetMusicVolume(slider.value);
+        AudioManager.current.SetMusicVolume(slider.value / 100);
+        slider.transform.FindChild("Percentage").GetComponent<Text>().text = slider.value.ToString() + "%";
 	}
 
 	public void SetSoundEffectsVolume(Slider slider)
 	{
-		AudioManager.current.SetSoundEffectsVolume(slider.value);
+        AudioManager.current.SetSoundEffectsVolume(slider.value / 100);
+        slider.transform.FindChild("Percentage").GetComponent<Text>().text = slider.value.ToString() + "%";
 
 		if (gameObject.activeSelf)
 		{
@@ -433,6 +436,7 @@ public class MenuController : MonoBehaviour
 
 	public void SetGamma(Slider slider)
 	{
-		GameManager.current.SetGamma(slider.value);
+        GameManager.current.SetGamma(slider.value / 100);
+        slider.transform.FindChild("Percentage").GetComponent<Text>().text = slider.value.ToString() + "%";
 	}
 }

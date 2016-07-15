@@ -1,8 +1,4 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
 
@@ -40,11 +36,6 @@ public class UniqueId : MonoBehaviour
     void Update()
     {
         #if UNITY_EDITOR
-
-        if(EditorApplication.isPlaying )
-        {
-            return;
-        }
 
         if (GetInstanceID() != UniqueIdRegistry.GetInstanceId(uniqueId))
         {

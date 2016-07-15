@@ -115,6 +115,19 @@ public class LevelManager : MonoBehaviour
 		{
 			SetLighting();
 		}
+
+        // Keeps the current level active, deactivates all others
+        foreach (GameObject level in levelsList)
+        {
+            if (level.GetComponent<Level>().levelName != currentLevel)
+            {
+                //level.SetActive(false);
+            }
+            else
+            {
+                //level.SetActive(true);
+            }
+        }
 	}
 
     public void SetLighting()

@@ -9,7 +9,7 @@ public class InventoryManager : MonoBehaviour
 	public int currentSlideIndex = 0;
 	public int numberOfSlides;
 
-    public List<Item> sceneItems = new List<Item>(); // List of all item data in the scene
+    public List<Item> sceneItems = new List<Item>(); // List of all items in the scene
 
 	Inventory inventory;
     ItemSlideMenu itemSlideMenu;
@@ -30,10 +30,18 @@ public class InventoryManager : MonoBehaviour
             sceneItems.Add(item.GetComponent<Item>());
         }
 
+        if (Game.current != null)
+        {
+            foreach (ItemData itemData in Game.current.itemsDataScene)
+            {
+                //Debug.Log(itemData.id);
+            }
+        }
+
         // Search for saved scene items
         for (int i = 0; i < sceneItems.Count; ++i)
         {
-            bool initialized = false;
+            bool dataLoaded = false;
 
             if (Game.current != null)
             {
@@ -46,15 +54,15 @@ public class InventoryManager : MonoBehaviour
                     for (int j = 0; j < savedData.Count; ++j)
                     {
                         // If saved items are found, set itemData to what was found and deactivate gameObject
-                        if (sceneItems[i].id == savedData[j].id)
+                        if (sceneItems[i].GetComponent<UniqueId>().uniqueId == savedData[j].id)
                         {
                             sceneItems[i].itemData = savedData[j];
-                            initialized = true;
+                            dataLoaded = true;
                             break;
                         }
                     }
 
-                    if (!initialized)
+                    if (!dataLoaded)
                     {
                         Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
                     }
@@ -75,9 +83,9 @@ public class InventoryManager : MonoBehaviour
                 }
             }
 
-            if (!initialized)
+            if (!dataLoaded)
             {
-                sceneItems[i].itemData = new ItemData(sceneItems[i].id, false);
+                sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
             }
         }
 
@@ -86,7 +94,20 @@ public class InventoryManager : MonoBehaviour
             // If current game is a loaded game
             if (!Game.current.newGame)
             {
+                // Adding saved items' data to inventory
                 inventory.itemsData = Game.current.itemsDataInventory;
+
+                // Adding saved items to inventory
+                for (int i = 0; i < sceneItems.Count; ++i)
+                {
+                    for (int j = 0; j < inventory.itemsData.Count; ++j)
+                    {
+                        if (sceneItems[i].itemData.id == inventory.itemsData[j].id)
+                        {
+                            inventory.items.Add(sceneItems[i]);
+                        }
+                    }
+                }
             }
         }
 
@@ -110,7 +131,7 @@ public class InventoryManager : MonoBehaviour
         {
             for (int j = 0; j < sceneItems.Count; ++j)
             {
-                if (inventory.itemsData[i].id == sceneItems[j].id)
+                if (inventory.itemsData[i].id == sceneItems[j].itemData.id)
                 {
                     data.Add(sceneItems[j]);
                 }

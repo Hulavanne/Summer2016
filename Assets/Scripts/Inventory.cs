@@ -47,7 +47,7 @@ public class Inventory : MonoBehaviour
 
         for (int i = 0; i < sceneItems.Count; ++i)
         {
-            if (itemId == sceneItems[i].id)
+            if (itemId == sceneItems[i].itemData.id)
             {
                 itemsData.Remove(sceneItems[i].itemData);
                 items.Remove(sceneItems[i]);

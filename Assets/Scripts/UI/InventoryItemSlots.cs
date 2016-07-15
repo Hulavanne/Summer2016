@@ -185,11 +185,7 @@ public class InventoryItemSlots : MonoBehaviour
             // Use the item
             itemsInSlots[inspectedItemIndex].GetComponent<Item>().UseItem();
 
-            // Remove the item from inventory
-            Inventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
-            inventory.RemoveItemFromInventory(itemsInSlots[inspectedItemIndex].id);
-
-            // Stop the inspection and resume game
+            // Stop the inspection and then resume game
             StopInspectingItem();
             transform.parent.parent.parent.GetComponent<MenuController>().ResumeGame();
 

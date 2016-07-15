@@ -8,10 +8,15 @@ public class ItemData
     public string dataStatus;
     public bool collected;
 
-    public ItemData(string itemID, bool isCollected)
+    [HideInInspector]
+    public int charges;
+
+    public ItemData(string itemID, int itemCharges)
 	{
         id = itemID;
         dataStatus = "Original Data";
-        collected = isCollected;
+        collected = false;
+
+        charges = itemCharges;
 	}
 }

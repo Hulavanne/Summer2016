@@ -94,7 +94,6 @@ public class GameManager : MonoBehaviour
             {
                 InventoryManager.current.sceneItems[i].itemData.dataStatus = "Modified Data";
                 game.itemsDataScene.Add(InventoryManager.current.sceneItems[i].itemData);
-                Debug.Log("Scene Item " + i + " added");
             }
 
             // Update the items in the player's inventory of the current game
@@ -115,7 +114,7 @@ public class GameManager : MonoBehaviour
 
 	public void LoadGraphicalSettings()
 	{
-		GameManager.gammaValue = PlayerPrefs.GetFloat("GammaValue", 0.5f);
+		GameManager.gammaValue = PlayerPrefs.GetFloat("GammaValue", 1.0f);
 		SetGamma(GameManager.gammaValue);
 	}
 
@@ -127,8 +126,13 @@ public class GameManager : MonoBehaviour
 
 	public void SetGamma(float newValue)
 	{
-		//Debug.Log("Gamma Changed");
 		GameManager.gammaValue = newValue;
+
+        // Update gamma
+        if (Camera.main.GetComponent<Brightness>() != null)
+        {
+            Camera.main.GetComponent<Brightness>().brightness = GameManager.gammaValue;
+        }
 	}
 
     void UpdateItemIds()

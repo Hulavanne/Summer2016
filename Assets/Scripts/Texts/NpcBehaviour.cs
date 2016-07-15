@@ -14,6 +14,7 @@ public class NpcBehaviour : MonoBehaviour
     public TextAsset text;
     public int[] buttonsYesNo;
     public int[] buttonsOpt;
+    public int behaviour;
     public int textStartLine;
     public int textEndLine;
     public string button1Text, button2Text, button3Text, button4Text;

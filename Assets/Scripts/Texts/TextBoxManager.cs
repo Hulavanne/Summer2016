@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine.UI;
 public class TextBoxManager : MonoBehaviour
 {
@@ -119,46 +121,29 @@ public class TextBoxManager : MonoBehaviour
         }
     }
 
-    void TypeLetter(bool type, string textLine, int thisLetter)
+    void LateUpdate()
     {
-        /*
-        if (type)
-        {
-            theText.text += textLine[thisLetter]; // adds one letter to the textBox
-            thisLetter += 1; // adds 1 to letter variable
-            return;
-        }
-        else
-        {
-            return;
-        }
-        */
+        player.hasClickedActionButton = false;
     }
 
-    void _TextScroll(string lineOfText)
+    public static string[] SplitExludeQuotes(string aText, char aSplitChar)
     {
-        /*
-        int letter = 0; // int for the number of letters
-        theText.text = "";
-
-        isTyping = true;
-        cancelTyping = false;
-
-        while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
+        StringBuilder sb = new StringBuilder();
+        List<string> result = new List<string>();
+        bool insideQuote = false;
+        foreach (char c in aText)
         {
-            theText.text += lineOfText[letter]; // adds one letter to the textBox
-            letter += 1; // adds 1 to letter variable
-            //TypeLetter(canType, lineOfText, letter);    
+            if (c == '"')
+                insideQuote = !insideQuote;
+            else if (c == aSplitChar)
+            {
+                result.Add(sb.ToString());
+                sb.Length = 0;
+                continue;
+            }
+            sb.Append(c);
         }
-        // the loop ends if the line has reached its end
-
-        GetYesNoButtonLines(); // checks the display of buttons
-        GetOptButtonLines(); // checks the display of buttons
-
-        theText.text = lineOfText; // adds one line of text if it exists
-        isTyping = false;
-        cancelTyping = false;
-        */
+        return result.ToArray();
     }
 
     private IEnumerator TextScroll(string lineOfText)
@@ -171,8 +156,28 @@ public class TextBoxManager : MonoBehaviour
 
         while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
         {
-            theText.text += lineOfText[letter]; // adds one letter to the textBox
-            letter += 1; // adds 1 to letter variable
+            if (lineOfText[letter] == ('"')
+                || lineOfText[letter] == ('\"')
+                || lineOfText[letter] == ('\'')) // creating string escape character exception for " and '
+            {
+                Debug.Log("working2");
+                if (lineOfText[letter + 1] == '\'')
+                {
+                    Debug.Log("working0");
+                }
+                else if (lineOfText[letter + 1] == '\"')
+                {
+                    Debug.Log("working1");
+                }
+                
+                //theText.text = theText.text + '\"' + lineOfText[letter + 1];
+                //letter += 2;
+            }
+            else
+            {
+                theText.text += lineOfText[letter]; // adds one letter to the textBox
+                letter += 1; // adds 1 to letter variable
+            }
             yield return new WaitForSeconds(typeSpeed); // waits for an amount of time
         }
         // the loop ends if the line has reached its end

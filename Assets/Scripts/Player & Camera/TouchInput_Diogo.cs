@@ -15,7 +15,7 @@ public class TouchInput_Diogo : MonoBehaviour
 
     public int runValue = 0;
     public float runTouchDelay = 0;
-    float runTouchDelayMax = 1;
+    float runTouchDelayMax = 2.0f;
     public bool isTouchingRight;
     bool isTouching;
 
@@ -79,8 +79,6 @@ public class TouchInput_Diogo : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                //Running Input
-
                 if (runValue == 0)
                 {
                     if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
@@ -99,10 +97,9 @@ public class TouchInput_Diogo : MonoBehaviour
                     if (runTouchDelay > 0)
                     {
                         // this will check runValue value, and add 1 if its value is either 0, or 1
-                        // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
-                        if (isTouchingRight)
+                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
                         {
-                            if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
+                            if (isTouchingRight)
                             {
                                 runValue++;
                                 runTouchDelay = 0;
@@ -115,10 +112,9 @@ public class TouchInput_Diogo : MonoBehaviour
                         }
                         else
                         {
-                            if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                            if (!isTouchingRight)
                             {
                                 runValue++;
-
                                 runTouchDelay = 0;
                             }
                             else
@@ -126,7 +122,22 @@ public class TouchInput_Diogo : MonoBehaviour
                                 runValue--;
                                 runTouchDelay = 0;
                             }
-                        }    
+                        }
+                    }
+                }
+
+                else
+                {
+                    if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
+                    {
+                        runValue++;
+
+                        runTouchDelay = 0;
+                    }
+                    else
+                    {
+                        runValue--;
+                        runTouchDelay = 0;
                     }
                 }
 
@@ -141,11 +152,9 @@ public class TouchInput_Diogo : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             playerController.PlayerAnimStop();
-            // Running Input
             if (runValue == 2)
             {
-                // if at any point the player releases the touch while the value is 2, it resets to 0
-                runValue = 0;
+                runValue = 0; // if at any point the player releases the touch while the value is 2, it resets to 0
             }
         }
 
@@ -168,77 +177,99 @@ public class TouchInput_Diogo : MonoBehaviour
             }
             else
             {
-                // Switching basic touchBegin and touchEnd functions
-                switch (touch.phase)
+                if (!EventSystem.current.IsPointerOverGameObject(-1))
                 {
-                    case TouchPhase.Began:
+                    if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+                    {
+                        isPressing = true;
 
-                        //Running Input
+                        if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
+                        {
+                            playerController.GoLeft();
+                        }
+
+                        else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
+                        {
+                            playerController.GoRight();
+                        }
+                    }
+
+                    if (touch.phase == TouchPhase.Began)
+                    {
                         if (runValue == 0)
                         {
-                            runValue++;
-
                             if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                             {
                                 isTouchingRight = false;
+                                runValue++;
                             }
                             else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                             {
                                 isTouchingRight = true;
+                                runValue++;
                             }
                         }
                         else if (runValue == 1)
                         {
-                            if (runTouchDelay > 0)
+                           if (runTouchDelay > 0)
+                    {
+                        // this will check runValue value, and add 1 if its value is either 0, or 1
+                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
+                        {
+                            if (isTouchingRight)
                             {
-                                // this will check runValue value, and add 1 if its value is either 0, or 1
-                                // it will only add 1 to runValue = 1 (making it 2) if the runTouchDelay hasn't elapsed
-                                if (isTouchingRight)
-                                {
-                                    if (!((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
-                                    {
-                                        runValue++;
-                                    }
-                                }
-                                else
-                                {
-                                    if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
-                                    {
-                                        runValue++;
-                                    }
-                                }
-                            
+                                runValue++;
+                                runTouchDelay = 0;
+                            }
+                            else
+                            {
+                                runValue--;
+                                runTouchDelay = 0;
                             }
                         }
-
-                        runTouchDelay = runTouchDelayMax;
-
-                        break;
-
-                    case TouchPhase.Ended:
-                        
-                        playerController.PlayerAnimStop();
-
-                        if (runValue == 2)
+                        else
                         {
-                            // if at any point the player releases the touch while the value is 2, it resets to 0
-                            runValue = 0;
+                            if (!isTouchingRight)
+                            {
+                                runValue++;
+                                runTouchDelay = 0;
+                            }
+                            else
+                            {
+                                runValue--;
+                                runTouchDelay = 0;
+                            }
                         }
+                    }
+                        }
+                        else
+                        {
+                            if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
+                            {
+                                runValue++;
+                                runTouchDelay = 0;
+                            }
+                            else
+                            {
+                                runValue--;
+                                runTouchDelay = 0;
+                            }
+                        }
+                    }
 
-                        break;
-
+                    runTouchDelay = runTouchDelayMax;
                 }
-                
-                isPressing = true;
-
-                if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
+                else
                 {
-                     playerController.GoLeft();
+                    playerController.PlayerAnimStop();
                 }
-
-                else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
+                if (touch.phase == TouchPhase.Ended)
                 {
-                     playerController.GoRight();
+                    playerController.PlayerAnimStop();
+                    if (runValue == 2)
+                    {
+                        runValue = 0; // if at any point the player releases the touch while the value is 2, it resets to 0
+                    }
                 }
             }
         }

@@ -27,6 +27,7 @@ public class ForegroundBehaviour : MonoBehaviour
         mainCamera = GameObject.Find("MainCamera");
         playerControl = GameObject.Find("Player").GetComponent<PlayerController>();
         boundaryAverage = (boundary2.transform.position.x - boundary1.transform.position.x) / 2;
+
     }
 
     void Update()

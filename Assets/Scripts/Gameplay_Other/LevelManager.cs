@@ -117,8 +117,6 @@ public class LevelManager : MonoBehaviour
 
 	void Update()
     {
-        Debug.Log(Game.current);
-
 		if (!player.switchingLevel)
 		{
 			SetLighting();

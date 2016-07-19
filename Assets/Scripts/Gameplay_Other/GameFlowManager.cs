@@ -53,7 +53,6 @@ public class GameFlowManager : MonoBehaviour
         player.DeactivateSelection();
         npcBehav.textStartLine = startLine;
         npcBehav.textEndLine = endLine;
-        npcBehav.behaviour++;
     }
 
     //this function only gets called after speaking with an NPC
@@ -65,6 +64,7 @@ public class GameFlowManager : MonoBehaviour
             if (npcBehav.behaviour == 0)
             {
                 ChangeLines(3, 4);
+                npcBehav.behaviour++;
                 player.npcWaitTime = 2.0f;
                 isNPCAutomatic = true;
                 player.isIntro = false;
@@ -84,6 +84,7 @@ public class GameFlowManager : MonoBehaviour
             if (npcBehav.behaviour == 0)
             {
                 ChangeLines(6, 7);
+                npcBehav.behaviour++;
             }
             else if (npcBehav.behaviour == 1)
             {
@@ -92,6 +93,7 @@ public class GameFlowManager : MonoBehaviour
             else if (npcBehav.behaviour == 2)
             {
                 ChangeLines(13, 13);
+                npcBehav.behaviour++;
                 GameObject.Find("DeathCap").transform.position =
                     player.transform.position;
                 player.DeactivateSelection();
@@ -111,6 +113,7 @@ public class GameFlowManager : MonoBehaviour
             if (npcBehav.behaviour == 0)
             {
                 ChangeLines(1, 1);
+                npcBehav.behaviour++;
                 berries.SetActive(true);
             }
             else if (npcBehav.behaviour == 1)

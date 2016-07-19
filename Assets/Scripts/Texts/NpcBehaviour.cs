@@ -59,12 +59,8 @@ public class NpcBehaviour : MonoBehaviour
         {
             if (name == "NPC_Deer")
             {
-                Debug.Log("display dialogue");
-                gameflow.ChangeLines(9, 11);
-                gameflow.npcBehav.behaviour = 2;
-                gameflow.isNPCAutomatic = true;
+                EventManager.current.InteractWithDeer(true);
             }
-           
         }
     }
 

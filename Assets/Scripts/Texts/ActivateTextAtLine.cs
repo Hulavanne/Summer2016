@@ -68,27 +68,26 @@ public class ActivateTextAtLine : MonoBehaviour
     {
         if (playerController.talkToNPC)
         {
-            ChooseNPC();
+            currentNPC = GameObject.Find(playerController.overlappingNpc.name);
+            npcBehav = currentNPC.GetComponent<NpcBehaviour>();
+
+            if (npcBehav.transform.name == "NPC_Deer")
+            {
+                EventManager.current.InteractWithDeer(false);
+            }
+
+            ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
+                npcBehav.textStartLine, npcBehav.textEndLine);
+
             playerController.talkToNPC = false;
         }
-    }
-
-    public void ChooseNPC()
-    {
-        currentNPC = GameObject.Find(playerController.overlappingNpc.name);
-        npcBehav = currentNPC.GetComponent<NpcBehaviour>();
-
-        ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
-            npcBehav.textStartLine, npcBehav.textEndLine);
     }
 
     public void ReloadTextRefScript(TextAsset currentText,
         int[] currentYesNoButtons, int[] currentOptButtons,
         int npcStartLine, int npcEndLine)
     {
-        playerController.talkToNPC = false;
-        playerController.playerAnim.SetBool("isIdle", true);
-        playerController.playerAnim.SetBool("isWalking", false);
+        playerController.PlayerAnimStop();
 
         theTextBox.ReloadButtons(Button1, Button2, Button3, Button4,
             Button1G, Button2G, Button3G, Button4G);

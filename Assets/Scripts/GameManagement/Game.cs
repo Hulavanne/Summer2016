@@ -43,7 +43,7 @@ public class Game
 
 	public void PrintGameVariables()
 	{
-		Debug.Log("Level: " + levelIndex +
+        Debug.Log("Level: " + levelIndex +
 			" | Savepoint: " + dateTime +
 			" | Date and Time: " + dateTime +
 			" | Played Time: " + playedTime +

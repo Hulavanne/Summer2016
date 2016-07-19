@@ -47,6 +47,10 @@ public class EventManager : MonoBehaviour
         {
             OpenKitchenDoor();
         }
+        else if (eventAction == EventManager.Events.CHANGE_DEER_STATE)
+        {
+            //InteractWithDeer(true);
+        }
     }
 
     public void OpenKitchenDoor()
@@ -54,9 +58,7 @@ public class EventManager : MonoBehaviour
         if (!Game.current.triggeredEvents.Keys.Contains(EventManager.Events.OPEN_KITCHEN_DOOR))
         {
             Game.current.triggeredEvents.Add(EventManager.Events.OPEN_KITCHEN_DOOR, 0);
-            Debug.Log("ADDED");
         }
-        else Debug.Log("NOT ADDED");
 
         GameObject doorKitchen = GameObject.Find("Levels").transform.FindChild("Kitchen").FindChild("Objects").GetChild(1).gameObject;
         NpcBehaviour npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
@@ -83,8 +85,46 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void TalkToDeer()
+    public void InteractWithDeer(bool givingBerries)
     {
-        //(int)Events.DEER_STATE = 4;
+        int value = 0;
+
+        if (!Game.current.triggeredEvents.Keys.Contains(EventManager.Events.CHANGE_DEER_STATE))
+        {
+            Game.current.triggeredEvents.Add(EventManager.Events.CHANGE_DEER_STATE, 0);
+        }
+        else
+        {
+            if (Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] < 1)
+            {
+                Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] += 1;
+            }
+
+            value = Game.current.triggeredEvents[Events.CHANGE_DEER_STATE];
+        }
+
+        if (givingBerries)
+        {
+            //do something
+            return;
+        }
+
+        if (value == 0)
+        {
+            GameFlowManager.current.ChangeLines(0, 4);
+        }
+        else if (value == 1)
+        {
+            GameFlowManager.current.ChangeLines(6, 7);
+        }
+        else
+        {
+            Debug.Log("WERKS");
+        }
+
+        Debug.Log("display dialogue");
+        GameFlowManager.current.ChangeLines(9, 11);
+        GameFlowManager.current.npcBehav.behaviour = 2;
+        GameFlowManager.current.isNPCAutomatic = true;
     }
 }

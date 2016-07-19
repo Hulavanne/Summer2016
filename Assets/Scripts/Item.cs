@@ -15,10 +15,10 @@ public class Item : MonoBehaviour
 
     public enum type
     {
-        WHATEVER,
+        BERRIES,
         GLOVES,
     };
-    public type itemType = type.WHATEVER;
+    public type itemType;
 
     public string displayName;
     public Sprite icon;

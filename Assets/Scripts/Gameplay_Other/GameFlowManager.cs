@@ -48,6 +48,8 @@ public class GameFlowManager : MonoBehaviour
 
     public void ChangeLines(int startLine, int endLine)
     {
+        npcBehav = GameObject.Find(npcName).GetComponent<NpcBehaviour>();
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
         player.DeactivateSelection();
         npcBehav.textStartLine = startLine;
         npcBehav.textEndLine = endLine;
@@ -89,6 +91,13 @@ public class GameFlowManager : MonoBehaviour
             }
             else if (npcBehav.behaviour == 2)
             {
+                ChangeLines(13, 13);
+                GameObject.Find("DeathCap").transform.position =
+                    player.transform.position;
+                player.DeactivateSelection();
+            }
+            else if (npcBehav.behaviour == 3)
+            {
                 player.DeactivateSelection();
             }
             npcBehav = null;
@@ -96,16 +105,21 @@ public class GameFlowManager : MonoBehaviour
 
         if (npcName == "NPC_Lilies")
         {
+            npcBehav = GameObject.Find("NPC_Lilies").GetComponent<NpcBehaviour>();
+            GameObject berries = GameObject.Find("Items").transform.FindChild("Berries").gameObject;
+            berries.transform.position = npcBehav.transform.position;
             if (npcBehav.behaviour == 0)
             {
-                ChangeLines(1, 1); 
-                //spawn berries object
+                ChangeLines(1, 1);
+                berries.SetActive(true);
             }
             else if (npcBehav.behaviour == 1)
             {
                 player.DeactivateSelection();
             }
+            npcBehav = null;
         }
+
         DestroyNPC(); // checks and destroys the npc if the bool is true
     }
 }

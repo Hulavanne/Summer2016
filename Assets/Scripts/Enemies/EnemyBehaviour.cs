@@ -15,6 +15,7 @@ public class EnemyBehaviour : MonoBehaviour {
     // distance from enemy to Player (placeholder) : will modulate and subtract playerPos with enemyPos and create a vector for it.
     public float distanceBetweenPlayer, playerPos, enemyPos;
 
+    public Vector3 initPos;
     public bool goToPlayerPos;
     public bool isTouchingPlayer;
     public float areaOfVision = 6.0f; // distance radius to start chasing
@@ -46,6 +47,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void Awake()
     {
+        initPos = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
         playerObj = GameObject.Find("Player");
         player = playerObj.GetComponent<PlayerController>();
         currentEnemy = EnemyBehav.PATROLLING;
@@ -55,13 +57,16 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         UnhidePlayer();
 
-        if ((turningTime % 1.0f) > 0.5f && turningTime >= 0.0f)
+        if (currentEnemy == EnemyBehav.SUSPICIOUS)
         {
-            movementDirection = 1;
-        }
-        else
-        {
-            movementDirection = -1;
+            if ((turningTime % 1.0f) > 0.5f && turningTime >= 0.0f)
+            {
+                movementDirection = 1;
+            }
+            else
+            {
+                movementDirection = -1;
+            }
         }
 
         switch (currentEnemy)
@@ -112,7 +117,6 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         if ((currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING) && isTouchingPlayer)
         {
-            Debug.Log("amigaaa");
             unhidePlayerTime += Time.deltaTime;
             if (unhidePlayerTime > 1.0f)
             {
@@ -128,19 +132,16 @@ public class EnemyBehaviour : MonoBehaviour {
         {
             isTouchingPlayer = true;
         }
+
+        if (col.tag == "PlayerBoundary")
+        {
+            movementDirection *= -1;
+            turningTime = -2.0f;
+        }
     }
 
     void OnTriggerStay2D(Collider2D col)
     {
-        if (col.tag == "PlayerBoundary")
-        {
-            if (movementDirection == 1)
-            {
-                movementDirection *= -1;
-                turningTime = -2.0f;
-            }
-        }
-
         if (col.gameObject.transform.parent.tag == "Player")
         {
             if (!player.isHidden)
@@ -168,16 +169,21 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void EnemyMove()
     {
+        if (TextBoxManager.current.isTalkingToNPC)
+        {
+            return;
+        }
+
         Vector3 tempVecX = new Vector3 (movementSpeed, 0, 0); // normal movement
         Vector3 tempVecRunX = new Vector3 (chaseSpeed, 0, 0); // chasing movement
         
         if (currentEnemy == EnemyBehav.PATROLLING)
         {
-            if (playerObj.transform.position.x > transform.position.x)
+            if (movementDirection == 1)
             {
                 transform.position += tempVecX * Time.deltaTime;
             }
-            else if (playerObj.transform.position.x < transform.position.x)
+            else if (movementDirection == -1)
             {
                 transform.position -= tempVecX * Time.deltaTime;
             }
@@ -185,11 +191,11 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (currentEnemy == EnemyBehav.CHASING || currentEnemy == EnemyBehav.SUSPICIOUS)
         {
-            if (playerObj.transform.position.x > transform.position.x)
+            if (movementDirection == 1)
             {
                 transform.position += tempVecRunX * Time.deltaTime;
             }
-            else if (playerObj.transform.position.x < transform.position.x)
+            else if (movementDirection == -1)
             {
                 transform.position -= tempVecRunX * Time.deltaTime;
             }
@@ -202,10 +208,15 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         if (thisEnemyLevel != LevelManager.current.currentLevel)
         {
+            transform.position = initPos;
+            return;
+        }
+        if (TextBoxManager.current.isTalkingToNPC)
+        {
             return;
         }
 
-        Vector3 tempVecX = new Vector3(1.0f, 0, 0); // normal movement
+        Vector3 tempVecX = new Vector3(movementSpeed, 0, 0); // normal movement
 
         if (goToPlayerPos)
         {

@@ -17,6 +17,7 @@ public class Item : MonoBehaviour
     {
         BERRIES,
         GLOVES,
+        DEATH_CAP,
     };
     public type itemType;
 

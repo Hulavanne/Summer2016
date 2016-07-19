@@ -33,6 +33,20 @@ public class NpcBehaviour : MonoBehaviour
         inventory = player.GetComponentInChildren<Inventory>();
     }
 
+    void Update()
+    {
+        if (name == "NPC_Deer")
+        {
+            if (GameObject.Find(name).GetComponent<NpcBehaviour>().behaviour == 3)
+            {
+                if (LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER)
+                {
+                    GameObject.Find(name).SetActive(false);
+                }
+            }
+        }
+    }
+
     public void TriggerAction()
     {
         if (action == Actions.DEACTIVATE)
@@ -43,9 +57,14 @@ public class NpcBehaviour : MonoBehaviour
         }
         if (action == Actions.DIALOGUE)
         {
-            Debug.Log("display dialogue");
-            gameflow.ChangeLines(8, 9);
-            gameflow.isNPCAutomatic = true;
+            if (name == "NPC_Deer")
+            {
+                Debug.Log("display dialogue");
+                gameflow.ChangeLines(9, 11);
+                gameflow.npcBehav.behaviour = 2;
+                gameflow.isNPCAutomatic = true;
+            }
+           
         }
     }
 

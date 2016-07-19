@@ -11,24 +11,34 @@ public class Game
 	public bool newGame;
 	public int levelIndex; // Saved level
     public string savepointId; // Index of the savepoint, -1 if there is none
-    public EventFlags eventFlags;
-	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
-	public System.DateTime dateTime; // Date and time
-    public double playedTime = 0.0f; // Seconds (with decimals) spent in-game
-	public int seconds = 0; // Seconds spent in-game
-	public int minutes = 0; // Minutes spent in-game
-	public int hours = 0; // Hours spent in-game
 
-    public List<ItemData> itemsDataScene = new List<ItemData>();
-    public List<ItemData> itemsDataInventory = new List<ItemData>();
+    //public List<bool> eventFlags;
+    public Dictionary<EventManager.Events, int> triggeredEvents;
+    public List<ItemData> itemsDataScene;
+    public List<ItemData> itemsDataInventory;
+
+	public System.DateTime dateTime; // Date and time
+    public double playedTime; // Seconds (with decimals) spent in-game
+	public int seconds; // Seconds spent in-game
+	public int minutes; // Minutes spent in-game
+	public int hours; // Hours spent in-game
 
 	public Game()
 	{
 		newGame = true;
 		levelIndex = 0;
         savepointId = "";
-        eventFlags = new EventFlags();
-		cameraStartPositionX = 0.0f;
+
+        //eventFlags = new List<bool>();
+        triggeredEvents = new Dictionary<EventManager.Events, int>();
+        itemsDataScene = new List<ItemData>();
+        itemsDataInventory = new List<ItemData>();
+
+        dateTime = System.DateTime.Now;
+        playedTime = 0.0f;
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
 	}
 
 	public void PrintGameVariables()

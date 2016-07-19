@@ -197,7 +197,11 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject;
-            overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(true);
+
+            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            {
+                overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(true);
+            }
 
             isOverlappingNPC = true;
             ActivateSelection(Selection.NPC);
@@ -257,9 +261,12 @@ public class PlayerController : MonoBehaviour {
 
         if (other.transform.tag == "NPC")
         {
-            overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(false);
-            overlappingNpc = null;
+            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            {
+                overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(false);
+            }
 
+            overlappingNpc = null;
             isOverlappingNPC = false;
             DeactivateSelection();
 

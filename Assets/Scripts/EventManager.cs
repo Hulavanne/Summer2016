@@ -7,6 +7,12 @@ public class EventManager : MonoBehaviour
 {
     public static EventManager current;
 
+    public enum Events
+    {
+        OPEN_KITCHEN_DOOR,
+        CHANGE_DEER_STATE
+    }
+
     public List<EventTrigger> eventTriggers = new List<EventTrigger>();
 
 	void Awake()
@@ -21,13 +27,13 @@ public class EventManager : MonoBehaviour
         {
             if (!Game.current.newGame)
             {
-                foreach (EventTrigger trigger in eventTriggers)
+                foreach (EventManager.Events triggeredEvent in Game.current.triggeredEvents.Keys)
                 {
-                    if (Game.current.eventFlags.kitchenDoorOpen)
+                    foreach (EventTrigger trigger in eventTriggers)
                     {
-                        if (trigger.eventAction == EventTrigger.Events.OPEN_KITCHEN_DOOR)
+                        if (triggeredEvent == trigger.eventAction)
                         {
-                            OpenKitchenDoor(trigger.gameObject);
+                            TriggerEvent(trigger.eventAction);
                         }
                     }
                 }
@@ -35,9 +41,22 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void OpenKitchenDoor(GameObject triggerObject)
+    public void TriggerEvent(EventManager.Events eventAction)
     {
-        Game.current.eventFlags.kitchenDoorOpen = true;
+        if (eventAction == EventManager.Events.OPEN_KITCHEN_DOOR)
+        {
+            OpenKitchenDoor();
+        }
+    }
+
+    public void OpenKitchenDoor()
+    {
+        if (!Game.current.triggeredEvents.Keys.Contains(EventManager.Events.OPEN_KITCHEN_DOOR))
+        {
+            Game.current.triggeredEvents.Add(EventManager.Events.OPEN_KITCHEN_DOOR, 0);
+            Debug.Log("ADDED");
+        }
+        else Debug.Log("NOT ADDED");
 
         GameObject doorKitchen = GameObject.Find("Levels").transform.FindChild("Kitchen").FindChild("Objects").GetChild(1).gameObject;
         NpcBehaviour npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
@@ -48,6 +67,24 @@ public class EventManager : MonoBehaviour
 
         Destroy(doorKitchenNPC);
         doorKitchen.SetActive(true);
-        Destroy(triggerObject);
+
+        foreach (EventTrigger trigger in eventTriggers)
+        {
+            if (trigger.eventAction == EventManager.Events.OPEN_KITCHEN_DOOR)
+            {
+                //eventTriggers.Remove(trigger);
+                Destroy(trigger.gameObject);
+            }
+        }
+
+        foreach (EventTrigger trigger in eventTriggers)
+        {
+            Debug.Log(trigger);
+        }
+    }
+
+    public void TalkToDeer()
+    {
+        //(int)Events.DEER_STATE = 4;
     }
 }

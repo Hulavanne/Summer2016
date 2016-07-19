@@ -70,7 +70,10 @@ public class GameManager : MonoBehaviour
             if (collidingSavepoint != null)
             {
                 game.savepointId = collidingSavepoint.gameObject.GetComponent<UniqueId>().uniqueId;
-                game.cameraStartPositionX = Camera.main.transform.position.x;
+            }
+            else
+            {
+                game.savepointId = "";
             }
 
             // Update date and time in the current game

@@ -87,9 +87,6 @@ public class LevelManager : MonoBehaviour
 	{
         if (Game.current != null)
         {
-            Game newGame = new Game();
-            Game.current = newGame;
-
             // If current isn't a new game, load saved level
             if (!Game.current.newGame)
             {
@@ -106,6 +103,10 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
+            Game game = new Game();
+            Game.current = game;
+            Game.currentIndex = -1;
+
             // For starting a new game from somewhere else than level 1
             if (currentLevel != Levels.CIERAN_BEDROOM)
             {
@@ -116,6 +117,8 @@ public class LevelManager : MonoBehaviour
 
 	void Update()
     {
+        Debug.Log(Game.current);
+
 		if (!player.switchingLevel)
 		{
 			SetLighting();
@@ -231,6 +234,10 @@ public class LevelManager : MonoBehaviour
                 startingPosition = savepoint.transform.GetChild(0).position;
                 break;
             }
+        }
+        if (startingPosition == new Vector2(0, 0))
+        {
+            Debug.Log("Savepoint ID not found");
         }
 
 		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);

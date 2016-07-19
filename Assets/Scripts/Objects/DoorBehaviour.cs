@@ -9,6 +9,7 @@ public class DoorBehaviour : MonoBehaviour {
     public LevelManager.Levels thisDoorLevel;
 
     public bool AutomaticDoor;
+    public bool willFaceRight;
 
 	public LevelManager levelManager;
     public PlayerController player;

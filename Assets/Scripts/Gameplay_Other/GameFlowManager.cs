@@ -46,6 +46,14 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
+    public void ChangeLines(int startLine, int endLine)
+    {
+        player.DeactivateSelection();
+        npcBehav.textStartLine = startLine;
+        npcBehav.textEndLine = endLine;
+        npcBehav.behaviour++;
+    }
+
     //this function only gets called after speaking with an NPC
     public void ChangeNPCBehaviour()
     {
@@ -54,14 +62,11 @@ public class GameFlowManager : MonoBehaviour
             npcBehav = GameObject.Find("Intro_NPC").GetComponent<NpcBehaviour>();
             if (npcBehav.behaviour == 0)
             {
-                player.DeactivateSelection();
-                npcBehav.textStartLine = 3;
-                npcBehav.textEndLine = 4;
+                ChangeLines(3, 4);
                 player.npcWaitTime = 2.0f;
                 isNPCAutomatic = true;
                 player.isIntro = false;
                 player.canMove = true;
-                npcBehav.behaviour++;
             }
             else if (npcBehav.behaviour == 1)
             {
@@ -76,16 +81,30 @@ public class GameFlowManager : MonoBehaviour
             npcBehav = GameObject.Find("NPC_Deer").GetComponent<NpcBehaviour>();
             if (npcBehav.behaviour == 0)
             {
-                player.DeactivateSelection();
-                npcBehav.textStartLine = 6;
-                npcBehav.textEndLine = 7;
-                npcBehav.behaviour++;
+                ChangeLines(6, 7);
             }
             else if (npcBehav.behaviour == 1)
             {
                 player.DeactivateSelection();
             }
+            else if (npcBehav.behaviour == 2)
+            {
+                player.DeactivateSelection();
+            }
             npcBehav = null;
+        }
+
+        if (npcName == "NPC_Lilies")
+        {
+            if (npcBehav.behaviour == 0)
+            {
+                ChangeLines(1, 1); 
+                //spawn berries object
+            }
+            else if (npcBehav.behaviour == 1)
+            {
+                player.DeactivateSelection();
+            }
         }
         DestroyNPC(); // checks and destroys the npc if the bool is true
     }

@@ -18,6 +18,8 @@ public class LevelManager : MonoBehaviour
         FOREST_LEFT = 5,
         FOREST_RIGHT_BELLADONA = 6,
         FOREST_DEER = 7,
+        FOREST_ENEMY = 8,
+        FOREST_LILIES = 9,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
@@ -205,7 +207,8 @@ public class LevelManager : MonoBehaviour
 		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
-		
+        player.playerAnim.SetBool("isFacingRight", GameObject.Find(player.doorName).GetComponent<DoorBehaviour>().willFaceRight);
+
         CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
     }
 

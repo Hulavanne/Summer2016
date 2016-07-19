@@ -189,13 +189,18 @@ public class PlayerController : MonoBehaviour {
             doorName = other.gameObject.name;
         }
 
+        else if (other.tag == "HideObject")
+        {
+            ActivateSelection(Selection.HIDEOBJECT);
+        }
+
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject;
             overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(true);
 
             isOverlappingNPC = true;
-            ActivateSelection(PlayerController.Selection.NPC);
+            ActivateSelection(Selection.NPC);
             PlayerAnimStop();
 
             if (ActivateTextAtLine.current.requireButtonPress)
@@ -384,7 +389,6 @@ public class PlayerController : MonoBehaviour {
         if (!isHidden)
         {
             playerAnim.SetBool("isHidden", true);
-            transform.position += tempVec;
             isHidden = true;
             canMove = false;
         }
@@ -395,7 +399,6 @@ public class PlayerController : MonoBehaviour {
         if (isHidden)
         {
             playerAnim.SetBool("isHidden", false);
-            transform.position -= tempVec;
             isHidden = false;
             canMove = true;
         }

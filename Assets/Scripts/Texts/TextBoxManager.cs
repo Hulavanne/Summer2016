@@ -125,27 +125,7 @@ public class TextBoxManager : MonoBehaviour
     {
         player.hasClickedActionButton = false;
     }
-
-    public static string[] SplitExludeQuotes(string aText, char aSplitChar)
-    {
-        StringBuilder sb = new StringBuilder();
-        List<string> result = new List<string>();
-        bool insideQuote = false;
-        foreach (char c in aText)
-        {
-            if (c == '"')
-                insideQuote = !insideQuote;
-            else if (c == aSplitChar)
-            {
-                result.Add(sb.ToString());
-                sb.Length = 0;
-                continue;
-            }
-            sb.Append(c);
-        }
-        return result.ToArray();
-    }
-
+    
     private IEnumerator TextScroll(string lineOfText)
     {
         int letter = 0; // int for the number of letters
@@ -156,28 +136,8 @@ public class TextBoxManager : MonoBehaviour
 
         while (isTyping && !cancelTyping && (letter < lineOfText.Length - 1))
         {
-            if (lineOfText[letter] == ('"')
-                || lineOfText[letter] == ('\"')
-                || lineOfText[letter] == ('\'')) // creating string escape character exception for " and '
-            {
-                Debug.Log("working2");
-                if (lineOfText[letter + 1] == '\'')
-                {
-                    Debug.Log("working0");
-                }
-                else if (lineOfText[letter + 1] == '\"')
-                {
-                    Debug.Log("working1");
-                }
-                
-                //theText.text = theText.text + '\"' + lineOfText[letter + 1];
-                //letter += 2;
-            }
-            else
-            {
-                theText.text += lineOfText[letter]; // adds one letter to the textBox
-                letter += 1; // adds 1 to letter variable
-            }
+            theText.text += lineOfText[letter]; // adds one letter to the textBox
+            letter += 1; // adds 1 to letter variable
             yield return new WaitForSeconds(typeSpeed); // waits for an amount of time
         }
         // the loop ends if the line has reached its end
@@ -185,7 +145,7 @@ public class TextBoxManager : MonoBehaviour
         GetYesNoButtonLines(); // checks the display of buttons
         GetOptButtonLines(); // checks the display of buttons
 
-        theText.text = lineOfText; // adds one line of text if it exists
+        theText.text = lineOfText;
         isTyping = false;
         cancelTyping = false;
     }

@@ -7,7 +7,8 @@ public class NpcBehaviour : MonoBehaviour
 
     public enum actionType
     {
-        DEACTIVATE
+        DEACTIVATE,
+        DIALOGUE,
     };
     public actionType action = actionType.DEACTIVATE;
 
@@ -39,6 +40,12 @@ public class NpcBehaviour : MonoBehaviour
             Debug.Log("Deactivated");
             gameObject.SetActive(false);
             player.canMove = true;
+        }
+        if (action == actionType.DIALOGUE)
+        {
+            Debug.Log("display dialogue");
+            gameflow.ChangeLines(8, 9);
+            gameflow.isNPCAutomatic = true;
         }
     }
 

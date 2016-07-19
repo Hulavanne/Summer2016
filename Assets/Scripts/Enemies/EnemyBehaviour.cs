@@ -16,6 +16,7 @@ public class EnemyBehaviour : MonoBehaviour {
     public float distanceBetweenPlayer, playerPos, enemyPos;
 
     public bool goToPlayerPos;
+    public bool isTouchingPlayer;
     public float areaOfVision = 6.0f; // distance radius to start chasing
 
     //amounts
@@ -32,12 +33,13 @@ public class EnemyBehaviour : MonoBehaviour {
     public float unhidePlayerTime = 0.0f; // enemy will remove the player if it knows it just hid (is in Suspicious mode too).
     public float startChaseTime = 0.0f;
 
+    public LevelManager.Levels thisEnemyLevel;
+
     public enum EnemyBehav
     {
         PATROLLING,
         SUSPICIOUS,
         CHASING,
-        REMOVING_PLAYER,
     };
 
     public EnemyBehav currentEnemy;
@@ -51,6 +53,8 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void Update()
     {
+        UnhidePlayer();
+
         if ((turningTime % 1.0f) > 0.5f && turningTime >= 0.0f)
         {
             movementDirection = 1;
@@ -85,18 +89,14 @@ public class EnemyBehaviour : MonoBehaviour {
             currentEnemy = EnemyBehav.SUSPICIOUS;
         }
 
-        if ((distanceBetweenPlayer > areaOfVision) || (distanceBetweenPlayer < -areaOfVision))
+        if ((distanceBetweenPlayer > areaOfVision || distanceBetweenPlayer < -areaOfVision)
+            && !player.isHidden)
         {
             currentEnemy = EnemyBehav.SUSPICIOUS;
         }
         
         GetDistanceBetweenObjects();
         CheckDistance();
-
-        if (currentEnemy == EnemyBehav.SUSPICIOUS)
-        {
-            UnhidePlayer();
-        }
 
         if (currentEnemy == EnemyBehav.PATROLLING || currentEnemy == EnemyBehav.SUSPICIOUS)
         {
@@ -110,14 +110,23 @@ public class EnemyBehaviour : MonoBehaviour {
     
     void UnhidePlayer()
     {
-        if (((currentEnemy == EnemyBehav.SUSPICIOUS) || (currentEnemy == EnemyBehav.CHASING)) && (!goToPlayerPos))
+        if ((currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING) && isTouchingPlayer)
         {
+            Debug.Log("amigaaa");
             unhidePlayerTime += Time.deltaTime;
             if (unhidePlayerTime > 1.0f)
             {
                 player.PlayerUnhide();
                 player.canHide = false;
             }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.transform.parent.tag == "Player")
+        {
+            isTouchingPlayer = true;
         }
     }
 
@@ -134,19 +143,25 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (col.gameObject.transform.parent.tag == "Player")
         {
-            touchPlayerTime += Time.deltaTime;
-        }
+            if (!player.isHidden)
+            {
+                {
+                    touchPlayerTime += Time.deltaTime;
+                }
 
-        if (touchPlayerTime >= 0.4f)
-        {
-            player.isGameOver = true;
+                if (touchPlayerTime >= 0.4f)
+                {
+                    player.isGameOver = true;
+                }
+            }
         }
     }
 
-    void OnTriggetExit2D(Collider2D col)
+    void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.transform.parent.tag == "Player")
         {
+            isTouchingPlayer = false;
             touchPlayerTime = 0;
         }
     }
@@ -185,6 +200,11 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void EnemyPatrol()
     {
+        if (thisEnemyLevel != LevelManager.current.currentLevel)
+        {
+            return;
+        }
+
         Vector3 tempVecX = new Vector3(1.0f, 0, 0); // normal movement
 
         if (goToPlayerPos)
@@ -212,7 +232,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (currentEnemy == EnemyBehav.PATROLLING)
         {
-            turningTime += 0.1f * Time.deltaTime;
+            turningTime = 0.0f;
         }
         
         else if (currentEnemy == EnemyBehav.SUSPICIOUS)
@@ -243,7 +263,7 @@ public class EnemyBehaviour : MonoBehaviour {
                     startChaseTime = 0;
                 }
             }
-            else
+            else if (player.isHidden && currentEnemy != EnemyBehav.PATROLLING)
             {
                 if (suspicionTime > 0)
                 {

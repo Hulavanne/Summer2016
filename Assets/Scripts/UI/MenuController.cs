@@ -260,8 +260,7 @@ public class MenuController : MonoBehaviour
 		}
 		else if (SavingAndLoading.savedGames.Count == 1)
 		{
-			saveSlots[0].transform.FindChild("SaveInfo").GetComponent<Text>().text = GetSaveInfo(0);
-			saveSlots [0].transform.FindChild("Image").GetComponent<Image>().sprite = null;//SavingAndLoading.savedGames[0].image;
+            FillSaveSlot(saveSlots[0], 0);
 
 			for (int i = 2 + indexModifier; i < saveSlots.Count; ++i)
 			{
@@ -272,8 +271,7 @@ public class MenuController : MonoBehaviour
 		{
 			for (int i = 0; i < saveSlots.Count - 1; ++i)
 			{
-				saveSlots[i].transform.FindChild("SaveInfo").GetComponent<Text>().text = GetSaveInfo(i);
-				saveSlots[i].transform.FindChild("Image").GetComponent<Image>().sprite = null;//SavingAndLoading.savedGames[i].image;
+                FillSaveSlot(saveSlots[i], i);
 			}
 
 			for (int i = 3 + indexModifier; i < saveSlots.Count; ++i)
@@ -285,14 +283,22 @@ public class MenuController : MonoBehaviour
 		{
 			for (int i = 0; i < saveSlots.Count; ++i)
 			{
-				saveSlots[i].transform.FindChild("SaveInfo").GetComponent<Text>().text = GetSaveInfo(i);
-				saveSlots[i].transform.FindChild("Image").GetComponent<Image>().sprite = null;//SavingAndLoading.savedGames[i].image;
+                FillSaveSlot(saveSlots[i], i);
 			}
 		}
 
 		loadMenu.SetActive(true);
 		menu.SetActive(false);
 	}
+
+    public void FillSaveSlot(GameObject saveSlot, int saveSlotIndex)
+    {
+        saveSlot.transform.FindChild("SaveInfo").GetComponent<Text>().text = GetSaveInfo(saveSlotIndex);
+
+        Sprite image = GameManager.current.levelImages[Mathf.Clamp(SavingAndLoading.savedGames[saveSlotIndex].levelIndex, 0, GameManager.current.levelImages.Count- 1)];
+        saveSlot.transform.FindChild("Image").GetComponent<Image>().sprite = image;
+        saveSlot.transform.FindChild("Image").gameObject.SetActive(true);
+    }
 
 	public string GetSaveInfo(int savedGamesIndex)
 	{
@@ -393,15 +399,18 @@ public class MenuController : MonoBehaviour
 		GameObject mutedImage = transform.FindChild("MuteButton").FindChild("MutedImage").gameObject;
 
 		masterVolumeSlider.value = AudioManager.masterVolume * 100;
-        musicVolumeSlider.value = AudioManager.musicVolume * 100;
-        soundEffectsVolumeSlider.value = AudioManager.soundEffectsVolume * 100;
-        gammaSlider.value = GameManager.gammaValue * 100;
-		mutedImage.SetActive(AudioManager.audioMuted);
+        masterVolumeSlider.transform.FindChild("Percentage").GetComponent<Text>().text = masterVolumeSlider.value.ToString() + "%";
 
-		//SetMasterVolume(masterVolumeSlider);
-		//SetMusicVolume(musicVolumeSlider);
-		//SetSoundEffectsVolume(soundEffectsVolumeSlider);
-		//SetGamma(gammaSlider);
+        musicVolumeSlider.value = AudioManager.musicVolume * 100;
+        musicVolumeSlider.transform.FindChild("Percentage").GetComponent<Text>().text = musicVolumeSlider.value.ToString() + "%";
+
+        soundEffectsVolumeSlider.value = AudioManager.soundEffectsVolume * 100;
+        soundEffectsVolumeSlider.transform.FindChild("Percentage").GetComponent<Text>().text = soundEffectsVolumeSlider.value.ToString() + "%";
+
+        gammaSlider.value = GameManager.gammaValue * 100;
+        gammaSlider.transform.FindChild("Percentage").GetComponent<Text>().text = gammaSlider.value.ToString() + "%";
+
+		mutedImage.SetActive(AudioManager.audioMuted);
 	}
 
 	public void ToggleMute()

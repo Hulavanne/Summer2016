@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+[ExecuteInEditMode]
 public class Item : MonoBehaviour
 {
     public bool usable = false;
@@ -27,22 +28,45 @@ public class Item : MonoBehaviour
 
     void Awake()
     {
-        if (itemType == type.GLOVES)
+        #if UNITY_EDITOR
+
+        if (transform.GetComponent<UniqueId>() == null)
         {
-            transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
+            gameObject.AddComponent<UniqueId>();
         }
+
+        #endif
     }
 
     void Update()
     {
+        #if UNITY_EDITOR
+
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        #endif
+
         charges = itemData.charges;
+
+        if (itemType == type.GLOVES && !itemData.collected)
+        {
+            transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
+        }
     }
 
     public void UseItem()
     {
         if (PlayerController.current.overlappingNpc != null)
         {
-            PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().TriggerAction();
+            NpcBehaviour npcBehaviour = PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>();
+
+            if (itemType == npcBehaviour.requiredItemType)
+            {
+                npcBehaviour.TriggerAction();
+            }
         }
         else
         {

@@ -16,8 +16,7 @@ public class GameManager : MonoBehaviour
 	public int minutes = 0; // Minutes spent in-game
 	public int hours = 0; // Hours spent in-game
 
-    public List<string> itemIds = new List<string>();
-    public List<int> itemInstanceIds = new List<int>();
+    public List<Sprite> levelImages = new List<Sprite>();
 
 	void Awake ()
 	{
@@ -40,8 +39,6 @@ public class GameManager : MonoBehaviour
 
 	void Update ()
 	{
-        UpdateItemIds();
-
 		if (SceneManager.GetActiveScene().name != "LoadingScene")
 		{
 			if (SceneManager.GetActiveScene().name != "MainMenu")
@@ -55,7 +52,7 @@ public class GameManager : MonoBehaviour
 				// Update seconds, minutes and hours in the manager
 				seconds = (int)playedTime % 60;
 				minutes = ((int)playedTime / 60) % 60;
-				hours = ((int)playedTime / 3600);
+                hours = ((int)playedTime / 3600);
 			}
 		}
 	}
@@ -134,19 +131,4 @@ public class GameManager : MonoBehaviour
             Camera.main.GetComponent<Brightness>().brightness = GameManager.gammaValue;
         }
 	}
-
-    void UpdateItemIds()
-    {
-        itemIds.Clear();
-        itemInstanceIds.Clear();
-
-        foreach (string id in UniqueIdRegistry.mapping.Keys)
-        {
-            itemIds.Add(id);
-        }
-        foreach (int id in UniqueIdRegistry.mapping.Values)
-        {
-            itemInstanceIds.Add(id);
-        }
-    }
 }

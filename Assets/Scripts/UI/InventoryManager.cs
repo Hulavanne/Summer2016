@@ -7,7 +7,7 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager current;
 
 	public int currentSlideIndex = 0;
-	public int numberOfSlides;
+	public int numberOfSlides = 0;
 
     public List<Item> sceneItems = new List<Item>(); // List of all items in the scene
 
@@ -28,14 +28,6 @@ public class InventoryManager : MonoBehaviour
         foreach (GameObject item in itemObjects)
         {
             sceneItems.Add(item.GetComponent<Item>());
-        }
-
-        if (Game.current != null)
-        {
-            foreach (ItemData itemData in Game.current.itemsDataScene)
-            {
-                //Debug.Log(itemData.id);
-            }
         }
 
         // Search for saved scene items
@@ -110,18 +102,12 @@ public class InventoryManager : MonoBehaviour
                 }
             }
         }
-
-        // Run setup for all items in the scene
-        if (GameObject.Find("Items") != null)
-        {
-            Transform itemsParent = GameObject.Find("Items").transform;
-
-            for (int i = 0; i < itemsParent.childCount; ++i)
-            {
-                //sceneItems[i].GetComponent<Item>().SetupData(i);
-            }
-        }
 	}
+
+    void Update()
+    {
+        //Debug.Log(itemsInSlides.Count);
+    }
 
     public List<Item> GetInventoryItemsData()
     {
@@ -151,6 +137,8 @@ public class InventoryManager : MonoBehaviour
 
         // Get itemsData from inventory and convert the data to references for matching items in scene
         itemsInInventory = GetInventoryItemsData();
+        // Reset currentSlideIndex
+        currentSlideIndex = 0;
 
         // Determine the number of slides
 		if (itemsInInventory.Count > 0)

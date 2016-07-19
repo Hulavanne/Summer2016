@@ -11,8 +11,8 @@ public class Game
 	public bool newGame;
 	public int levelIndex; // Saved level
     public string savepointId; // Index of the savepoint, -1 if there is none
+    public EventFlags eventFlags;
 	public float cameraStartPositionX = 0.0f; // Position on the X-axis at which the camera starts when loading in
-	//public Sprite levelImage;
 	public System.DateTime dateTime; // Date and time
     public double playedTime = 0.0f; // Seconds (with decimals) spent in-game
 	public int seconds = 0; // Seconds spent in-game
@@ -27,6 +27,7 @@ public class Game
 		newGame = true;
 		levelIndex = 0;
         savepointId = "";
+        eventFlags = new EventFlags();
 		cameraStartPositionX = 0.0f;
 	}
 

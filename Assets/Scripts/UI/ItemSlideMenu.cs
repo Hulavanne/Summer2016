@@ -42,17 +42,20 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void Update()
 	{
-		// For unity editor and computers
-		#if (UNITY_EDITOR || UNITY_STANDALONE)
+        if (!slidesSliding && !InventoryItemSlots.inspectingItem)
+        {
+            // For unity editor and computers
+            #if (UNITY_EDITOR || UNITY_STANDALONE)
 
-		MouseInput();
+            MouseInput();
 
-		// For touch devices
-		#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
+            // For touch devices
+            #elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
 
-		TouchInput();
+		    TouchInput();
 
-		#endif
+            #endif
+        }
 
 		// Updating slides
 		UpdateSlides();
@@ -72,17 +75,17 @@ public class ItemSlideMenu : MonoBehaviour
 			{
 				// If user just began touching the screen
 				//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
-				if (Input.GetTouch(0).phase == TouchPhase.Began && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				if (Input.GetTouch(0).phase == TouchPhase.Began)
 				{
 					InputBegan("touch");
 				}
 				// If input is ongoing and the finger is moving
-				if (Input.GetTouch(0).phase == TouchPhase.Moved && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				if (Input.GetTouch(0).phase == TouchPhase.Moved)
 				{
 					InputMoving("touch");
 				}
 				// If input just ended
-				if (Input.GetTouch(0).phase == TouchPhase.Ended && !slidesSliding && !InventoryItemSlots.inspectingItem)
+				if (Input.GetTouch(0).phase == TouchPhase.Ended)
 				{
 					InputEnded();
 				}
@@ -93,17 +96,17 @@ public class ItemSlideMenu : MonoBehaviour
 	void MouseInput()
 	{
 		// If the left mouse button was just clicked:
-		if (Input.GetMouseButtonDown(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		if (Input.GetMouseButtonDown(0))
 		{
 			InputBegan("mouse");
 		}
 		// If the left mouse button is still pressed down:
-		if (Input.GetMouseButton(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		if (Input.GetMouseButton(0))
 		{
 			InputMoving("mouse");
 		}
 		// If the left mouse button was just released:
-		if (Input.GetMouseButtonUp(0) && !slidesSliding && !InventoryItemSlots.inspectingItem)
+		if (Input.GetMouseButtonUp(0))
 		{
 			InputEnded();
 		}

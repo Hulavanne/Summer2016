@@ -2,11 +2,11 @@
 using UnityEngine;
 
 [ExecuteInEditMode]
-[AddComponentMenu("Image Effects/Color Adjustments/Brightness")]
+//[AddComponentMenu("Image Effects/Color Adjustments/Brightness")]
 public class Brightness : MonoBehaviour
 {
-    /// Provides a shader property that is set in the inspector
-    /// and a material instantiated from the shader
+    // Provides a shader property that is set in the inspector
+    // and a material instantiated from the shader
     public Shader shader;
     Material shaderMaterial;
 

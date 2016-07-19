@@ -11,8 +11,8 @@ public class InventoryItemSlots : MonoBehaviour
     public List<Item> itemsInSlots = new List<Item>();
 	public GameObject itemDescriptionObject;
 
-	static public bool inspectingItem = false;
-	static public int inspectedItemIndex = -1;
+	public static bool inspectingItem = false;
+    public static int inspectedItemIndex = -1;
 
 	List<bool> itemSlotOccupied = new List<bool>();
 	List<Vector3> itemSlotPositions = new List<Vector3>();
@@ -41,14 +41,6 @@ public class InventoryItemSlots : MonoBehaviour
 		}
 
 		itemSlideMenu = transform.GetComponentInParent<ItemSlideMenu>();
-	}
-
-	void Update()
-	{
-		if (inspectingItem)
-		{
-			itemSlideMenu.canSlide = false;
-		}
 	}
 
 	public void AssignItemsToSlots()

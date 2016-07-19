@@ -87,6 +87,9 @@ public class LevelManager : MonoBehaviour
 	{
         if (Game.current != null)
         {
+            Game newGame = new Game();
+            Game.current = newGame;
+
             // If current isn't a new game, load saved level
             if (!Game.current.newGame)
             {

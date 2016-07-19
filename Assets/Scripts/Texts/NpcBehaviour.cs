@@ -5,12 +5,12 @@ public class NpcBehaviour : MonoBehaviour
 {
     public Item.type requiredItemType = Item.type.GLOVES;
 
-    public enum actionType
+    public enum Actions
     {
         DEACTIVATE,
         DIALOGUE,
     };
-    public actionType action = actionType.DEACTIVATE;
+    public Actions action = Actions.DEACTIVATE;
 
     public TextAsset text;
     public int[] buttonsYesNo;
@@ -35,13 +35,13 @@ public class NpcBehaviour : MonoBehaviour
 
     public void TriggerAction()
     {
-        if (action == actionType.DEACTIVATE)
+        if (action == Actions.DEACTIVATE)
         {
             Debug.Log("Deactivated");
             gameObject.SetActive(false);
             player.canMove = true;
         }
-        if (action == actionType.DIALOGUE)
+        if (action == Actions.DIALOGUE)
         {
             Debug.Log("display dialogue");
             gameflow.ChangeLines(8, 9);

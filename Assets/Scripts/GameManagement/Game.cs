@@ -41,14 +41,16 @@ public class Game
         hours = 0;
 	}
 
-	public void PrintGameVariables()
-	{
-        Debug.Log("Level: " + levelIndex +
-			" | Savepoint: " + dateTime +
-			" | Date and Time: " + dateTime +
-			" | Played Time: " + playedTime +
-			" | Played Hours: " + hours +
-			" | Played Minutes: " + minutes +
-			" | Played Seconds: " + seconds);
-	}
+    public bool AddToTriggeredEvents(EventManager.Events eventType, int value = 0)
+    {
+        if (!triggeredEvents.ContainsKey(eventType))
+        {
+            triggeredEvents.Add(eventType, value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

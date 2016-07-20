@@ -66,21 +66,29 @@ public class ActivateTextAtLine : MonoBehaviour
 
     void Update()
     {
-        if (playerController.talkToNPC)
+        /*if (playerController.talkToNPC)
         {
-            currentNPC = GameObject.Find(playerController.overlappingNpc.name);
-            npcBehav = currentNPC.GetComponent<NpcBehaviour>();
+            TalkToNPC();
+        }*/
+    }
 
-            if (npcBehav.transform.name == "NPC_Deer")
-            {
-                EventManager.current.InteractWithDeer(false);
-            }
+    public void TalkToNPC()
+    {
+        PlayerController.current.DeactivateSelection();
+        PlayerController.current.hasClickedActionButton = false;
 
-            ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
-                npcBehav.textStartLine, npcBehav.textEndLine);
+        currentNPC = PlayerController.current.overlappingNpc;
+        npcBehav = currentNPC.GetComponent<NpcBehaviour>();
 
-            playerController.talkToNPC = false;
+        if (npcBehav.transform.name == "NPC_Deer")
+        {
+            EventManager.current.InteractWithDeer();
         }
+
+        ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
+            npcBehav.textStartLine, npcBehav.textEndLine);
+
+        //playerController.talkToNPC = false;
     }
 
     public void ReloadTextRefScript(TextAsset currentText,

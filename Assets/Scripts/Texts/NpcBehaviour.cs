@@ -37,11 +37,14 @@ public class NpcBehaviour : MonoBehaviour
     {
         if (name == "NPC_Deer")
         {
-            if (GameObject.Find(name).GetComponent<NpcBehaviour>().behaviour == 3)
+            if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_DEER_STATE))
             {
-                if (LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER)
+                if ((Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
+                    Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] == 4)
                 {
-                    GameObject.Find(name).SetActive(false);
+                    Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] = 4;
+                    gameObject.SetActive(false);
+                    //GameObject.Find(name).SetActive(false);
                 }
             }
         }

@@ -41,24 +41,17 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void TriggerEvent(EventManager.Events eventAction)
+    public void TriggerEvent(Events eventAction)
     {
-        if (eventAction == EventManager.Events.OPEN_KITCHEN_DOOR)
+        if (eventAction == Events.OPEN_KITCHEN_DOOR)
         {
             OpenKitchenDoor();
-        }
-        else if (eventAction == EventManager.Events.CHANGE_DEER_STATE)
-        {
-            //InteractWithDeer(true);
         }
     }
 
     public void OpenKitchenDoor()
     {
-        if (!Game.current.triggeredEvents.Keys.Contains(EventManager.Events.OPEN_KITCHEN_DOOR))
-        {
-            Game.current.triggeredEvents.Add(EventManager.Events.OPEN_KITCHEN_DOOR, 0);
-        }
+        Game.current.AddToTriggeredEvents(Events.OPEN_KITCHEN_DOOR);
 
         GameObject doorKitchen = GameObject.Find("Levels").transform.FindChild("Kitchen").FindChild("Objects").GetChild(1).gameObject;
         NpcBehaviour npcKitchen = GameObject.Find("NPC_Kitchen").GetComponent<NpcBehaviour>();
@@ -72,59 +65,60 @@ public class EventManager : MonoBehaviour
 
         foreach (EventTrigger trigger in eventTriggers)
         {
-            if (trigger.eventAction == EventManager.Events.OPEN_KITCHEN_DOOR)
+            if (trigger.eventAction == Events.OPEN_KITCHEN_DOOR)
             {
-                //eventTriggers.Remove(trigger);
-                Destroy(trigger.gameObject);
+                trigger.gameObject.SetActive(false);
             }
-        }
-
-        foreach (EventTrigger trigger in eventTriggers)
-        {
-            Debug.Log(trigger);
         }
     }
 
-    public void InteractWithDeer(bool givingBerries)
+    public void InteractWithDeer(bool givingBerries = false)
     {
         int value = 0;
 
-        if (!Game.current.triggeredEvents.Keys.Contains(EventManager.Events.CHANGE_DEER_STATE))
+        // Add event to triggeredEvents,
+        // if event is already there,
+        // set value to the event's value instead
+        if (!Game.current.AddToTriggeredEvents(Events.CHANGE_DEER_STATE))
         {
-            Game.current.triggeredEvents.Add(EventManager.Events.CHANGE_DEER_STATE, 0);
-        }
-        else
-        {
-            if (Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] < 1)
-            {
-                Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] += 1;
-            }
-
             value = Game.current.triggeredEvents[Events.CHANGE_DEER_STATE];
         }
 
-        if (givingBerries)
+        // If player is giving berries
+        if (givingBerries && Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] < 2)
         {
-            //do something
+            // Set deer's state to 2
+            Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 2;
+
+            // Setup correct lines and start talking to the deer
+            GameFlowManager.current.ChangeLines(9, 11);
+            ActivateTextAtLine.current.TalkToNPC();
+
+            // Add death cap to player's inventory and return the function
+            Inventory.current.AddItemToInventory(GameObject.Find("DeathCap"));
             return;
         }
 
+        // Deafult response
         if (value == 0)
         {
             GameFlowManager.current.ChangeLines(0, 4);
+            Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 1;
         }
+        // If spoken once already
         else if (value == 1)
         {
             GameFlowManager.current.ChangeLines(6, 7);
         }
-        else
+        // State is upped to 3 right after giving berries
+        else if (value == 2)
         {
-            Debug.Log("WERKS");
+            Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 3;
         }
-
-        Debug.Log("display dialogue");
-        GameFlowManager.current.ChangeLines(9, 11);
-        GameFlowManager.current.npcBehav.behaviour = 2;
-        GameFlowManager.current.isNPCAutomatic = true;
+        // Last state after 
+        else if (value >= 3)
+        {
+            GameFlowManager.current.ChangeLines(13, 13);
+        }
     }
 }

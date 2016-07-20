@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour {
     public bool canShowGameOverButtons;
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
-    public bool talkToNPC;
+    //public bool talkToNPC;
     public Animator playerAnim;
 
     public bool hasClickedActionButton;
@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour {
 			}
 			else if (selection == Selection.NPC)
 			{
-                TalkToNPC();
+                ActivateTextAtLine.current.TalkToNPC();
 			}
 		}
         
@@ -215,7 +215,7 @@ public class PlayerController : MonoBehaviour {
 
             if ((GameFlowManager.current.isNPCAutomatic) && (npcWaitTime <= 0.0f))
             {
-                TalkToNPC();
+                ActivateTextAtLine.current.TalkToNPC();
                 GameFlowManager.current.isNPCAutomatic = false;
             }
         }
@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour {
 
     public void OnActionButtonClick()
     {
-        Debug.Log("Player has clicked Action Button.");
+        //Debug.Log("Player has clicked Action Button.");
         hasClickedActionButton = true;
     }
 
@@ -308,12 +308,12 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void TalkToNPC()
+    /*public void TalkToNPC()
     {
         talkToNPC = true;
         DeactivateSelection();
         hasClickedActionButton = false;
-    }
+    }*/
 
     void GameOverSplash()
     {

@@ -5,24 +5,25 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory current;
+
     public List<Item> items = new List<Item>();
     public List<ItemData> itemsData = new List<ItemData>();
 
-	void Update()
-	{
-        
-	}
+    void Awake()
+    {
+        current = this;
+    }
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (other.gameObject.tag == "Item")
 		{
 			AddItemToInventory(other.gameObject);
-			//other.gameObject.SetActive(false);
 		}
 	}
 
-	void AddItemToInventory(GameObject item)
+	public void AddItemToInventory(GameObject item)
 	{
         Item itemScript = item.GetComponent<Item>();
         ItemData itemData = itemScript.itemData;

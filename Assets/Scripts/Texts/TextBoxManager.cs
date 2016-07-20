@@ -96,7 +96,7 @@ public class TextBoxManager : MonoBehaviour
                 hasClickedYesNoButton || hasClickedOptButton)
             {
                 // executes every click without buttons, or every successful button press
-                player.talkToNPC = false;
+                //player.talkToNPC = false;
                 hasClickedYesNoButton = false;
                 hasClickedOptButton = false;
 
@@ -192,7 +192,7 @@ public class TextBoxManager : MonoBehaviour
         // Getting save component
         if (currentNPC.GetComponent<Savepoint>() != null)
         {
-            player.talkToNPC = false;
+            //player.talkToNPC = false;
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 

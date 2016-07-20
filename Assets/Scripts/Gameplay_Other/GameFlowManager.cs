@@ -83,8 +83,8 @@ public class GameFlowManager : MonoBehaviour
             npcBehav = GameObject.Find("NPC_Deer").GetComponent<NpcBehaviour>();
             if (npcBehav.behaviour == 0)
             {
-                ChangeLines(6, 7);
-                npcBehav.behaviour++;
+                //ChangeLines(6, 7);
+                //npcBehav.behaviour++;
             }
             else if (npcBehav.behaviour == 1)
             {
@@ -92,15 +92,14 @@ public class GameFlowManager : MonoBehaviour
             }
             else if (npcBehav.behaviour == 2)
             {
-                ChangeLines(13, 13);
-                npcBehav.behaviour++;
-                GameObject.Find("DeathCap").transform.position =
-                    player.transform.position;
-                player.DeactivateSelection();
+                //ChangeLines(13, 13);
+                //npcBehav.behaviour++;
+                //GameObject.Find("DeathCap").transform.position = player.transform.position;
+                //player.DeactivateSelection();
             }
             else if (npcBehav.behaviour == 3)
             {
-                player.DeactivateSelection();
+                //player.DeactivateSelection();
             }
             npcBehav = null;
         }

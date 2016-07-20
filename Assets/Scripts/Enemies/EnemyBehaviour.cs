@@ -120,8 +120,7 @@ public class EnemyBehaviour : MonoBehaviour {
             unhidePlayerTime += Time.deltaTime;
             if (unhidePlayerTime > 1.0f)
             {
-                player.PlayerUnhide();
-                player.canHide = false;
+                player.isGameOver = true;
             }
         }
     }
@@ -191,6 +190,14 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (currentEnemy == EnemyBehav.CHASING || currentEnemy == EnemyBehav.SUSPICIOUS)
         {
+            if (transform.position.x >= player.transform.position.x)
+            {
+                movementDirection = -1;
+            }
+            else
+            {
+                movementDirection = 1;
+            }
             if (movementDirection == 1)
             {
                 transform.position += tempVecRunX * Time.deltaTime;

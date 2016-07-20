@@ -285,7 +285,7 @@ public class TouchInput_Diogo : MonoBehaviour
 
         if (runValue == 2)
         {
-            staminaBar.value -= Time.deltaTime * 0.18f;
+            staminaBar.value -= Time.deltaTime * 0.1f;
         }
 
         if ((staminaBar.value <= .01f && Input.GetMouseButton(0))

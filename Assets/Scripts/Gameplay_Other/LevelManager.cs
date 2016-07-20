@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour
         FOREST_DEER = 7,
         FOREST_ENEMY = 8,
         FOREST_LILIES = 9,
+        CAVE_ENTRANCE = 10,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;

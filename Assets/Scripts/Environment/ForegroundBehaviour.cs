@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ForegroundBehaviour : MonoBehaviour
 {
-
+    public float speed = 1;
     public PlayerController playerControl;
     public LevelManager.Levels thisLevelValue;
     public GameObject mainCamera;

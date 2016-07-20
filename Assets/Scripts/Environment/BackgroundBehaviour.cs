@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BackgroundBehaviour : MonoBehaviour
 {
-
+    public float totalOffset;
     public GameObject thisLevelPos;
     public GameObject player;
     public PlayerController playerControl;
@@ -60,7 +60,6 @@ public class BackgroundBehaviour : MonoBehaviour
                 }
                 transform.position = new Vector3(thisLevelPos.transform.position.x, thisLevelPos.transform.position.y, thisLevelPos.transform.position.z);
                 playerStart = false;
-                distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
             }
             if (movesAlone)
             {
@@ -85,9 +84,9 @@ public class BackgroundBehaviour : MonoBehaviour
             }
             else
             {
-                transform.position = new Vector3((mainCamera.transform.position.x
-                    + distanceFromStart) * backgroundSpeed,
-                    transform.position.y, transform.position.z);
+                distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
+                totalOffset = mainCamera.transform.position.x + distanceFromStart;
+                transform.position = new Vector3((mainCamera.transform.position.x + (distanceFromStart * 0.5f)), transform.position.y, transform.position.z);
             }
         }
         else

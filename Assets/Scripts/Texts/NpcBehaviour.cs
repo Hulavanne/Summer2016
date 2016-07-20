@@ -13,6 +13,8 @@ public class NpcBehaviour : MonoBehaviour
     public Actions action = Actions.DEACTIVATE;
 
     public TextAsset text;
+    public bool isAutomatic;
+    public float waitTimer;
     public int[] buttonsYesNo;
     public int[] buttonsOpt;
     public int behaviour;
@@ -35,7 +37,15 @@ public class NpcBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (name == "NPC_Deer")
+        if (name == "Intro_NPC")
+        {
+            if (waitTimer <= 0.0f && isAutomatic && !PlayerController.current.isIntro)
+            {
+                gameObject.GetComponent<IsIntro>().StartIntro();
+                isAutomatic = false;
+            }
+        }
+        else if (name == "NPC_Deer")
         {
             if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_DEER_STATE))
             {

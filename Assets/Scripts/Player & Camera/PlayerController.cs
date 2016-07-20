@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool isIntro = true;
 
-    public float npcWaitTime = 0.0f;
+    //public float npcWaitTime = 0.0f;
     public bool canTalkToNPC;
     public GameObject overlappingNpc;
 
@@ -197,10 +197,12 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject;
+            NpcBehaviour npcBehaviour = null;
 
             if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
             {
-                overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(true);
+                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
+                npcBehaviour.SetItemsUsability(true);
             }
 
             isOverlappingNPC = true;
@@ -213,10 +215,14 @@ public class PlayerController : MonoBehaviour {
                 return;
             }
 
-            if ((GameFlowManager.current.isNPCAutomatic) && (npcWaitTime <= 0.0f))
+            if (npcBehaviour != null)
             {
-                ActivateTextAtLine.current.TalkToNPC();
-                GameFlowManager.current.isNPCAutomatic = false;
+                if (npcBehaviour.isAutomatic && npcBehaviour.waitTimer <= 0.0f)
+                {
+                    //ActivateTextAtLine.current.TalkToNPC();
+                    //npcBehaviour.isAutomatic = false;
+                    //GameFlowManager.current.isNPCAutomatic = false;
+                }
             }
         }
 
@@ -250,6 +256,29 @@ public class PlayerController : MonoBehaviour {
 				{
 					canMove = false;
                     PlayerAnimStop();
+                }
+            }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "NPC")
+        {
+            overlappingNpc = other.gameObject;
+            NpcBehaviour npcBehaviour;
+
+            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            {
+                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
+
+                if (npcBehaviour != null)
+                {
+                    if (npcBehaviour.isAutomatic && npcBehaviour.waitTimer <= 0.0f)
+                    {
+                        //ActivateTextAtLine.current.TalkToNPC();
+                        //GameFlowManager.current.isNPCAutomatic = false;
+                    }
                 }
             }
         }
@@ -296,15 +325,24 @@ public class PlayerController : MonoBehaviour {
 
     void CheckNPCWaitTime()
     {
-        if (npcWaitTime > 0.0f)
+        if (overlappingNpc != null)
         {
-            canMove = false;
-            npcWaitTime -= Time.deltaTime;
-            canTalkToNPC = false;
-        }
-        else
-        {
-            canTalkToNPC = true;
+            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            {
+                NpcBehaviour npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
+
+                if (npcBehaviour.waitTimer > 0.0f)
+                {
+                    canMove = false;
+                    npcBehaviour.waitTimer -= Time.deltaTime;
+                    canTalkToNPC = false;
+                }
+                else
+                {
+                    npcBehaviour.waitTimer = 0.0f;
+                    canTalkToNPC = true;
+                }
+            }
         }
     }
 

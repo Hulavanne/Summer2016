@@ -1,25 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class IsIntro : MonoBehaviour {
-
-    public GameFlowManager gameFlow;
-    public CameraFollowAndEffects effects;
-
-    void OnTriggerEnter2D(Collider2D col)
+public class IsIntro : MonoBehaviour
+{
+    public void StartIntro()
     {
-		if (col.gameObject.transform.parent.name == "Player")
-        {
-            gameFlow.player.isIntro = true;
-            gameFlow.isIntro = true;
-            gameFlow.isNPCAutomatic = true;
-            effects.FadeToBlack();
-        }
-    }
+        PlayerController.current.canTalkToNPC = true;
 
-	void Start ()
-	{
-        effects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
-        gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
-	}
+        PlayerController.current.overlappingNpc = gameObject;
+        NpcBehaviour npcBehaviour = transform.GetComponent<NpcBehaviour>();
+
+        PlayerController.current.isOverlappingNPC = true;
+        PlayerController.current.ActivateSelection(PlayerController.Selection.NPC);
+        PlayerController.current.PlayerAnimStop();
+
+        if (ActivateTextAtLine.current.requireButtonPress)
+        {
+            //ActivateTextAtLine.current.waitForPress = true;
+            //return;
+        }
+
+        //npcBehaviour.waitTimer = -1;
+        //GameFlowManager.current.player.isIntro = true;
+        npcBehaviour.isAutomatic = true;
+        //CameraFollowAndEffects.current.FadeToBlack();
+        ActivateTextAtLine.current.TalkToNPC();
+    }
 }

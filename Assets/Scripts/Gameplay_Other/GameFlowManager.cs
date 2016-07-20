@@ -12,9 +12,8 @@ public class GameFlowManager : MonoBehaviour
     public TextBoxManager textBoxManager;
     public CameraFollowAndEffects cameraEffects;
 
-    public bool isIntro = true;
     public bool destroyNPC;
-    public bool isNPCAutomatic;
+    //public bool isNPCAutomatic;
     public int npcIntroBehav = 0;
 
     void Awake()
@@ -63,10 +62,11 @@ public class GameFlowManager : MonoBehaviour
             npcBehav = GameObject.Find("Intro_NPC").GetComponent<NpcBehaviour>();
             if (npcBehav.behaviour == 0)
             {
+                Debug.Log("heiiei");
                 ChangeLines(3, 4);
                 npcBehav.behaviour++;
-                player.npcWaitTime = 2.0f;
-                isNPCAutomatic = true;
+                npcBehav.waitTimer = 2.0f;
+                npcBehav.isAutomatic = true;
                 player.isIntro = false;
                 player.canMove = true;
             }

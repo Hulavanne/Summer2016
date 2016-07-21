@@ -10,7 +10,9 @@ public class EventManager : MonoBehaviour
     public enum Events
     {
         OPEN_KITCHEN_DOOR,
-        CHANGE_DEER_STATE
+        CHANGE_DEER_STATE,
+        CHANGE_LILIES_STATE,
+        CHANGE_BLOCKNPC_STATE,
     }
 
     public List<EventTrigger> eventTriggers = new List<EventTrigger>();
@@ -119,6 +121,29 @@ public class EventManager : MonoBehaviour
         else if (value >= 3)
         {
             GameFlowManager.current.ChangeLines(13, 13);
+        }
+    }
+
+    public void InteractWithLilies()
+    {
+        int value = 0;
+
+        // Add event to triggeredEvents,
+        // if event is already there,
+        // set value to the event's value instead
+        if (!Game.current.AddToTriggeredEvents(Events.CHANGE_DEER_STATE))
+        {
+            value = Game.current.triggeredEvents[Events.CHANGE_DEER_STATE];
+        }
+
+        if (Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] == 0)
+        {
+            Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] = 1;
+
+            GameFlowManager.current.ChangeLines(1, 1);
+            ActivateTextAtLine.current.TalkToNPC();
+
+            Inventory.current.AddItemToInventory(GameObject.Find("Berries"));
         }
     }
 }

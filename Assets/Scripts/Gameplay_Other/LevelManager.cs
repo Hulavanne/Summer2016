@@ -117,9 +117,6 @@ public class LevelManager : MonoBehaviour
 
         if (currentLevel == Levels.CIERAN_BEDROOM)
         {
-            GameFlowManager.current.player.isIntro = true;
-            //npcBehaviour.isAutomatic = true;
-            CameraFollowAndEffects.current.FadeToBlack();
             GameObject.Find("Intro_NPC").GetComponent<IsIntro>().StartIntro();
         }
 	}

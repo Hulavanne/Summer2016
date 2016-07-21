@@ -41,8 +41,7 @@ public class NpcBehaviour : MonoBehaviour
         {
             if (waitTimer <= 0.0f && isAutomatic && !PlayerController.current.isIntro)
             {
-                gameObject.GetComponent<IsIntro>().StartIntro();
-                isAutomatic = false;
+                gameObject.GetComponent<IsIntro>().ContinueIntro();
             }
         }
         else if (name == "NPC_Deer")

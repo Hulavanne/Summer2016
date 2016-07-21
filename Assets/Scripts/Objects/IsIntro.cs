@@ -3,27 +3,36 @@ using System.Collections;
 
 public class IsIntro : MonoBehaviour
 {
+    NpcBehaviour npcBehaviour;
+
+    void Awake()
+    {
+        npcBehaviour = transform.GetComponent<NpcBehaviour>();
+    }
+
     public void StartIntro()
     {
-        PlayerController.current.canTalkToNPC = true;
+        PlayerController.current.isIntro = true;
+        CameraFollowAndEffects.current.FadeToBlack();
+        npcBehaviour.isAutomatic = true;
+        Intro();
+    }
 
-        PlayerController.current.overlappingNpc = gameObject;
-        NpcBehaviour npcBehaviour = transform.GetComponent<NpcBehaviour>();
+    public void ContinueIntro()
+    {
+        npcBehaviour.isAutomatic = false;
+        Intro();
+    }
 
+    void Intro()
+    {
         PlayerController.current.isOverlappingNPC = true;
+        PlayerController.current.canTalkToNPC = true;
+        PlayerController.current.overlappingNpc = gameObject;
+
         PlayerController.current.ActivateSelection(PlayerController.Selection.NPC);
         PlayerController.current.PlayerAnimStop();
 
-        if (ActivateTextAtLine.current.requireButtonPress)
-        {
-            //ActivateTextAtLine.current.waitForPress = true;
-            //return;
-        }
-
-        //npcBehaviour.waitTimer = -1;
-        //GameFlowManager.current.player.isIntro = true;
-        npcBehaviour.isAutomatic = true;
-        //CameraFollowAndEffects.current.FadeToBlack();
         ActivateTextAtLine.current.TalkToNPC();
     }
 }

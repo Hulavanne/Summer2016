@@ -6,7 +6,8 @@ public class ItemSlideMenu : MonoBehaviour
 {
 	public bool canSlide = true;
 	public float slideSpeed = 10.0f;
-	public float slideDraggingThreshold = 10.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
+	public float slideDraggingThreshold = 300.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
+    public float draggingLimit = 500.0f;
 	public float emptyDraggingThreshold = 100.0f; // Replaces the above value when canSlide is false
 	public float slideSlidingDistance = 1000.0f;
 	public List<GameObject> itemSlides = new List<GameObject>();
@@ -14,12 +15,14 @@ public class ItemSlideMenu : MonoBehaviour
 	List<float> slideStartPositionsX = new List<float>();
 	public GameObject background;
 	float cursorStartPositionX = 0.0f; // Position of the finger / cursor at the start of input
-	float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
+	public float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
 	bool dragging = false; // Is the player dragging the slides
 	bool inputLocked = false; // Insures that only a single slide occurs
+    bool canStartSlide = false;
 	bool slidesSliding = false;
 	bool slidesResetting = false;
-	string slidingDirection = "left";
+    int slidingDirection = 0;
+	//string slidingDirection = "left";
 
 	InventoryManager inventoryManager;
 
@@ -138,6 +141,8 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void InputMoving(string inputType)
 	{
+        float inputThreshold = 1.0f;
+        
 		if (!inputLocked)
 		{
 			// Set the current position of the finger / cursor
@@ -165,10 +170,10 @@ public class ItemSlideMenu : MonoBehaviour
 			if (!dragging)
 			{
 				// If dragging left
-				if (cursorDistanceToStartPosition > 5)
+                if (cursorDistanceToStartPosition > inputThreshold)
 				{
 					// Set direction
-					slidingDirection = "left";
+					slidingDirection = -1;
 
 					// If the slides can be moved:
 					if (canSlide)
@@ -181,9 +186,10 @@ public class ItemSlideMenu : MonoBehaviour
 					dragging = true;
 				}
 				// If dragging right
-				else if (cursorDistanceToStartPosition < -5)
+                else if (cursorDistanceToStartPosition < -inputThreshold)
 				{
-					slidingDirection = "right";
+                    // Set direction
+					slidingDirection = 1;
 
 					// If the slides can be moved:
 					if (canSlide)
@@ -198,49 +204,101 @@ public class ItemSlideMenu : MonoBehaviour
 			}
 			else
 			{
-				RectTransform backgroundTransform = background.GetComponent<RectTransform>();
-				backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1 * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+                // If direction is currently set to the left
+                if (slidingDirection == -1)
+                {
+                    // Check if direction has changed
+                    if (cursorDistanceToStartPosition < -inputThreshold)
+                    {
+                        // Set direction
+                        slidingDirection = 1;
 
-				// Loop through all the slides
-				for (int i = 0; i < itemSlides.Count; ++i)
-				{
-					// Update the local position of the slide so that it follows the finger / cursor
-					RectTransform slideTranform = itemSlides[i].GetComponent<RectTransform>();
-					slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 1 * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
-				}
+                        // If the slides can be moved:
+                        if (canSlide)
+                        {
+                            // Clear slides
+                            ClearOutermostSlides();
+                            // Fill the item slots of the slides
+                            inventoryManager.FillItemSlots(slidingDirection);
+                        }
+                    }
+                }
+                // If direction is currently set to the right
+                else
+                {
+                    // Check if direction has changed
+                    if (cursorDistanceToStartPosition > inputThreshold)
+                    {
+                        // Set direction
+                        slidingDirection = -1;
 
-				// Set the distance that the finger / cursor has moved since input began
-				cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
-				// When dragging the screen if this threshold is reached the sliding will be triggered
-				float threshold = slideDraggingThreshold;
+                        // If the slides can be moved:
+                        if (canSlide)
+                        {
+                            // Clear slides
+                            ClearOutermostSlides();
+                            // Fill the item slots of the slides
+                            inventoryManager.FillItemSlots(slidingDirection);
+                        }
+                    }
+                }
 
-				// If the slides can't slide, use the secondary threshold instead
-				if (!canSlide)
-				{
-					threshold = emptyDraggingThreshold;
-				}
+                // When dragging the screen if this threshold is reached the sliding will be triggered
+                float draggingThreshold = slideDraggingThreshold;
 
-				// If the distance moved is long enough:
-				if (cursorDistanceMoved >= threshold)
-				{
-					// If the slides can be moved:
-					if (canSlide)
-					{
-						// Start sliding the slides
-						slidesSliding = true;
-					}
-					// If the slides can't be moved:
-					else
-					{
-						// Reset the slides back to their original position and lock input
-						slidesResetting = true;
-					}
+                // If the slides can't slide, use the secondary threshold instead
+                if (!canSlide)
+                {
+                    draggingThreshold = emptyDraggingThreshold;
+                }
 
-					// Slides are no longer being dragged
-					dragging = false;
-					// Lock input to make sure only a single slide occurs
-					inputLocked = true;
-				}
+                // If the distance moved is long enough:
+                if (cursorDistanceMoved >= draggingThreshold)
+                {
+                    // If the slides can be moved:
+                    if (canSlide)
+                    {
+                        // Start sliding the slides
+                        canStartSlide = true;
+                        //slidesSliding = true;
+                    }
+                    // If the slides can't be moved:
+                    else
+                    {
+                        // Reset the slides back to their original position and lock input
+                        //slidesResetting = true;
+                        //canStartSlide = true;
+                    }
+
+                    // Slides are no longer being dragged
+                    //dragging = false;
+                    // Lock input to make sure only a single slide occurs
+                    //inputLocked = true;
+                }
+                else
+                {
+                    canStartSlide = false;
+                }
+
+                // Set the distance that the finger / cursor has moved since input began
+                cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
+
+                RectTransform backgroundTransform = background.GetComponent<RectTransform>();
+                draggingLimit = Mathf.Abs(slideStartPositionsX[1] - backgroundTransform.localPosition.x) - 0.0f;
+                Debug.Log(draggingLimit);
+
+                if (draggingLimit < slideSlidingDistance)
+                {
+                    backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 0.75f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+
+                    // Loop through all the slides
+                    for (int i = 0; i < itemSlides.Count; ++i)
+                    {
+                        // Update the local position of the slide so that it follows the finger / cursor
+                        RectTransform slideTranform = itemSlides[i].GetComponent<RectTransform>();
+                        slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 0.75f * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
+                    }
+                }
 			}
 		}
 	}
@@ -248,21 +306,26 @@ public class ItemSlideMenu : MonoBehaviour
 	void InputEnded()
 	{
 		// If input is locked:
-		if (inputLocked)
+        if (canStartSlide)
+		//if (inputLocked)
 		{
+            slidesSliding = true;
+
 			// Release the lock
-			inputLocked = false;
+            inputLocked = true;
 		}
 		// If input isn't locked:
 		else
 		{
-			// If the distance moved is long enough:
-			if (cursorDistanceMoved > 5)
-			{
-				// Reset the slides back to their original position
-				slidesResetting = true;
-			}
+			// If the cursor distance moved is long enough:
+            if (cursorDistanceMoved != 0.0f)
+            {
+                // Reset the slides back to their original position
+                slidesResetting = true;
+            }
 		}
+
+
 
 		// Slides are no longer being dragged
 		dragging = false;
@@ -282,18 +345,21 @@ public class ItemSlideMenu : MonoBehaviour
 		// If slides are resetting:
 		if (slidesResetting)
 		{
-			// Reverse the sliding direction
-			if (slidingDirection == "left")
-			{
-				slidingDirection = "right";
-			}
-			else
-			{
-				slidingDirection = "left";
-			}
+            if (dragging)
+            {
+                // Reverse the sliding direction
+                if (slidingDirection == -1)
+                {
+                    slidingDirection = 1;
+                }
+                else
+                {
+                    slidingDirection = -1;
+                }
+            }
 
 			// Update the position of the slides
-			SlideSlides(slidingDirection, 0, slideSpeed, false);
+            SlideSlides(slidingDirection, 0, slideSpeed, false);
 			// Clear the outermost slides
 			ClearOutermostSlides();
 			// Slides are no longer being dragged
@@ -301,46 +367,73 @@ public class ItemSlideMenu : MonoBehaviour
 		}
 	}
 
-	void SlideSlides(string direction, float distance, float slidingSpeed, bool snapWhenFinished)
+	void SlideSlides(int direction, float distance, float slidingSpeed, bool snapWhenFinished)
 	{
-		// Multiplies certain values depending on the direction
-		int directionMultiplier = 1;
+        float distanceFromStart;
 
-		if (direction == "left")
-		{
-			directionMultiplier *= -1;
-		}
+        if (snapWhenFinished)
+        {
+            distanceFromStart = distance + 5;
+        }
+        else
+        {
+            distanceFromStart = distance - 5;
+        }
 
 		RectTransform backgroundTransform = background.GetComponent<RectTransform>();
-		Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + directionMultiplier * (distance + 5), backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+        Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + direction * distanceFromStart, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 		backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
+
+        Debug.Log(targetPosition.x + " | " + backgroundTransform.localPosition.x + " | " + Mathf.Abs(slideStartPositionsX[1] + direction * (distance + 5) - backgroundTransform.localPosition.x));
 
 		// For each item slide:
 		for (int i = 0; i < itemSlides.Count; ++i)
 		{
 			// Lerp the slide's local position towards the target distance
 			RectTransform slideTransform = itemSlides[i].GetComponent<RectTransform>();
-			targetPosition = new Vector3(slideStartPositionsX[i] + directionMultiplier * (distance + 5), slideTransform.localPosition.y, slideTransform.localPosition.z);
+            targetPosition = new Vector3(slideStartPositionsX[i] + direction * distanceFromStart, slideTransform.localPosition.y, slideTransform.localPosition.z);
 			slideTransform.localPosition = Vector3.Lerp(slideTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
 
 			bool destinationReached = false;
 
-			if (direction == "left")
-			{
-				// If the slide has moved the wanted distance or more:
-				if (slideTransform.localPosition.x <= slideStartPositionsX[i] + directionMultiplier * distance)
-				{
-					destinationReached = true;
-				}
-			}
-			else
-			{
-				// If the slide has moved the wanted distance or more:
-				if (slideTransform.localPosition.x >= slideStartPositionsX[i] + directionMultiplier * distance)
-				{
-					destinationReached = true;
-				}
-			}
+            if (snapWhenFinished)
+            {
+                if (direction == -1)
+                {
+                    // If the slide has moved the wanted distance or more:
+                    if (slideTransform.localPosition.x <= slideStartPositionsX[i] + direction * distance)
+                    {
+                        destinationReached = true;
+                    }
+                }
+                else
+                {
+                    // If the slide has moved the wanted distance or more:
+                    if (slideTransform.localPosition.x >= slideStartPositionsX[i] + direction * distance)
+                    {
+                        destinationReached = true;
+                    }
+                }
+            }
+            else
+            {
+                if (direction == -1)
+                {
+                    // If the slide has moved the wanted distance or more:
+                    if (slideTransform.localPosition.x >= slideStartPositionsX[i] + direction * distance)
+                    {
+                        destinationReached = true;
+                    }
+                }
+                else
+                {
+                    // If the slide has moved the wanted distance or more:
+                    if (slideTransform.localPosition.x <= slideStartPositionsX[i] + direction * distance)
+                    {
+                        destinationReached = true;
+                    }
+                }
+            }
 
 			if (destinationReached)
 			{
@@ -351,14 +444,16 @@ public class ItemSlideMenu : MonoBehaviour
 				{
 					// Set the slide's local position to the target distance
 					RectTransform rectTransform = itemSlides[j].GetComponent<RectTransform>();
-					rectTransform.localPosition = new Vector3 (slideStartPositionsX[j] + directionMultiplier * distance, rectTransform.localPosition.y, rectTransform.localPosition.z);
+					rectTransform.localPosition = new Vector3(slideStartPositionsX[j] + direction * distance, rectTransform.localPosition.y, rectTransform.localPosition.z);
 
 					// Set related booleans to false
+                    canStartSlide = false;
 					slidesSliding = false;
 					slidesResetting = false;
-					// Make sure the first for loop finishes
-					i = 100;
 				}
+
+                // Make sure the first for loop finishes
+                i = 100;
 
 				if (snapWhenFinished)
 				{
@@ -368,12 +463,12 @@ public class ItemSlideMenu : MonoBehaviour
 		}
 	}
 
-	void SnapSlides(string direction)
+	void SnapSlides(int direction)
 	{
 		List<GameObject> tempSlides = new List<GameObject>();
 
 		// Sliding left
-		if (direction == "left")
+		if (direction == -1)
 		{
 			// Take slides into a temporary and reorganize them
 			tempSlides.Add(itemSlides[1]);

@@ -185,11 +185,12 @@ public class InventoryManager : MonoBehaviour
 		}
 	}
 
-	public void FillItemSlots(string slidingDirection = "noDirection")
+	public void FillItemSlots(int slidingDirection = 0)
 	{
         int itemsInSlidesIndex = 0;
 
-		if (slidingDirection == "left")
+        // Sliding to the left, fill the slide on the right
+		if (slidingDirection == -1)
 		{
 			itemsInSlidesIndex = currentSlideIndex + 1;
 
@@ -199,8 +200,9 @@ public class InventoryManager : MonoBehaviour
 			}
 
 			SetItemsInSlots(2, itemsInSlidesIndex);
-		}
-		else if (slidingDirection == "right")
+        }
+        // Sliding to the right, fill the slide on the left
+		else if (slidingDirection == 1)
 		{
 			itemsInSlidesIndex = currentSlideIndex - 1;
 
@@ -211,6 +213,7 @@ public class InventoryManager : MonoBehaviour
 
 			SetItemsInSlots(0, itemsInSlidesIndex);
 		}
+        // No sliding direction, fill the slide in the middle
 		else
 		{
 			SetItemsInSlots(1, itemsInSlidesIndex);

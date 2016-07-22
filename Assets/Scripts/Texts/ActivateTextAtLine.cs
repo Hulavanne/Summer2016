@@ -40,11 +40,9 @@ public class ActivateTextAtLine : MonoBehaviour
     public bool waitForPress;
 
     public GameObject currentNPC;
-    public NpcBehaviour npcBehav;
+    public NpcBehaviour npcBehaviour;
 
     public bool destroyWhenActivated;
-
-    GameFlowManager npcState;
 
     void Awake()
     {
@@ -60,7 +58,6 @@ public class ActivateTextAtLine : MonoBehaviour
         }
 
         theTextBox = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
-        npcState = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
     }
 
@@ -78,20 +75,20 @@ public class ActivateTextAtLine : MonoBehaviour
         PlayerController.current.hud.hasClickedActionButton = false;
 
         currentNPC = PlayerController.current.overlappingNpc;
-        npcBehav = currentNPC.GetComponent<NpcBehaviour>();
+        npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();
 
-        if (npcBehav.transform.name == "NPC_Deer")
+        if (npcBehaviour.transform.name == "NPC_Deer")
         {
-            EventManager.current.InteractWithDeer();
+            EventManager.current.InteractWithDeer(npcBehaviour);
         }
 
-        if (npcBehav.transform.name == "NPC_Block")
+        if (npcBehaviour.transform.name == "NPC_Block")
         {
-            EventManager.current.InteractWithBlockNPC(false);
+            EventManager.current.InteractWithBlockNPC(npcBehaviour);
         }
 
-        ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,
-            npcBehav.textStartLine, npcBehav.textEndLine);
+        ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
+            npcBehaviour.textStartLine, npcBehaviour.textEndLine);
 
         //playerController.talkToNPC = false;
     }

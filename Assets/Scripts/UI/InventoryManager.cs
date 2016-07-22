@@ -16,7 +16,7 @@ public class InventoryManager : MonoBehaviour
     List<Item> itemsInInventory = new List<Item>();
     List<List<Item>> itemsInSlides = new List<List<Item>>();
 
-	void Awake()
+    public void Setup()
 	{
         current = this;
 
@@ -103,11 +103,6 @@ public class InventoryManager : MonoBehaviour
             }
         }
 	}
-
-    void Update()
-    {
-        //Debug.Log(itemsInSlides.Count);
-    }
 
     public List<Item> GetInventoryItemsData()
     {

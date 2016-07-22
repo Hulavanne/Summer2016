@@ -12,7 +12,6 @@ public class NpcBehaviour : MonoBehaviour
     };
     public Actions action = Actions.DEACTIVATE;
 
-    public IsIntro isIntro;
     public TextAsset text;
     public bool isAutomatic;
     public float waitTimer;
@@ -25,13 +24,10 @@ public class NpcBehaviour : MonoBehaviour
 
     PlayerController player;
     ActivateTextAtLine textLoader;
-    GameFlowManager gameflow;
     Inventory inventory;
 
     void Awake()
     {
-        isIntro = GameObject.Find("Intro_NPC").GetComponent<IsIntro>();
-        gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         inventory = player.GetComponentInChildren<Inventory>();
@@ -39,14 +35,7 @@ public class NpcBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (name == "Intro_NPC")
-        {
-            if (waitTimer <= 0.0f && isAutomatic && !isIntro.isIntro)
-            {
-                gameObject.GetComponent<IsIntro>().ContinueIntro();
-            }
-        }
-        else if (name == "NPC_Deer")
+        if (name == "NPC_Deer")
         {
             if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_DEER_STATE))
             {
@@ -95,13 +84,21 @@ public class NpcBehaviour : MonoBehaviour
         {
             if (name == "NPC_Deer")
             {
-                EventManager.current.InteractWithDeer(true);
+                EventManager.current.InteractWithDeer(this, true);
             }
             else if (name == "NPC_Block")
             {
-                EventManager.current.InteractWithBlockNPC(true);
+                EventManager.current.InteractWithBlockNPC(this, true);
             }
         }
+    }
+
+    public void ChangeLines(int startLine, int endLine)
+    {
+        PlayerController.current.DeactivateSelection();
+
+        textStartLine = startLine;
+        textEndLine = endLine;
     }
 
     public void SetItemsUsability(bool usable)

@@ -57,6 +57,7 @@ public class MenuController : MonoBehaviour
 		{
 			pauseOverlay = transform.FindChild("PauseScreen").gameObject;
 			inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
+            inventoryManager.Setup();
 			pauseOverlay.SetActive(false);
 		}
 		if (transform.name != "LoadMenu" && transform.name != "OptionsOverlay" && transform.name != "CreditsOverlay")

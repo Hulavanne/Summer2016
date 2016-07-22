@@ -7,7 +7,6 @@ public class ItemSlideMenu : MonoBehaviour
 	public bool canSlide = true;
 	public float slideSpeed = 10.0f;
 	public float slideDraggingThreshold = 300.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
-    public float draggingLimit = 500.0f;
 	public float emptyDraggingThreshold = 100.0f; // Replaces the above value when canSlide is false
 	public float slideSlidingDistance = 1000.0f;
 	public List<GameObject> itemSlides = new List<GameObject>();
@@ -15,14 +14,13 @@ public class ItemSlideMenu : MonoBehaviour
 	List<float> slideStartPositionsX = new List<float>();
 	public GameObject background;
 	float cursorStartPositionX = 0.0f; // Position of the finger / cursor at the start of input
-	public float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
+	float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
 	bool dragging = false; // Is the player dragging the slides
 	bool inputLocked = false; // Insures that only a single slide occurs
     bool canStartSlide = false;
 	bool slidesSliding = false;
 	bool slidesResetting = false;
     int slidingDirection = 0;
-	//string slidingDirection = "left";
 
 	InventoryManager inventoryManager;
 
@@ -258,22 +256,9 @@ public class ItemSlideMenu : MonoBehaviour
                     // If the slides can be moved:
                     if (canSlide)
                     {
-                        // Start sliding the slides
+                        // Start sliding the slides when input is released
                         canStartSlide = true;
-                        //slidesSliding = true;
                     }
-                    // If the slides can't be moved:
-                    else
-                    {
-                        // Reset the slides back to their original position and lock input
-                        //slidesResetting = true;
-                        //canStartSlide = true;
-                    }
-
-                    // Slides are no longer being dragged
-                    //dragging = false;
-                    // Lock input to make sure only a single slide occurs
-                    //inputLocked = true;
                 }
                 else
                 {
@@ -282,24 +267,23 @@ public class ItemSlideMenu : MonoBehaviour
 
                 // Set the distance that the finger / cursor has moved since input began
                 cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
+                // Calculate the distance the slides have moved
+                float distanceToStartPosition = Mathf.Abs(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition);
 
-                RectTransform backgroundTransform = background.GetComponent<RectTransform>();
-                draggingLimit = Mathf.Abs(slideStartPositionsX[1] - backgroundTransform.localPosition.x) - 0.0f;
-                Debug.Log(draggingLimit);
-
-                if (draggingLimit < slideSlidingDistance)
+                if (distanceToStartPosition < slideSlidingDistance * 0.9f)
                 {
-                    backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 0.75f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+                    RectTransform backgroundTransform = background.GetComponent<RectTransform>();
+                    backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 
                     // Loop through all the slides
                     for (int i = 0; i < itemSlides.Count; ++i)
                     {
                         // Update the local position of the slide so that it follows the finger / cursor
                         RectTransform slideTranform = itemSlides[i].GetComponent<RectTransform>();
-                        slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 0.75f * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
+                        slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 1.0f * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
                     }
                 }
-			}
+            }
 		}
 	}
 
@@ -383,8 +367,6 @@ public class ItemSlideMenu : MonoBehaviour
 		RectTransform backgroundTransform = background.GetComponent<RectTransform>();
         Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + direction * distanceFromStart, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 		backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
-
-        Debug.Log(targetPosition.x + " | " + backgroundTransform.localPosition.x + " | " + Mathf.Abs(slideStartPositionsX[1] + direction * (distance + 5) - backgroundTransform.localPosition.x));
 
 		// For each item slide:
 		for (int i = 0; i < itemSlides.Count; ++i)

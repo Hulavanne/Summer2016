@@ -115,7 +115,7 @@ public class LevelManager : MonoBehaviour
 
         if (currentLevel == Levels.CIERAN_BEDROOM)
         {
-            GameObject.Find("Intro_NPC").GetComponent<IsIntro>().StartIntro();
+            GameObject.FindObjectOfType<IsIntro>().StartIntro();
         }
 	}
 

@@ -3,18 +3,33 @@ using System.Collections;
 
 public class IsIntro : MonoBehaviour
 {
-    public bool isIntro;
+    public bool introPlaying;
 
     NpcBehaviour npcBehaviour;
+    bool destroyIntro = false;
 
     void Awake()
     {
         npcBehaviour = transform.GetComponent<NpcBehaviour>();
+        npcBehaviour.isAutomatic = true;
+    }
+
+    void Update()
+    {
+        if (npcBehaviour.waitTimer <= 0.0f && npcBehaviour.isAutomatic && !introPlaying)
+        {
+            gameObject.GetComponent<IsIntro>().ContinueIntro();
+        }
+        if (destroyIntro)
+        {
+            PlayerController.current.DeactivateSelection();
+            Destroy(gameObject);
+        }
     }
 
     public void StartIntro()
     {
-        isIntro = true;
+        introPlaying = true;
         CameraEffects.current.FadeToBlack(true);
         npcBehaviour.isAutomatic = true;
         Intro();

@@ -165,9 +165,8 @@ public class TouchInput : MonoBehaviour
 
             // If user is not touching a button (eg. pause button)
             if (EventSystem.current.IsPointerOverGameObject(pointerID))
-            //if (EventSystem.current.currentSelectedGameObject == null)// && EventSystem.current.currentSelectedGameObject.tag == "FireButton") return;
             {
-                playerController.PlayerAnimStop();
+                player.PlayerAnimStop();
             }
             else
             {
@@ -179,12 +178,12 @@ public class TouchInput : MonoBehaviour
 
                         if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                         {
-                            playerController.GoLeft();
+                            player.GoLeft();
                         }
 
                         else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                         {
-                            playerController.GoRight();
+                            player.GoRight();
                         }
                     }
 
@@ -255,11 +254,11 @@ public class TouchInput : MonoBehaviour
                 }
                 else
                 {
-                    playerController.PlayerAnimStop();
+                    player.PlayerAnimStop();
                 }
                 if (touch.phase == TouchPhase.Ended)
                 {
-                    playerController.PlayerAnimStop();
+                    player.PlayerAnimStop();
                     if (runValue == 2)
                     {
                         runValue = 0; // if at any point the player releases the touch while the value is 2, it resets to 0

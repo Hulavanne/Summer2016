@@ -7,8 +7,6 @@ public class TextBoxManager : MonoBehaviour
 {
     public static TextBoxManager current;
 
-    public GameFlowManager gameFlow;
-
     public static GameObject currentNPC;
     public bool hasClickedYesButton;
     public bool isTalkingToNPC;
@@ -72,8 +70,10 @@ public class TextBoxManager : MonoBehaviour
     void Awake()
     {
         current = this;
+    }
 
-        gameFlow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
+    void Start()
+    {
         DisableAllButtons();
         DisableTextBox();
     }
@@ -273,7 +273,7 @@ public class TextBoxManager : MonoBehaviour
         isActive = false;
         player.canMove = true;
         isTalkingToNPC = false;
-        gameFlow.ChangeNPCBehaviour(); // changes something everytime you finish talking to a NPC
+        EventManager.current.NpcDialogueFinished(PlayerController.current.overlappingNpc); // changes something everytime you finish talking to a NPC
     }
 
     public void ResetButtons()

@@ -74,7 +74,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void InteractWithDeer(bool givingBerries = false)
+    public void InteractWithDeer(NpcBehaviour npcBehaviour, bool givingBerries = false)
     {
         int value = 0;
 
@@ -93,7 +93,7 @@ public class EventManager : MonoBehaviour
             Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 2;
 
             // Setup correct lines and start talking to the deer
-            GameFlowManager.current.ChangeLines(9, 11);
+            npcBehaviour.ChangeLines(9, 11);
             ActivateTextAtLine.current.TalkToNPC();
 
             // Add death cap to player's inventory and return the function
@@ -104,13 +104,13 @@ public class EventManager : MonoBehaviour
         // Deafult response
         if (value == 0)
         {
-            GameFlowManager.current.ChangeLines(0, 4);
+            npcBehaviour.ChangeLines(0, 4);
             Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 1;
         }
         // If spoken once already
         else if (value == 1)
         {
-            GameFlowManager.current.ChangeLines(6, 7);
+            npcBehaviour.ChangeLines(6, 7);
         }
         // State is upped to 3 right after giving berries
         else if (value == 2)
@@ -120,47 +120,86 @@ public class EventManager : MonoBehaviour
         // Last state after 
         else if (value >= 3)
         {
-            GameFlowManager.current.ChangeLines(13, 13);
+            npcBehaviour.ChangeLines(13, 13);
         }
     }
 
     public void InteractWithLilies()
     {
-        /*
         int value = 0;
 
         // Add event to triggeredEvents,
         // if event is already there,
         // set value to the event's value instead
-        if (!Game.current.AddToTriggeredEvents(Events.CHANGE_DEER_STATE))
+        if (!Game.current.AddToTriggeredEvents(Events.CHANGE_LILIES_STATE))
         {
-            Debug.Log("working1");
-            value = Game.current.triggeredEvents[Events.CHANGE_DEER_STATE];
+            value = Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE];
         }
 
         if (Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] == 0)
         {
-            Debug.Log("working3");
             Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] = 1;
 
-            GameFlowManager.current.ChangeLines(1, 1);
-            ActivateTextAtLine.current.TalkToNPC();
-
-            Inventory.current.AddItemToInventory(GameObject.Find("Berries"));
+            foreach (Item item in InventoryManager.current.sceneItems)
+            {
+                if (item.itemType == Item.type.BERRIES)
+                {
+                    Inventory.current.AddItemToInventory(item.gameObject);
+                    break;
+                }
+            }
         }
-        */
+
+        PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().ChangeLines(1, 1);
     }
 
-    public void InteractWithBlockNPC(bool hasDeathCap)
+    public void InteractWithBlockNPC(NpcBehaviour npcBehaviour, bool hasDeathCap = true)
     {
         if (hasDeathCap)
         {
-            Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 2;
+            Game.current.triggeredEvents[Events.CHANGE_BLOCKNPC_STATE] = 2;
             
-            GameFlowManager.current.ChangeLines(3, 4);
+            npcBehaviour.ChangeLines(3, 4);
             ActivateTextAtLine.current.TalkToNPC();
-            GameFlowManager.current.npcBehav.behaviour++;
-            GameFlowManager.current.npcBehav.transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
+            npcBehaviour.behaviour++;
+            npcBehaviour.transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
+        }
+    }
+
+    // This gets called after speaking with an NPC
+    public void NpcDialogueFinished(GameObject npc)
+    {
+        if (npc != null)
+        {
+            NpcBehaviour npcBehaviour = npc.GetComponent<NpcBehaviour>();
+
+            if (npc.name == "NPC_Intro")
+            {
+                if (npc.GetComponent<IsIntro>().introPlaying)
+                {
+                    npc.GetComponent<IsIntro>().introPlaying = false;
+                    npcBehaviour.ChangeLines(3, 4);
+                    npcBehaviour.waitTimer = 2.0f;
+                    PlayerController.current.canMove = true;
+                    CameraEffects.current.fadeToBlack = false;
+                }
+            }
+
+            if (npc.name == "NPC_Lilies")
+            {
+                InteractWithLilies();
+                //ActivateTextAtLine.current.TalkToNPC();
+            }
+
+            if (npc.name == "NPC_Block")
+            {
+                npcBehaviour = GameObject.Find("NPC_Block").GetComponent<NpcBehaviour>();
+                if (npcBehaviour.behaviour == 1)
+                {
+                    npcBehaviour.ChangeLines(6, 6);
+                    npcBehaviour.behaviour++; 
+                }
+            }
         }
     }
 }

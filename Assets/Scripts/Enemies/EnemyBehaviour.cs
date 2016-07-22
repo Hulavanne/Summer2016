@@ -28,6 +28,7 @@ public class EnemyBehaviour : MonoBehaviour {
     //timers
     public float turningTime = 0; // this is a Timer that resets everytime it reaches 1  // it will mod (%2) always, and every once in a while (everytime it hits 0.5 or 1) switches direction on enemy
     public int movementDirection = 0;
+    int initialMovementDirection;
     public float waitTime;
     public float suspicionTime;
     public float touchPlayerTime = 0.0f; // this will end the game if the enemy touches the player for too long
@@ -47,6 +48,7 @@ public class EnemyBehaviour : MonoBehaviour {
 
     void Awake()
     {
+        initialMovementDirection = movementDirection;
         initPos = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
         playerObj = GameObject.Find("Player");
         player = playerObj.GetComponent<PlayerController>();
@@ -216,6 +218,7 @@ public class EnemyBehaviour : MonoBehaviour {
         if (thisEnemyLevel != LevelManager.current.currentLevel)
         {
             transform.position = initPos;
+            movementDirection = initialMovementDirection;
             return;
         }
         if (TextBoxManager.current.isTalkingToNPC)

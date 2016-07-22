@@ -1,0 +1,247 @@
+fileFormatVersion: 2
+guid: 291abde06fe548f4da78e75f13e7ad7e
+timeCreated: 1469169587
+licenseType: Pro
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: bush_07_21_0
+    21300002: bush_07_21_1
+    21300004: bush_07_21_2
+    21300006: bush_07_21_3
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 1
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: bush_07_21_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1024
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 202, y: -92}
+        - {x: 202, y: -78}
+        - {x: 187, y: -34}
+        - {x: 194, y: -24}
+        - {x: 182, y: 2}
+        - {x: 180, y: 52}
+        - {x: 158, y: 80}
+        - {x: 130, y: 94}
+        - {x: 111, y: 96}
+        - {x: 103, y: 97}
+        - {x: -56, y: 97}
+        - {x: -128, y: 89}
+        - {x: -143, y: 81}
+        - {x: -179, y: 49}
+        - {x: -188, y: 31}
+        - {x: -197, y: 16}
+        - {x: -197, y: 3}
+        - {x: -191, y: -8}
+        - {x: -197, y: -20}
+        - {x: -197, y: -40}
+        - {x: -189, y: -47}
+        - {x: -194, y: -69}
+        - {x: -186, y: -91}
+        - {x: -161, y: -103}
+        - {x: 57, y: -103}
+        - {x: 125, y: -101}
+        - {x: 201, y: -93}
+      - - {x: -177, y: -90}
+        - {x: -197, y: -90}
+        - {x: -199, y: -94}
+        - {x: -198, y: -98}
+        - {x: -183, y: -98}
+        - {x: -177, y: -97}
+        - {x: -175, y: -95}
+        - {x: -175, y: -93}
+    - name: bush_07_21_1
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 1024
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 52, y: -102}
+        - {x: 93, y: -101}
+        - {x: 155, y: -97}
+        - {x: 171, y: -99}
+        - {x: 201, y: -91}
+        - {x: 201, y: -86}
+        - {x: 185, y: -82}
+        - {x: 189, y: -47}
+        - {x: 178, y: 19}
+        - {x: 172, y: 51}
+        - {x: 155, y: 84}
+        - {x: 132, y: 99}
+        - {x: 105, y: 105}
+        - {x: 71, y: 105}
+        - {x: 62, y: 103}
+        - {x: 31, y: 104}
+        - {x: 15, y: 105}
+        - {x: -55, y: 105}
+        - {x: -120, y: 99}
+        - {x: -141, y: 89}
+        - {x: -178, y: 52}
+        - {x: -188, y: -3}
+        - {x: -188, y: -53}
+        - {x: -172, y: -99}
+        - {x: -154, y: -101}
+        - {x: -130, y: -103}
+        - {x: -76, y: -103}
+        - {x: -59, y: -101}
+        - {x: -19, y: -103}
+        - {x: 9, y: -103}
+      - - {x: -195, y: -89}
+        - {x: -199, y: -90}
+        - {x: -199, y: -94}
+        - {x: -196, y: -97}
+        - {x: -176, y: -97}
+        - {x: -175, y: -94}
+        - {x: -175, y: -89}
+    - name: bush_07_21_2
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 0
+        width: 1024
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 178, y: -99}
+        - {x: 201, y: -93}
+        - {x: 201, y: -86}
+        - {x: 187, y: -79}
+        - {x: 189, y: -50}
+        - {x: 177, y: 22}
+        - {x: 170, y: 45}
+        - {x: 151, y: 81}
+        - {x: 127, y: 95}
+        - {x: 106, y: 97}
+        - {x: -55, y: 97}
+        - {x: -97, y: 93}
+        - {x: -129, y: 92}
+        - {x: -170, y: 60}
+        - {x: -183, y: 35}
+        - {x: -184, y: -7}
+        - {x: -188, y: -21}
+        - {x: -188, y: -60}
+        - {x: -183, y: -78}
+        - {x: -177, y: -101}
+        - {x: -162, y: -104}
+        - {x: -67, y: -104}
+        - {x: -59, y: -103}
+        - {x: 6, y: -104}
+        - {x: 28, y: -104}
+        - {x: 58, y: -102}
+        - {x: 103, y: -101}
+      - - {x: -177, y: -90}
+        - {x: -197, y: -90}
+        - {x: -199, y: -94}
+        - {x: -199, y: -97}
+        - {x: -196, y: -98}
+        - {x: -178, y: -98}
+        - {x: -175, y: -95}
+        - {x: -175, y: -92}
+    - name: bush_07_21_3
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 0
+        width: 1024
+        height: 491
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 202, y: -92}
+        - {x: 202, y: -78}
+        - {x: 187, y: -34}
+        - {x: 194, y: -24}
+        - {x: 182, y: 2}
+        - {x: 180, y: 52}
+        - {x: 158, y: 80}
+        - {x: 130, y: 94}
+        - {x: 111, y: 96}
+        - {x: 103, y: 97}
+        - {x: -56, y: 97}
+        - {x: -128, y: 89}
+        - {x: -143, y: 81}
+        - {x: -179, y: 49}
+        - {x: -188, y: 31}
+        - {x: -197, y: 16}
+        - {x: -197, y: 3}
+        - {x: -191, y: -8}
+        - {x: -197, y: -20}
+        - {x: -197, y: -40}
+        - {x: -189, y: -47}
+        - {x: -194, y: -69}
+        - {x: -186, y: -91}
+        - {x: -161, y: -103}
+        - {x: 57, y: -103}
+        - {x: 125, y: -101}
+        - {x: 201, y: -93}
+      - - {x: -177, y: -90}
+        - {x: -197, y: -90}
+        - {x: -199, y: -94}
+        - {x: -198, y: -98}
+        - {x: -183, y: -98}
+        - {x: -177, y: -97}
+        - {x: -175, y: -95}
+        - {x: -175, y: -93}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

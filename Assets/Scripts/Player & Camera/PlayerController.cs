@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour {
     
     public GameObject currentDoor;
     public GameObject overlappingNpc;
-    public GameObject questionMark;
 
     public int movementDirection = 1;
     public float switchingLevelTime; // A timer for fading in/out of dark screen
@@ -354,6 +353,7 @@ public class PlayerController : MonoBehaviour {
         if (!isHidden)
         {
             playerAnim.SetBool("isHidden", true);
+            hud.questionMark.GetComponent<SpriteRenderer>().enabled = false;
             isHidden = true;
             canMove = false;
         }
@@ -364,6 +364,7 @@ public class PlayerController : MonoBehaviour {
         if (isHidden)
         {
             playerAnim.SetBool("isHidden", false);
+            hud.questionMark.GetComponent<SpriteRenderer>().enabled = true;
             isHidden = false;
             canMove = true;
         }

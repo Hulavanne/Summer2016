@@ -92,6 +92,8 @@ public class EventManager : MonoBehaviour
             // Set deer's state to 2
             Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 2;
 
+            GameObject.Find("NPC_Deer").GetComponent<Animator>().SetBool("hasBerries", true);
+
             // Setup correct lines and start talking to the deer
             npcBehaviour.ChangeLines(9, 11);
             ActivateTextAtLine.current.TalkToNPC();

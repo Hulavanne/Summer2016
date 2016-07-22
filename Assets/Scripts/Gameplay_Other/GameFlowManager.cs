@@ -6,11 +6,12 @@ public class GameFlowManager : MonoBehaviour
     public static GameFlowManager current;
 
     public string npcName;
+    public IsIntro isIntro;
     public NpcBehaviour npcBehav;
     public PlayerController player;
     public ActivateTextAtLine textActivate;
     public TextBoxManager textBoxManager;
-    public CameraFollowAndEffects cameraEffects;
+    public CameraEffects cameraEffects;
 
     public bool destroyNPC;
     //public bool isNPCAutomatic;
@@ -18,12 +19,13 @@ public class GameFlowManager : MonoBehaviour
 
     void Awake()
     {
+        isIntro = GameObject.Find("Intro_NPC").GetComponent<IsIntro>();
         current = this;
         npcName = "";
         textActivate = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textBoxManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();
-        cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraFollowAndEffects>();
+        cameraEffects = GameObject.Find("MainCamera").GetComponent<CameraEffects>();
     }
 
     void Update()
@@ -67,8 +69,9 @@ public class GameFlowManager : MonoBehaviour
                 npcBehav.behaviour++;
                 npcBehav.waitTimer = 2.0f;
                 npcBehav.isAutomatic = true;
-                player.isIntro = false;
+                isIntro.isIntro = false;
                 player.canMove = true;
+                CameraEffects.current.fadeToBlack = false;
             }
             else if (npcBehav.behaviour == 1)
             {
@@ -120,6 +123,16 @@ public class GameFlowManager : MonoBehaviour
                 player.DeactivateSelection();
             }
             npcBehav = null;
+        }
+
+        if (npcName ==  "NPC_Block")
+        {
+            npcBehav = GameObject.Find("NPC_Block").GetComponent<NpcBehaviour>();
+            if (npcBehav.behaviour == 1)
+            {
+                ChangeLines(6, 6);
+                npcBehav.behaviour++; 
+            }
         }
 
         DestroyNPC(); // checks and destroys the npc if the bool is true

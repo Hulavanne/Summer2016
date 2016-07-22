@@ -123,7 +123,7 @@ public class TextBoxManager : MonoBehaviour
 
     void LateUpdate()
     {
-        player.hasClickedActionButton = false;
+        player.hud.hasClickedActionButton = false;
     }
     
     private IEnumerator TextScroll(string lineOfText)

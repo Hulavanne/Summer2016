@@ -3,6 +3,8 @@ using System.Collections;
 
 public class IsIntro : MonoBehaviour
 {
+    public bool isIntro;
+
     NpcBehaviour npcBehaviour;
 
     void Awake()
@@ -12,8 +14,8 @@ public class IsIntro : MonoBehaviour
 
     public void StartIntro()
     {
-        PlayerController.current.isIntro = true;
-        CameraFollowAndEffects.current.FadeToBlack();
+        isIntro = true;
+        CameraEffects.current.FadeToBlack(true);
         npcBehaviour.isAutomatic = true;
         Intro();
     }

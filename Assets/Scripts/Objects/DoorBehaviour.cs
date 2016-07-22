@@ -52,7 +52,6 @@ public class DoorBehaviour : MonoBehaviour {
             levelManager.currentDoor = thisDoor;
             levelManager.nextDoor = nextDoor;
             player.switchingLevel = true;
-            player.isOverlappingDoor = true;
             player.PlayerAnimStop();
         }
 
@@ -61,7 +60,6 @@ public class DoorBehaviour : MonoBehaviour {
             levelManager.currentDoor = thisDoor;
             levelManager.nextDoor = nextDoor;
             player.ActivateSelection(PlayerController.Selection.DOOR);
-            player.isOverlappingDoor = true;
         }
     }
 
@@ -82,7 +80,6 @@ public class DoorBehaviour : MonoBehaviour {
             levelManager.currentDoor = null;
             levelManager.nextDoor = null;
             player.DeactivateSelection();
-            player.isOverlappingDoor = false;
         }
     }
 }

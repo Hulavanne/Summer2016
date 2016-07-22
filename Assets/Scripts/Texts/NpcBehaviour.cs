@@ -12,6 +12,7 @@ public class NpcBehaviour : MonoBehaviour
     };
     public Actions action = Actions.DEACTIVATE;
 
+    public IsIntro isIntro;
     public TextAsset text;
     public bool isAutomatic;
     public float waitTimer;
@@ -29,6 +30,7 @@ public class NpcBehaviour : MonoBehaviour
 
     void Awake()
     {
+        isIntro = GameObject.Find("Intro_NPC").GetComponent<IsIntro>();
         gameflow = GameObject.Find("GameFlowManager").GetComponent<GameFlowManager>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
         textLoader = GameObject.Find("ActivateText").GetComponent<ActivateTextAtLine>();
@@ -39,7 +41,7 @@ public class NpcBehaviour : MonoBehaviour
     {
         if (name == "Intro_NPC")
         {
-            if (waitTimer <= 0.0f && isAutomatic && !PlayerController.current.isIntro)
+            if (waitTimer <= 0.0f && isAutomatic && !isIntro.isIntro)
             {
                 gameObject.GetComponent<IsIntro>().ContinueIntro();
             }
@@ -57,6 +59,28 @@ public class NpcBehaviour : MonoBehaviour
                 }
             }
         }
+        else if (name == "NPC_Lilies")
+        {
+        /*
+            if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_LILIES_STATE))
+            {
+                Debug.Log("working1");
+                if ((Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_LILIES) ||
+                    Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] == 4)
+                {
+                    Debug.Log("working2");
+                    Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] = 4;
+                    gameObject.SetActive(false);
+                    //GameObject.Find(name).SetActive(false);
+                }
+            }
+        */
+        }
+        else if (name == "NPC_Block")
+        {
+
+        }
+
     }
 
     public void TriggerAction()
@@ -72,6 +96,10 @@ public class NpcBehaviour : MonoBehaviour
             if (name == "NPC_Deer")
             {
                 EventManager.current.InteractWithDeer(true);
+            }
+            else if (name == "NPC_Block")
+            {
+                EventManager.current.InteractWithBlockNPC(true);
             }
         }
     }

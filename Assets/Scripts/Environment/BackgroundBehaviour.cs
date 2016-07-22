@@ -42,7 +42,7 @@ public class BackgroundBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (playerControl.levelManager.currentLevel == thisLevelValue)
+        if (LevelManager.current.currentLevel == thisLevelValue)
         {
             if (playerStart)
             {

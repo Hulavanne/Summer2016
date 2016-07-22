@@ -7,9 +7,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 
     #region declarations
-
-    public static PlayerController current;
-
+    
     public enum Selection
     {
         DOOR,
@@ -17,107 +15,59 @@ public class PlayerController : MonoBehaviour {
         NPC,
         DEFAULT,
     };
+
     public Selection selection = Selection.DEFAULT;
 
-    public bool isIntro = true;
-
-    //public float npcWaitTime = 0.0f;
-    public bool canTalkToNPC;
+    public static PlayerController current;
+    public HUDHandler hud;
+    public TouchInput touchRun;
+    public Animator playerAnim;
+    
+    public GameObject currentDoor;
     public GameObject overlappingNpc;
+    public GameObject questionMark;
 
-    public string doorName;
+    public int movementDirection = 1;
+    public float switchingLevelTime; // A timer for fading in/out of dark screen
+    public bool switchingLevel; // check if is switching level
 
-    public bool canShowGameOverButtons;
+    public bool canMove = true;
+    public bool canHide = true; // monsters will set this to false
+    public bool canTalkToNPC;
+
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
-    //public bool talkToNPC;
-    public Animator playerAnim;
-
-    public bool hasClickedActionButton;
-
-	public Slider staminaBar;
-	public Button yesButton;
-	public Button noButton;
-
-	public bool canHide = true; // monsters will set this to false
-	public bool isGameOver = false;
-	public GameObject gameOverObj;
-	public Text gameOverImg;
-	public float opacity = 0.0f;
-    public GameObject reloadSaveButton;
-    public GameObject backToMenuButton;
-    public TouchInput_Diogo touchRun;
+    public bool isGameOver = false;
+    public bool isHidden;
+    public bool isRunning;
 
     GameObject rightBoundary;
     GameObject leftBoundary;
 
-	public int movementDirection = 1;
-    //public int canWalkRight = true;
-    //public bool canWalkLeft = true;
-    //public bool canCameraFollow = true;
-
-    public bool isRoomFixed;
-    public bool isHidden;
-
-    public HideBehaviour selectHide;
-    public TextBoxManager textRef;
-
-    public GameObject currentDoor;
-    public GameObject nextDoor;
-
-    public bool isOverlappingDoor;
-    public bool isClickingButton;
-
-    public LevelManager levelManager;
-
     Camera cameraComponent;
-    CameraFollowAndEffects cameraScript; // this is the reference to set the dark screen when changing level
 
-    public bool switchingLevel; // These two variables are to check if it's switching level, and a timer to fading in/out of dark screen
-    public float switchingLevelTime; // ^
-
-    public bool isSelectionActive; // using this to know if it's colliding with RayCastHit
-    
-    public GameObject questionMark;
-
-    public bool canMove = true;
-    public bool isRunning;
-    
-    public GameObject bckgPlane;
- 
-    Vector3 addXPos = new Vector3(3f, 0, 0); // Add X position to player (to move < or >)
+    Vector3 addXPos = new Vector3(3f, 0, 0); // Add X move position to player
     Vector3 addXRunPos = new Vector3(5f, 0, 0); // same for running
-    Vector3 tempVec; // Vector being used to hide/unhide
     
     #endregion
 
 	void Awake ()
 	{
+        CameraEffects.current.FadeToBlack(false);
         current = this;
 
-		GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
-		GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
-
-        touchRun = GetComponent<TouchInput_Diogo>();
-		levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        hud = GetComponent<HUDHandler>();
+        touchRun = GetComponent<TouchInput>();
+		LevelManager.current = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		playerAnim = transform.GetComponentInChildren<Animator>();
-		questionMark = transform.FindChild ("QuestionMark").gameObject;
-		gameOverObj = gui.transform.FindChild("GameOver").gameObject;
-		gameOverImg = gameOverObj.GetComponent<Text>();
-		reloadSaveButton = gameOverObj.transform.FindChild("ReloadSave").gameObject;
-		backToMenuButton = gameOverObj.transform.FindChild("BackToMenu").gameObject;
-		textRef = inGameUI.GetComponent<TextBoxManager>();
-		staminaBar = gui.transform.FindChild("StaminaBar").GetComponent<Slider>();
-		yesButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonYes").GetComponent<Button>();
-		noButton = gui.transform.FindChild("TextBoxNormal").FindChild("ButtonNo").GetComponent<Button>();
-		cameraComponent = Camera.main;
-		cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
+        
+        cameraComponent = Camera.main;
 
         canMove = true;
-        canShowGameOverButtons = true;
+        hud.canShowGameOverButtons = true;
 
-		staminaBar.value = 100.0f;
-		questionMark.SetActive(false); // Activates once the player reaches a clickable object
+		hud.staminaBar.value = 100.0f;
+		hud.questionMark.SetActive(false); // Activates once the player reaches a clickable object
         
 	}
 
@@ -125,11 +75,10 @@ public class PlayerController : MonoBehaviour {
     {
         CheckNPCWaitTime();
 
-		if ((hasClickedActionButton) && (isSelectionActive))
+		if ((hud.hasClickedActionButton) && (hud.isSelectionActive))
 		{
 			if (selection == Selection.HIDEOBJECT)
 			{
-				tempVec = new Vector3(0, 0, 5);
 				if (isHidden)
 				{
 					PlayerUnhide();
@@ -143,7 +92,7 @@ public class PlayerController : MonoBehaviour {
 			else if (selection == Selection.DOOR)
 			{
 				switchingLevel = true;
-				hasClickedActionButton = false;
+				hud.hasClickedActionButton = false;
 			}
 			else if (selection == Selection.NPC)
 			{
@@ -153,8 +102,8 @@ public class PlayerController : MonoBehaviour {
         
 		if (isGameOver)
 		{
-			GameOverSplash();
-			cameraScript.FadeToBlack();
+			hud.GameOverSplash();
+			CameraEffects.current.FadeToBlack(true);
 			return;
 		}
 
@@ -162,18 +111,14 @@ public class PlayerController : MonoBehaviour {
 
         if (switchingLevel) // if true, turns the screen dark
         {
-            cameraScript.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
+            CameraEffects.current.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
             switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
-        }
-        else if (!isIntro)
-        {
-            cameraScript.fadeToBlack = false; // once this is false, CameraFollowAndEffects script will gradually re-turn the screen visible
         }
         
 		if (switchingLevelTime >= 1) // 1 is a timer
 		{
 			canMove = true;
-			levelManager.ChangeLevel();
+			LevelManager.current.ChangeLevel();
 
 			//resetting variables
 			switchingLevel = false;
@@ -186,7 +131,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (other.tag == "Door")
         {
-            doorName = other.gameObject.name;
+            currentDoor = other.gameObject;
         }
 
         else if (other.tag == "HideObject")
@@ -225,18 +170,14 @@ public class PlayerController : MonoBehaviour {
                 }
             }
         }
-
-        if (other.tag == "FixedBoundary")
-        {
-            isRoomFixed = true;
-        }
+        
         else if (other.tag == "PlayerBoundary")
         {
             rightBoundary = other.gameObject;
 
             if (transform.position.x > rightBoundary.transform.position.x)
             {
-				if (movementDirection == 1 && !textRef.isTalkingToNPC)
+				if (movementDirection == 1 && !TextBoxManager.current.isTalkingToNPC)
 				{
 					canMove = true;
 				}
@@ -248,7 +189,7 @@ public class PlayerController : MonoBehaviour {
             }
             else if (transform.position.x < rightBoundary.transform.position.x)
             {
-				if (movementDirection == -1 && !textRef.isTalkingToNPC)
+				if (movementDirection == -1 && !TextBoxManager.current.isTalkingToNPC)
 				{
 					canMove = true;
 				}
@@ -286,7 +227,7 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
-        doorName = "";
+        currentDoor = null;
 
         if (other.transform.tag == "NPC")
         {
@@ -305,22 +246,22 @@ public class PlayerController : MonoBehaviour {
 
     public void ActivateSelection(Selection currentSelection)
     {
-        isSelectionActive = true;
-        questionMark.SetActive(true);
+        hud.isSelectionActive = true;
+        hud.questionMark.SetActive(true);
         selection = currentSelection;
     }
 
     public void DeactivateSelection()
     {
-        isSelectionActive = false;
-        questionMark.SetActive(false);
+        hud.isSelectionActive = false;
+        hud.questionMark.SetActive(false);
         selection = Selection.DEFAULT;
     }
 
     public void OnActionButtonClick()
     {
         //Debug.Log("Player has clicked Action Button.");
-        hasClickedActionButton = true;
+        hud.hasClickedActionButton = true;
     }
 
     void CheckNPCWaitTime()
@@ -345,28 +286,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
-
-    /*public void TalkToNPC()
-    {
-        talkToNPC = true;
-        DeactivateSelection();
-        hasClickedActionButton = false;
-    }*/
-
-    void GameOverSplash()
-    {
-        gameOverObj.SetActive(true);
-        opacity += 0.015f;
-        gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
-        
-        if((opacity >= 1.0f) && (canShowGameOverButtons))
-        {
-            canShowGameOverButtons = false;
-            reloadSaveButton.SetActive(true);
-            backToMenuButton.SetActive(true);
-        }
-    }
-
+    
     public void PlayerAnimStop()
     {
         playerAnim.SetBool("isRunning", false);

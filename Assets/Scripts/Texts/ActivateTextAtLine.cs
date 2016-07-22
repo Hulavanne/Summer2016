@@ -75,7 +75,7 @@ public class ActivateTextAtLine : MonoBehaviour
     public void TalkToNPC()
     {
         PlayerController.current.DeactivateSelection();
-        PlayerController.current.hasClickedActionButton = false;
+        PlayerController.current.hud.hasClickedActionButton = false;
 
         currentNPC = PlayerController.current.overlappingNpc;
         npcBehav = currentNPC.GetComponent<NpcBehaviour>();
@@ -83,6 +83,11 @@ public class ActivateTextAtLine : MonoBehaviour
         if (npcBehav.transform.name == "NPC_Deer")
         {
             EventManager.current.InteractWithDeer();
+        }
+
+        if (npcBehav.transform.name == "NPC_Block")
+        {
+            EventManager.current.InteractWithBlockNPC(false);
         }
 
         ReloadTextRefScript(npcBehav.text, npcBehav.buttonsYesNo, npcBehav.buttonsOpt,

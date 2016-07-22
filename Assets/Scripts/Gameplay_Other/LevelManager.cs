@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour
         FOREST_ENEMY = 8,
         FOREST_LILIES = 9,
         CAVE_ENTRANCE = 10,
+        CAVE_CREVICE = 11,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
@@ -36,12 +37,10 @@ public class LevelManager : MonoBehaviour
     public DoorBehaviour nextDoorBehav;
 
     Camera cameraComponent;
-    CameraFollowAndEffects cameraScript;
+    CameraEffects cameraScript;
 
     public float lightAmount;
-    public float lightLevel1 = 0.1f,
-        lightLevel2 = 0.0f,
-        lightLevel3 = -0.5f;
+    
     public GameObject LightInLevel;
 
     MenuController menuController;
@@ -77,10 +76,9 @@ public class LevelManager : MonoBehaviour
                 savepointsList.Add(npcs[i]);
             }
         }
-
-        lightAmount = lightLevel1;
+        
         cameraComponent = Camera.main;
-        cameraScript = cameraComponent.GetComponent<CameraFollowAndEffects>();
+        cameraScript = cameraComponent.GetComponent<CameraEffects>();
         menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();
     }
 
@@ -211,15 +209,17 @@ public class LevelManager : MonoBehaviour
 
     public void ChangeLevel()
     {
+        Debug.Log("werking0");
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
 
         currentLevel = nextDoorBehav.thisDoorLevel;
 		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
-        player.playerAnim.SetBool("isFacingRight", GameObject.Find(player.doorName).GetComponent<DoorBehaviour>().willFaceRight);
+        player.playerAnim.SetBool("isFacingRight", player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight);
 
-        CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.fadeToBlack = false;
     }
 
 	public void LoadSavedLevel()
@@ -245,7 +245,7 @@ public class LevelManager : MonoBehaviour
         }
 
 		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
-		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+		CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 
 	public void TestStart()
@@ -256,6 +256,6 @@ public class LevelManager : MonoBehaviour
 		float startingPositionX = levelScript.transform.position.x;
 		player.transform.position = new Vector3(startingPositionX, player.transform.position.y, player.transform.position.z);
 
-		CameraFollowAndEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+		CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 }

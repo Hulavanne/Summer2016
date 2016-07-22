@@ -126,6 +126,7 @@ public class EventManager : MonoBehaviour
 
     public void InteractWithLilies()
     {
+        /*
         int value = 0;
 
         // Add event to triggeredEvents,
@@ -133,17 +134,33 @@ public class EventManager : MonoBehaviour
         // set value to the event's value instead
         if (!Game.current.AddToTriggeredEvents(Events.CHANGE_DEER_STATE))
         {
+            Debug.Log("working1");
             value = Game.current.triggeredEvents[Events.CHANGE_DEER_STATE];
         }
 
         if (Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] == 0)
         {
+            Debug.Log("working3");
             Game.current.triggeredEvents[Events.CHANGE_LILIES_STATE] = 1;
 
             GameFlowManager.current.ChangeLines(1, 1);
             ActivateTextAtLine.current.TalkToNPC();
 
             Inventory.current.AddItemToInventory(GameObject.Find("Berries"));
+        }
+        */
+    }
+
+    public void InteractWithBlockNPC(bool hasDeathCap)
+    {
+        if (hasDeathCap)
+        {
+            Game.current.triggeredEvents[Events.CHANGE_DEER_STATE] = 2;
+            
+            GameFlowManager.current.ChangeLines(3, 4);
+            ActivateTextAtLine.current.TalkToNPC();
+            GameFlowManager.current.npcBehav.behaviour++;
+            GameFlowManager.current.npcBehav.transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
         }
     }
 }

@@ -32,7 +32,7 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (playerControl.levelManager.currentLevel == thisLevelValue)
+        if (LevelManager.current.currentLevel == thisLevelValue)
         {
             if (startLevel) // enables sprites and positions only in the level beggining
             {

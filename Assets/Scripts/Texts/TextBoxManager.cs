@@ -75,7 +75,7 @@ public class TextBoxManager : MonoBehaviour
     void Start()
     {
         DisableAllButtons();
-        DisableTextBox();
+        //DisableTextBox();
     }
     
     void Update()

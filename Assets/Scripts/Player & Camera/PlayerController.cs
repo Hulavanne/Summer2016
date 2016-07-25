@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour {
     public GameObject overlappingNpc;
 
     public int movementDirection = 1;
+    public float walkingSpeed = 3.0f; // Add X move position to player
+    public float runningSpeed = 5.0f; // same for running
     public float switchingLevelTime; // A timer for fading in/out of dark screen
     public bool switchingLevel; // check if is switching level
 
@@ -44,9 +46,6 @@ public class PlayerController : MonoBehaviour {
     GameObject leftBoundary;
 
     Camera cameraComponent;
-
-    Vector3 addXPos = new Vector3(3f, 0, 0); // Add X move position to player
-    Vector3 addXRunPos = new Vector3(5f, 0, 0); // same for running
     
     #endregion
 
@@ -317,12 +316,12 @@ public class PlayerController : MonoBehaviour {
         if (isRunning) // reference for this in TouchInput
         {
             playerAnim.SetBool("isRunning", true);
-            transform.position -= addXRunPos * Time.deltaTime;
+            transform.position -= new Vector3(runningSpeed * Time.deltaTime, 0, 0);
         }
         else
         {
             //playeranim is walking right
-            transform.position -= addXPos * Time.deltaTime;
+            transform.position -= new Vector3(walkingSpeed * Time.deltaTime, 0, 0);
         }
     }
 
@@ -340,11 +339,11 @@ public class PlayerController : MonoBehaviour {
         if (isRunning)
         {
             playerAnim.SetBool("isRunning", true);
-            transform.position += addXRunPos * Time.deltaTime;
+            transform.position += new Vector3(runningSpeed * Time.deltaTime, 0, 0);
         }
         else
         {
-            transform.position += addXPos * Time.deltaTime;
+            transform.position += new Vector3(walkingSpeed * Time.deltaTime, 0, 0);
         }
     }
 

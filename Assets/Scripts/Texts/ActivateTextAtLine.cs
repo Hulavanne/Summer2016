@@ -81,7 +81,10 @@ public class ActivateTextAtLine : MonoBehaviour
         {
             EventManager.current.InteractWithDeer(npcBehaviour);
         }
-
+        if (npcBehaviour.transform.name == "NPC_Lilies")
+        {
+            EventManager.current.InteractWithLilies();
+        }
         if (npcBehaviour.transform.name == "NPC_Block")
         {
             EventManager.current.InteractWithBlockNPC(npcBehaviour);
@@ -106,6 +109,5 @@ public class ActivateTextAtLine : MonoBehaviour
             GetComponent<ActivateTextAtLine>(), npcStartLine, npcEndLine);       
         
         theTextBox.EnableTextBox();
-        Debug.Log(currentNPC);
     }
 }

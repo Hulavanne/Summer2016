@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
             // Get the index of the current savepoint and the position of the camera
             if (collidingSavepoint != null)
             {
+                game.spawnPosition = new KeyValuePair<float, float>(PlayerController.current.transform.position.x, PlayerController.current.transform.position.y);
                 game.savepointId = collidingSavepoint.gameObject.GetComponent<UniqueId>().uniqueId;
             }
             else

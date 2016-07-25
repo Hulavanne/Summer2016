@@ -16,12 +16,13 @@ public class IsIntro : MonoBehaviour
 
     void Update()
     {
-        if (npcBehaviour.waitTimer <= 0.0f && npcBehaviour.isAutomatic && !introPlaying)
+        if (npcBehaviour.waitTimer <= 0.0f && npcBehaviour.isAutomatic && !introPlaying && LevelManager.current.currentLevel == 0)
         {
             gameObject.GetComponent<IsIntro>().ContinueIntro();
         }
         if (destroyIntro)
         {
+            PlayerController.current.canMove = true;
             PlayerController.current.DeactivateSelection();
             Destroy(gameObject);
         }
@@ -43,6 +44,7 @@ public class IsIntro : MonoBehaviour
 
     void Intro()
     {
+        PlayerController.current.canMove = false;
         PlayerController.current.isOverlappingNPC = true;
         PlayerController.current.canTalkToNPC = true;
         PlayerController.current.overlappingNpc = gameObject;

@@ -209,7 +209,6 @@ public class LevelManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        Debug.Log("werking0");
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
 
         currentLevel = nextDoorBehav.thisDoorLevel;
@@ -229,22 +228,7 @@ public class LevelManager : MonoBehaviour
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
 		lightAmount = levelScript.levelLightAmount;
 
-        Vector2 startingPosition = new Vector2(0, 0);
-
-        foreach (GameObject savepoint in savepointsList)
-        {
-            if (savepoint.GetComponent<UniqueId>().uniqueId == Game.current.savepointId)
-            {
-                startingPosition = savepoint.transform.GetChild(0).position;
-                break;
-            }
-        }
-        if (startingPosition == new Vector2(0, 0))
-        {
-            Debug.Log("Savepoint ID not found");
-        }
-
-		player.transform.position = new Vector3(startingPosition.x, startingPosition.y, player.transform.position.z);
+        player.transform.position = new Vector3(Game.current.spawnPosition.Key, Game.current.spawnPosition.Value, player.transform.position.z);
 		CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
 	}
 

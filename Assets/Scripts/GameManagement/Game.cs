@@ -11,6 +11,7 @@ public class Game
 	public bool newGame;
 	public int levelIndex; // Saved level
     public string savepointId; // Index of the savepoint, -1 if there is none
+    public KeyValuePair<float, float> spawnPosition;
 
     //public List<bool> eventFlags;
     public Dictionary<EventManager.Events, int> triggeredEvents;
@@ -28,6 +29,7 @@ public class Game
 		newGame = true;
 		levelIndex = 0;
         savepointId = "";
+        spawnPosition = new KeyValuePair<float, float>(0.0f, 0.0f);
 
         //eventFlags = new List<bool>();
         triggeredEvents = new Dictionary<EventManager.Events, int>();

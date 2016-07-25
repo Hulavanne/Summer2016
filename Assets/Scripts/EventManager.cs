@@ -151,20 +151,55 @@ public class EventManager : MonoBehaviour
                 }
             }
         }
-
-        PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().ChangeLines(1, 1);
+        else
+        {
+            PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().ChangeLines(1, 1);
+        }
     }
 
-    public void InteractWithBlockNPC(NpcBehaviour npcBehaviour, bool hasDeathCap = true)
+    public void InteractWithBlockNPC(NpcBehaviour npcBehaviour, bool givingDeathCap = true)
     {
-        if (hasDeathCap)
+        Debug.Log("hhrhrhrhrhr");
+        int value = 0;
+
+        // Add event to triggeredEvents,
+        // if event is already there,
+        // set value to the event's value instead
+        if (!Game.current.AddToTriggeredEvents(Events.CHANGE_BLOCKNPC_STATE))
         {
-            Game.current.triggeredEvents[Events.CHANGE_BLOCKNPC_STATE] = 2;
+            value = Game.current.triggeredEvents[Events.CHANGE_BLOCKNPC_STATE];
+        }
+
+        if (givingDeathCap)
+        {
+            Game.current.triggeredEvents[Events.CHANGE_BLOCKNPC_STATE] = 1;
             
             npcBehaviour.ChangeLines(3, 4);
             ActivateTextAtLine.current.TalkToNPC();
-            npcBehaviour.behaviour++;
             npcBehaviour.transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
+
+            return;
+        }
+
+        // Deafult response
+        if (value == 0)
+        {
+            
+        }
+        // If spoken once already
+        if (value == 1)
+        {
+            npcBehaviour.ChangeLines(6, 6);
+        }
+        // State is upped to 3 right after giving berries
+        else if (value == 2)
+        {
+            
+        }
+        // Last state after 
+        else if (value >= 3)
+        {
+            
         }
     }
 
@@ -181,26 +216,24 @@ public class EventManager : MonoBehaviour
                 {
                     npc.GetComponent<IsIntro>().introPlaying = false;
                     npcBehaviour.ChangeLines(3, 4);
-                    npcBehaviour.waitTimer = 2.0f;
-                    PlayerController.current.canMove = true;
+                    npcBehaviour.waitTimer = 1.5f;
                     CameraEffects.current.fadeToBlack = false;
                 }
             }
-
             if (npc.name == "NPC_Lilies")
             {
-                InteractWithLilies();
+                //InteractWithLilies();
                 //ActivateTextAtLine.current.TalkToNPC();
             }
-
             if (npc.name == "NPC_Block")
             {
-                npcBehaviour = GameObject.Find("NPC_Block").GetComponent<NpcBehaviour>();
+                /*npcBehaviour = GameObject.Find("NPC_Block").GetComponent<NpcBehaviour>();
+
                 if (npcBehaviour.behaviour == 1)
                 {
                     npcBehaviour.ChangeLines(6, 6);
                     npcBehaviour.behaviour++; 
-                }
+                }*/
             }
         }
     }

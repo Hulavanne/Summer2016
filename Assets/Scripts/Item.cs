@@ -13,13 +13,13 @@ public class Item : MonoBehaviour
     public bool usable = false;
     public int charges = 1;
 
-    public enum type
+    public enum Type
     {
         BERRIES,
         GLOVES,
         DEATH_CAP,
     };
-    public type itemType;
+    public Type itemType;
 
     public string displayName;
     public Sprite icon;
@@ -52,7 +52,7 @@ public class Item : MonoBehaviour
 
         charges = itemData.charges;
 
-        if (itemType == type.GLOVES && !itemData.collected)
+        if (itemType == Type.GLOVES && !itemData.collected)
         {
             transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
         }

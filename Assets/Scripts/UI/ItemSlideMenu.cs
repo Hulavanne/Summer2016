@@ -72,25 +72,27 @@ public class ItemSlideMenu : MonoBehaviour
 			int pointerID = touch.fingerId;
 
 			// If user is not touching a button (eg. pause button)
-			if (!EventSystem.current.IsPointerOverGameObject(pointerID))
+			//if (!EventSystem.current.IsPointerOverGameObject(pointerID))
+			//{
+
+			// If user just began touching the screen
+			//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
+			if (Input.GetTouch(0).phase == TouchPhase.Began)
 			{
-				// If user just began touching the screen
-				//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
-				if (Input.GetTouch(0).phase == TouchPhase.Began)
-				{
-					InputBegan("touch");
-				}
-				// If input is ongoing and the finger is moving
-				if (Input.GetTouch(0).phase == TouchPhase.Moved)
-				{
-					InputMoving("touch");
-				}
-				// If input just ended
-				if (Input.GetTouch(0).phase == TouchPhase.Ended)
-				{
-					InputEnded();
-				}
+				InputBegan("touch");
 			}
+			// If input is ongoing and the finger is moving
+			if (Input.GetTouch(0).phase == TouchPhase.Moved)
+			{
+				InputMoving("touch");
+			}
+			// If input just ended
+			if (Input.GetTouch(0).phase == TouchPhase.Ended)
+			{
+				InputEnded();
+			}
+
+			//}
 		}
 	}
 

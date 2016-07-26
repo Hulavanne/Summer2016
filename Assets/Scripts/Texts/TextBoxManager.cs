@@ -70,12 +70,9 @@ public class TextBoxManager : MonoBehaviour
     void Awake()
     {
         current = this;
-    }
 
-    void Start()
-    {
         DisableAllButtons();
-        //DisableTextBox();
+        DisableTextBox();
     }
     
     void Update()

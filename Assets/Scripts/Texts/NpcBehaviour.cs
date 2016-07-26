@@ -3,13 +3,32 @@ using System.Collections;
 
 public class NpcBehaviour : MonoBehaviour
 {
-    public Item.type requiredItemType = Item.type.GLOVES;
+    public enum Type
+    {
+        INTRO,
+        BED,
+        SHELF,
+        BOX,
+        FRONT_DOOR,
+        KITCHEN,
+        PARENTS_BED,
+        PARENTS_CLOSET,
+        OUTHOUSE,
+        BELLADONA,
+        DEER,
+        BLOCK,
+        LILIES
+    };
 
     public enum Actions
     {
         DEACTIVATE,
         DIALOGUE,
     };
+
+
+    public Type npcType = Type.DEER;
+    public Item.Type requiredItemType = Item.Type.GLOVES;
     public Actions action = Actions.DEACTIVATE;
 
     public TextAsset text;

@@ -144,7 +144,7 @@ public class EventManager : MonoBehaviour
 
             foreach (Item item in InventoryManager.current.sceneItems)
             {
-                if (item.itemType == Item.type.BERRIES)
+                if (item.itemType == Item.Type.BERRIES)
                 {
                     Inventory.current.AddItemToInventory(item.gameObject);
                     break;
@@ -184,7 +184,7 @@ public class EventManager : MonoBehaviour
         // Deafult response
         if (value == 0)
         {
-            
+            npcBehaviour.ChangeLines(0, 5);
         }
         // If spoken once already
         if (value == 1)

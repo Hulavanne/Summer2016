@@ -23,12 +23,7 @@ public class InventoryManager : MonoBehaviour
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
         itemSlideMenu = transform.GetComponent<ItemSlideMenu>();
 
-        GameObject[] itemObjects = GameObject.FindGameObjectsWithTag("Item");
-
-        foreach (GameObject item in itemObjects)
-        {
-            sceneItems.Add(item.GetComponent<Item>());
-        }
+        sceneItems = GameObject.FindObjectsOfType<Item>().ToList();
 
         // Search for saved scene items
         for (int i = 0; i < sceneItems.Count; ++i)

@@ -15,11 +15,12 @@ public class Item : MonoBehaviour
 
     public enum Type
     {
-        BERRIES,
+        EMPTY,
         GLOVES,
-        DEATH_CAP,
+        BERRIES,
+        DEATH_CAP
     };
-    public Type itemType;
+    public Type itemType = Type.EMPTY;
 
     public string displayName;
     public Sprite icon;
@@ -39,6 +40,14 @@ public class Item : MonoBehaviour
         #endif
     }
 
+    void Start()
+    {
+        if (itemType == Type.GLOVES && !itemData.collected && Application.isPlaying)
+        {
+            Inventory.current.AddItemToInventory(gameObject);
+        }
+    }
+
     void Update()
     {
         #if UNITY_EDITOR
@@ -51,11 +60,6 @@ public class Item : MonoBehaviour
         #endif
 
         charges = itemData.charges;
-
-        if (itemType == Type.GLOVES && !itemData.collected)
-        {
-            transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
-        }
     }
 
     public void UseItem()

@@ -5,6 +5,7 @@ public class NpcBehaviour : MonoBehaviour
 {
     public enum Type
     {
+        PASSIVE,
         INTRO,
         BED,
         SHELF,
@@ -16,20 +17,11 @@ public class NpcBehaviour : MonoBehaviour
         OUTHOUSE,
         BELLADONA,
         DEER,
-        BLOCK,
+        BLOCKER,
         LILIES
     };
-
-    public enum Actions
-    {
-        DEACTIVATE,
-        DIALOGUE,
-    };
-
-
-    public Type npcType = Type.DEER;
-    public Item.Type requiredItemType = Item.Type.GLOVES;
-    public Actions action = Actions.DEACTIVATE;
+    public Type npcType = Type.PASSIVE;
+    public Item.Type requiredItemType = Item.Type.EMPTY;
 
     public TextAsset text;
     public bool isAutomatic;
@@ -54,20 +46,35 @@ public class NpcBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (name == "NPC_Deer")
+        if (npcType == Type.DEER)
         {
-            if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_DEER_STATE))
+            if (Game.current.triggeredEvents.ContainsKey(NpcBehaviour.Type.DEER))
             {
-                if ((Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
-                    Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] == 4)
+                if (Game.current.triggeredEvents[NpcBehaviour.Type.DEER] >= 2)
                 {
-                    Game.current.triggeredEvents[EventManager.Events.CHANGE_DEER_STATE] = 4;
+                    // Setup new animation
+                    transform.GetComponent<Animator>().SetBool("hasBerries", true);
+                }
+                if ((Game.current.triggeredEvents[NpcBehaviour.Type.DEER] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
+                    Game.current.triggeredEvents[NpcBehaviour.Type.DEER] == 4)
+                {
+                    Game.current.triggeredEvents[NpcBehaviour.Type.DEER] = 4;
                     gameObject.SetActive(false);
                     //GameObject.Find(name).SetActive(false);
                 }
             }
         }
-        else if (name == "NPC_Lilies")
+        else if (npcType == Type.BLOCKER)
+        {
+            if (Game.current.triggeredEvents.ContainsKey(NpcBehaviour.Type.BLOCKER))
+            {
+                if (Game.current.triggeredEvents[NpcBehaviour.Type.BLOCKER] >= 2)
+                {
+                    transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
+                }
+            }
+        }
+        else if (npcType == Type.LILIES)
         {
         /*
             if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_LILIES_STATE))
@@ -84,31 +91,23 @@ public class NpcBehaviour : MonoBehaviour
             }
         */
         }
-        else if (name == "NPC_Block")
-        {
-
-        }
-
     }
 
     public void TriggerAction()
     {
-        if (action == Actions.DEACTIVATE)
+        if (npcType == Type.BELLADONA)
         {
             Debug.Log("Deactivated");
             gameObject.SetActive(false);
             player.canMove = true;
         }
-        if (action == Actions.DIALOGUE)
+        else if (npcType == Type.DEER)
         {
-            if (name == "NPC_Deer")
-            {
-                EventManager.current.InteractWithDeer(this, true);
-            }
-            else if (name == "NPC_Block")
-            {
-                EventManager.current.InteractWithBlockNPC(this, true);
-            }
+            EventManager.current.InteractWithDeer(this, true);
+        }
+        else if (npcType == Type.BLOCKER)
+        {
+            EventManager.current.InteractWithBlocker(this, true);
         }
     }
 

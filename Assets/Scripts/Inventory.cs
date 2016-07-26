@@ -19,12 +19,12 @@ public class Inventory : MonoBehaviour
 	{
 		if (other.gameObject.tag == "Item")
 		{
-			AddItemToInventory(other.gameObject);
+            AddItemToInventory(other.gameObject);
 		}
 	}
 
-	public void AddItemToInventory(GameObject item)
-	{
+    public void AddItemToInventory(GameObject item)
+    {
         Item itemScript = item.GetComponent<Item>();
         ItemData itemData = itemScript.itemData;
 
@@ -40,7 +40,37 @@ public class Inventory : MonoBehaviour
         {
             item.GetComponent<BoxCollider2D>().enabled = false;
         }
-	}
+    }
+
+    public void AddItemToInventory(Item.Type type)
+	{
+        foreach (Item item in InventoryManager.current.sceneItems)
+        {
+            if (type == item.itemType)
+            {
+                ItemData itemData = item.itemData;
+
+                if (!itemData.collected)
+                {
+                    items.Add(item);
+                    itemsData.Add(itemData);
+                    itemData.collected = true;
+
+                    if (item.GetComponent<SpriteRenderer>() != null)
+                    {
+                        item.GetComponent<SpriteRenderer>().enabled = false;
+                    }
+                    if (item.GetComponent<BoxCollider2D>() != null)
+                    {
+                        item.GetComponent<BoxCollider2D>().enabled = false;
+                    }
+                    return;
+                }
+            }
+        }
+
+        Debug.Log("No uncollected item of type '" + type + "' found in scene");
+    }
 
     public void RemoveItemFromInventory(string itemId)
 	{

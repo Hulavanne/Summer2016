@@ -61,15 +61,7 @@ public class ActivateTextAtLine : MonoBehaviour
         selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
     }
 
-    void Update()
-    {
-        /*if (playerController.talkToNPC)
-        {
-            TalkToNPC();
-        }*/
-    }
-
-    public void TalkToNPC()
+    public void TalkToNPC(bool interact = true)
     {
         PlayerController.current.DeactivateSelection();
         PlayerController.current.hud.hasClickedActionButton = false;
@@ -77,23 +69,24 @@ public class ActivateTextAtLine : MonoBehaviour
         currentNPC = PlayerController.current.overlappingNpc;
         npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();
 
-        if (npcBehaviour.transform.name == "NPC_Deer")
+        if (interact)
         {
-            EventManager.current.InteractWithDeer(npcBehaviour);
-        }
-        if (npcBehaviour.transform.name == "NPC_Lilies")
-        {
-            EventManager.current.InteractWithLilies();
-        }
-        if (npcBehaviour.transform.name == "NPC_Block")
-        {
-            EventManager.current.InteractWithBlockNPC(npcBehaviour);
+            if (npcBehaviour.npcType == NpcBehaviour.Type.DEER)
+            {
+                EventManager.current.InteractWithDeer(npcBehaviour);
+            }
+            if (npcBehaviour.npcType == NpcBehaviour.Type.BLOCKER)
+            {
+                EventManager.current.InteractWithBlocker(npcBehaviour);
+            }
+            if (npcBehaviour.npcType == NpcBehaviour.Type.LILIES)
+            {
+                EventManager.current.InteractWithLilies();
+            }
         }
 
         ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
             npcBehaviour.textStartLine, npcBehaviour.textEndLine);
-
-        //playerController.talkToNPC = false;
     }
 
     public void ReloadTextRefScript(TextAsset currentText,

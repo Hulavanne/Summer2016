@@ -9,7 +9,17 @@ public class MenuController : MonoBehaviour
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
 
-	public AudioClip buttonSoundEffect;
+    public enum State
+    {
+        MAIN_MENU_OR_CLOSED,
+        INVENTORY,
+        LOAD_MENU,
+        OPTIONS,
+        CREDITS,
+    }
+    public static State currentState = State.MAIN_MENU_OR_CLOSED;
+
+    public AudioClip buttonSoundEffect;
 
 	LevelManager levelManager;
 	InventoryManager inventoryManager;
@@ -105,8 +115,42 @@ public class MenuController : MonoBehaviour
 		}
 	}
 
+    void Update()
+    {
+        #if (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (currentState == State.MAIN_MENU_OR_CLOSED)
+            {
+                
+            }
+            else if (currentState == State.INVENTORY)
+            {
+                ResumeGame();
+            }
+            else if (currentState == State.LOAD_MENU)
+            {
+                CloseLoadMenu();
+            }
+            else if (currentState == State.OPTIONS)
+            {
+                DeactivateOptionsOverlay();
+            }
+            else if (currentState == State.CREDITS)
+            {
+                DeactivateCreditsOverlay();
+            }
+        }
+
+        #endif
+    }
+
 	public void GoToScene(string sceneName)
-	{
+    {
+        // Set state
+        currentState = State.MAIN_MENU_OR_CLOSED;
+
 		// If heading out of the Main Menu:
 		if (SceneManager.GetActiveScene().name == "MainMenu")
 		{
@@ -116,7 +160,6 @@ public class MenuController : MonoBehaviour
 				GameManager.current.LoadCurrentGameVariables();
 			}
 		}
-
         gamePaused = false;
 
 		SceneManager.LoadSceneAsync("LoadingScene");
@@ -125,6 +168,9 @@ public class MenuController : MonoBehaviour
 
 	public void ActivateOptionsOverlay()
 	{
+        // Set state
+        currentState = State.OPTIONS;
+
 		// Load values
 		optionsOverlay.GetComponent<MenuController>().SetOptionsValues();
 
@@ -132,8 +178,20 @@ public class MenuController : MonoBehaviour
 		menu.SetActive(false);
 	}
 
-	public void DectivateOptionsOverlay()
+	public void DeactivateOptionsOverlay()
 	{
+        // If in the Main Menu:
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            // Set state
+            currentState = State.MAIN_MENU_OR_CLOSED;
+        }
+        else
+        {
+            // Set state
+            currentState = State.INVENTORY;
+        }
+
 		// Saving the settings
 		AudioManager.current.SaveAudioSettings();
 		GameManager.current.SaveGraphicalSettings();
@@ -144,12 +202,18 @@ public class MenuController : MonoBehaviour
 
 	public void ActivateCreditsOverlay()
 	{
+        // Set state
+        currentState = State.CREDITS;
+
 		creditsOverlay.SetActive(true);
 		optionsOverlay.SetActive(false);
 	}
 
-	public void DectivateCreditsOverlay()
+	public void DeactivateCreditsOverlay()
 	{
+        // Set state
+        currentState = State.OPTIONS;
+
 		optionsOverlay.SetActive(true);
 		creditsOverlay.SetActive(false);
 	}
@@ -178,6 +242,9 @@ public class MenuController : MonoBehaviour
 
 	public void PauseGame()
 	{
+        // Set state
+        currentState = State.INVENTORY;
+
 		Time.timeScale = 0;
 		MenuController.gamePaused = true;
 
@@ -191,9 +258,13 @@ public class MenuController : MonoBehaviour
 
     public void ResumeGame()
     {
+        // Set state
+        currentState = State.MAIN_MENU_OR_CLOSED;
+
         Time.timeScale = 1;
 		MenuController.gamePaused = false;
 
+        ItemSlideMenu.current.itemSlides[1].GetComponent<InventoryItemSlots>().StopInspectingItem();
 		gui.SetActive(true);
         pauseOverlay.SetActive(false);
     }
@@ -211,6 +282,9 @@ public class MenuController : MonoBehaviour
 
 	public void OpenLoadMenu()
 	{
+        // Set state
+        currentState = State.LOAD_MENU;
+
 		Text titleText = loadMenu.transform.FindChild("Title").GetComponent<Text>();
 
 		// If selecting a game to be loaded this insures that all empty slots are set to non-interactable,
@@ -381,6 +455,9 @@ public class MenuController : MonoBehaviour
 
 	public void CloseLoadMenu()
 	{
+        // Set state
+        currentState = State.MAIN_MENU_OR_CLOSED;
+
 		Time.timeScale = 1;
 		MenuController.gamePaused = false;
 		MenuController.savingGame = false;

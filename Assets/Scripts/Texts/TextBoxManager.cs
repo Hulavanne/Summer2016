@@ -270,7 +270,11 @@ public class TextBoxManager : MonoBehaviour
         isActive = false;
         player.canMove = true;
         isTalkingToNPC = false;
-        EventManager.current.NpcDialogueFinished(PlayerController.current.overlappingNpc); // changes something everytime you finish talking to a NPC
+
+        if (PlayerController.current != null)
+        {
+            EventManager.current.NpcDialogueFinished(PlayerController.current.overlappingNpc); // changes something everytime you finish talking to a NPC
+        }
     }
 
     public void ResetButtons()

@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 
 public class ItemSlideMenu : MonoBehaviour
 {
+    public static ItemSlideMenu current;
+
 	public bool canSlide = true;
 	public float slideSpeed = 10.0f;
 	public float slideDraggingThreshold = 300.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
@@ -26,6 +28,8 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void Awake()
 	{
+        current = this;
+
 		background = transform.GetChild(0).gameObject;
 
 		for (int i = 1; i < transform.childCount; ++i)

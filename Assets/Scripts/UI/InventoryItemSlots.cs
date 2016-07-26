@@ -115,11 +115,9 @@ public class InventoryItemSlots : MonoBehaviour
 
 	public void InspectItem(int index)
 	{
-		if (inspectingItem)
-		{
-			StopInspectingItem();
-		}
-		else
+        StopInspectingItem();
+
+		if (!inspectingItem)
 		{
 			if (index == 0)
 			{
@@ -147,26 +145,31 @@ public class InventoryItemSlots : MonoBehaviour
 
 	public void StopInspectingItem()
 	{
-		if (inspectedItemIndex == 0)
-		{
-			itemSlots[1].SetActive(true);
-			itemSlots[2].SetActive(true);
-		}
-		else if (inspectedItemIndex == 1)
-		{
-			itemSlots[0].SetActive(true);
-			itemSlots[2].SetActive(true);
-		}
-		else if (inspectedItemIndex == 2)
-		{
-			itemSlots[0].SetActive(true);
-			itemSlots[1].SetActive(true);
-		}
-		itemSlots[inspectedItemIndex].transform.localPosition = itemSlotPositions[inspectedItemIndex];
+        if (inspectingItem)
+        {
+            Debug.Log("TOIMII");
 
-		itemDescriptionObject.SetActive(false);
-		inspectingItem = false;
-		inspectedItemIndex = -1;
+            if (inspectedItemIndex == 0)
+            {
+                itemSlots[1].SetActive(true);
+                itemSlots[2].SetActive(true);
+            }
+            else if (inspectedItemIndex == 1)
+            {
+                itemSlots[0].SetActive(true);
+                itemSlots[2].SetActive(true);
+            }
+            else if (inspectedItemIndex == 2)
+            {
+                itemSlots[0].SetActive(true);
+                itemSlots[1].SetActive(true);
+            }
+            itemSlots[inspectedItemIndex].transform.localPosition = itemSlotPositions[inspectedItemIndex];
+
+            itemDescriptionObject.SetActive(false);
+            inspectingItem = false;
+            inspectedItemIndex = -1;
+        }
 	}
 
 	public void UseItem()

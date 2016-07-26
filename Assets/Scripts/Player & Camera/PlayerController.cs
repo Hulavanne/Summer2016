@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject overlappingNpc;
 
     public int movementDirection = 1;
+    public float unhideTimer = -1.0f;
     public float walkingSpeed = 3.0f; // Add X move position to player
     public float runningSpeed = 5.0f; // same for running
     public float switchingLevelTime; // A timer for fading in/out of dark screen
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour {
     public bool isOverlappingNPC;
     public bool isGameOver = false;
     public bool isHidden;
+    public bool isUnhiding = true; // animation for unhiding
     public bool isRunning;
 
     GameObject rightBoundary;
@@ -71,6 +73,18 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
     {
+        if (unhideTimer >= -0.5f)
+        {
+            if (unhideTimer <= 0.0f)
+            {
+                PlayerUnhide(true);
+            }
+            else
+            {
+                unhideTimer -= Time.deltaTime;
+            }
+        }
+
         CheckNPCWaitTime();
 
 		if ((hud.hasClickedActionButton) && (hud.isSelectionActive))
@@ -79,7 +93,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				if (isHidden)
 				{
-					PlayerUnhide();
+					PlayerUnhide(false);
 				}
 				else if (canHide)
 				{
@@ -351,6 +365,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (!isHidden)
         {
+            LightBehaviour.current.SetLighting(true, 1.0f);
             playerAnim.SetBool("isHidden", true);
             hud.questionMark.GetComponent<SpriteRenderer>().enabled = false;
             isHidden = true;
@@ -358,14 +373,27 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void PlayerUnhide ()
+    public void PlayerUnhide (bool hides)
     {
         if (isHidden)
         {
-            playerAnim.SetBool("isHidden", false);
-            hud.questionMark.GetComponent<SpriteRenderer>().enabled = true;
-            isHidden = false;
-            canMove = true;
+            if (!hides)
+            {
+                LightBehaviour.current.SetLighting(false, 0.0f);
+                unhideTimer = 1.2f;
+                isUnhiding = true;
+            }
+            else
+            {
+                if (canHide)
+                {
+                    hud.questionMark.GetComponent<SpriteRenderer>().enabled = true;
+                    playerAnim.SetBool("isHidden", false);
+                    isHidden = false;
+                    canMove = true;
+                    unhideTimer = -1;
+                }
+            }
         }
     }
 }

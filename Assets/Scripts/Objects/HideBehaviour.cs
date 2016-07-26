@@ -23,7 +23,8 @@ public class HideBehaviour : MonoBehaviour {
             {
                 anim.SetBool("isHidden", true);
             }
-            else
+
+            if (PlayerController.current.isUnhiding)
             {
                 anim.SetBool("isHidden", false);
             }

@@ -40,7 +40,7 @@ public class BackgroundBehaviour : MonoBehaviour
         moveAloneSpeed += 0.05f;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (LevelManager.current.currentLevel == thisLevelValue)
         {

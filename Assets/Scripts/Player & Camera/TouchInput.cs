@@ -9,7 +9,7 @@ public class TouchInput : MonoBehaviour
     
     public int runValue = 0;
     public float runTouchDelay = 0;
-    public float runTouchDelayMax = 2.0f;
+    public float runTouchDelayMax = 4.0f;
     
     public bool isPressing;
     public bool isTouchingRight;
@@ -22,7 +22,6 @@ public class TouchInput : MonoBehaviour
     
     Releasing the touch at value 1, the program waits for a while for the second touch before turning back to 0.
     The player starts running once the value reaches 2.
-    (Check GetMouseButtonDown(0) and GetMouseButtonUp(0) and TouchPhase events.)
     */
 
 	void Awake()
@@ -148,7 +147,8 @@ public class TouchInput : MonoBehaviour
             player.PlayerAnimStop();
             if (runValue == 2)
             {
-                runValue = 0; // if at any point the player releases the touch while the value is 2, it resets to 0
+                runTouchDelay = runTouchDelayMax;
+                runValue = 1; // if at any point the player releases the touch while the value is 2, it resets to 0
             }
         }
 

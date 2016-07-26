@@ -29,7 +29,7 @@ public class ForegroundBehaviour : MonoBehaviour
         boundaryAverage = (boundary2.transform.position.x - boundary1.transform.position.x) / 2;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (LevelManager.current.currentLevel == thisLevelValue)
         {

@@ -49,8 +49,7 @@ public class CameraEffects : MonoBehaviour
 	{
 		AdjustCameraSize();
 		FadingToBlack();
-
-		// Make the camera follow the player
+        
 		if (!fixedCamera)
         {
 			float nextPositionX = player.transform.position.x;
@@ -189,8 +188,8 @@ public class CameraEffects : MonoBehaviour
 		{
 			if (opacity <= 1)
 			{
-				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
-			}
+				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything               
+            }
 		}
 		else
 		{
@@ -200,7 +199,16 @@ public class CameraEffects : MonoBehaviour
 			}
 		}
 
-		darkScreenRenderer.SetAlpha(opacity);
+        if (opacity >= 1.0f)
+        {
+            darkScreenRenderer.transform.GetComponent<Image>().raycastTarget = true;
+        }
+        else
+        {
+            darkScreenRenderer.transform.GetComponent<Image>().raycastTarget = false;
+        }
+
+        darkScreenRenderer.SetAlpha(opacity);
 
 		opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
 		// darkScreenRenderer.material.color = opacityManager; // and puts it in the material

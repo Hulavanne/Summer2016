@@ -53,8 +53,6 @@ public class TextBoxManager : MonoBehaviour
     public int currentLine;
     public int endAtLine;
 
-    public PlayerController player;
-
     public bool isActive = true;
 
     public bool stopPlayerMovement = true;
@@ -70,8 +68,11 @@ public class TextBoxManager : MonoBehaviour
     void Awake()
     {
         current = this;
-
         DisableAllButtons();
+    }
+
+    void Start()
+    {
         DisableTextBox();
     }
     
@@ -120,7 +121,7 @@ public class TextBoxManager : MonoBehaviour
 
     void LateUpdate()
     {
-        player.hud.hasClickedActionButton = false;
+        PlayerController.current.hud.hasClickedActionButton = false;
     }
     
     private IEnumerator TextScroll(string lineOfText)
@@ -181,7 +182,7 @@ public class TextBoxManager : MonoBehaviour
 
     public void OnYesClick()
     {
-        currentNPC = GameObject.Find(player.overlappingNpc.name);
+        currentNPC = GameObject.Find(PlayerController.current.overlappingNpc.name);
 
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
@@ -252,14 +253,15 @@ public class TextBoxManager : MonoBehaviour
 
     public void EnableTextBox() // activates all text output, disables player movement
     {
-        if (player.canTalkToNPC)
+        if (PlayerController.current.canTalkToNPC)
         {
             OptTextBox.SetActive(true);
             textBox.SetActive(true);
             isActive = true;
-            player.canMove = false;
+            PlayerController.current.canMove = false;
             isTalkingToNPC = true;
             StartCoroutine(TextScroll(textLines[currentLine]));
+            PlayerController.current.hud.SetHud(false);
         }
     }
 
@@ -268,8 +270,9 @@ public class TextBoxManager : MonoBehaviour
         OptTextBox.SetActive(false);
         textBox.SetActive(false);
         isActive = false;
-        player.canMove = true;
+        PlayerController.current.canMove = true;
         isTalkingToNPC = false;
+        PlayerController.current.hud.SetHud(true);
 
         if (PlayerController.current != null)
         {

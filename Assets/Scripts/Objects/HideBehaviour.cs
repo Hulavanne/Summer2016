@@ -13,6 +13,10 @@ public class HideBehaviour : MonoBehaviour {
     {
         anim = transform.FindChild("Sprite").gameObject.GetComponent<Animator>();
         creviceSprite = transform.FindChild("Sprite").gameObject.GetComponent<SpriteRenderer>().sprite;
+        if (transform.name == "Bush")
+        {
+            anim.SetBool("isHidden", false);
+        }
     }
     
     void Update()
@@ -28,6 +32,8 @@ public class HideBehaviour : MonoBehaviour {
             {
                 anim.SetBool("isHidden", false);
             }
+
+            
         }
         else if (transform.name == "Crevice")
         {
@@ -48,7 +54,7 @@ public class HideBehaviour : MonoBehaviour {
         {
             if (!PlayerController.current.isHidden)
             {
-                PlayerController.current.ActivateSelection(PlayerController.Selection.HIDEOBJECT);
+                PlayerController.current.ActivateSelection(PlayerController.Selection.HIDE_OBJECT);
             }
             PlayerController.current.isOverlappingHideObject = true;
         }
@@ -58,7 +64,7 @@ public class HideBehaviour : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerController.current.selection = PlayerController.Selection.HIDEOBJECT;
+            PlayerController.current.selection = PlayerController.Selection.HIDE_OBJECT;
         }
     }
 

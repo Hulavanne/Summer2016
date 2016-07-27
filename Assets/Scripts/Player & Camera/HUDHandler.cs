@@ -15,7 +15,15 @@ public class HUDHandler : MonoBehaviour {
     public bool isSelectionActive;
     public bool canShowGameOverButtons;
 
+    public GameObject staminaBarObj;
+    public GameObject pauseButtonObj;
+    public GameObject actionButtonObj;
+
     void Awake () {
+        staminaBarObj = GameObject.Find("StaminaBar");
+        pauseButtonObj = GameObject.Find("Pause");
+        actionButtonObj = GameObject.Find("ActionButton");
+
         GameObject inGameUI = GameObject.Find("InGameUI").gameObject;
         GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
@@ -26,6 +34,13 @@ public class HUDHandler : MonoBehaviour {
         reloadSaveButton = gameOverObj.transform.FindChild("ReloadSave").gameObject;
         backToMenuButton = gameOverObj.transform.FindChild("BackToMenu").gameObject;
         staminaBar = gui.transform.FindChild("StaminaBar").GetComponent<Slider>();
+    }
+
+    public void SetHud(bool option)
+    {
+        staminaBarObj.SetActive(option);
+        pauseButtonObj.SetActive(option);
+        actionButtonObj.SetActive(option);
     }
 
     public void GameOverSplash()

@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 
     #region declarations
-    
+
     public enum Selection
     {
         DOOR,
-        HIDEOBJECT,
+        HIDE_OBJECT,
         NPC,
         DEFAULT,
     };
@@ -22,12 +22,13 @@ public class PlayerController : MonoBehaviour {
     public HUDHandler hud;
     public TouchInput touchRun;
     public Animator playerAnim;
-    
+
+    public GameObject currentHideObject;
     public GameObject currentDoor;
     public GameObject overlappingNpc;
 
     public int movementDirection = 1;
-    public float unhideTimer = -1.0f;
+    public float unhideTimer = -0.5f;
     public float walkingSpeed = 3.0f; // Add X move position to player
     public float runningSpeed = 5.0f; // same for running
     public float switchingLevelTime; // A timer for fading in/out of dark screen
@@ -36,13 +37,16 @@ public class PlayerController : MonoBehaviour {
     public bool canMove = true;
     public bool canHide = true; // monsters will set this to false
     public bool canTalkToNPC;
-
+    
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool isGameOver = false;
     public bool isHidden;
-    public bool isUnhiding = true; // animation for unhiding
+    public bool isUnhiding = false; // animation for unhiding
     public bool isRunning;
+
+    bool isNextRight;
+    bool canCameraFollow;
 
     GameObject rightBoundary;
     GameObject leftBoundary;
@@ -73,6 +77,8 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
     {
+        PlayerFollowObject(canCameraFollow);
+
         if (unhideTimer >= -0.5f)
         {
             if (unhideTimer <= 0.0f)
@@ -89,7 +95,7 @@ public class PlayerController : MonoBehaviour {
 
 		if ((hud.hasClickedActionButton) && (hud.isSelectionActive))
 		{
-			if (selection == Selection.HIDEOBJECT)
+			if (selection == Selection.HIDE_OBJECT)
 			{
 				if (isHidden)
 				{
@@ -148,7 +154,8 @@ public class PlayerController : MonoBehaviour {
 
         else if (other.tag == "HideObject")
         {
-            ActivateSelection(Selection.HIDEOBJECT);
+            currentHideObject = other.gameObject;
+            ActivateSelection(Selection.HIDE_OBJECT);
         }
 
         else if (other.tag == "NPC")
@@ -361,10 +368,51 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void PlayerFollowObject(bool canFollow)
+    {
+        if (currentHideObject == null)
+        {
+            return;
+        }
+
+        if (!canFollow)
+        {
+            if (currentHideObject.transform.position.x > transform.position.x)
+            {
+                isNextRight = true;
+            }
+            else
+            {
+                isNextRight = false;
+            }
+        }
+
+        else
+        {
+            if (isNextRight)
+            {
+                transform.position += new Vector3(4*Time.deltaTime, 0, 0);
+                if (transform.position.x >= currentHideObject.transform.position.x)
+                {
+                    canCameraFollow = false;
+                }
+            }
+            else
+            {
+                transform.position -= new Vector3(4*Time.deltaTime, 0, 0);
+                if (transform.position.x <= currentHideObject.transform.position.x)
+                {
+                    canCameraFollow = false;
+                }
+            }
+        }
+    }
+
     public void PlayerHide()
     {
         if (!isHidden)
         {
+            canCameraFollow = true;
             LightBehaviour.current.SetLighting(true, 1.0f);
             playerAnim.SetBool("isHidden", true);
             hud.questionMark.GetComponent<SpriteRenderer>().enabled = false;
@@ -380,18 +428,20 @@ public class PlayerController : MonoBehaviour {
             if (!hides)
             {
                 LightBehaviour.current.SetLighting(false, 0.0f);
-                unhideTimer = 1.2f;
+                unhideTimer = 0.5f;
                 isUnhiding = true;
             }
             else
             {
                 if (canHide)
                 {
+                    playerAnim.SetBool("isFacingRight", false);
                     hud.questionMark.GetComponent<SpriteRenderer>().enabled = true;
                     playerAnim.SetBool("isHidden", false);
                     isHidden = false;
                     canMove = true;
                     unhideTimer = -1;
+                    isUnhiding = false;
                 }
             }
         }

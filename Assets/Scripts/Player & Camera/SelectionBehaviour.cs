@@ -22,7 +22,7 @@ public class SelectionBehaviour : MonoBehaviour {
             thisRenderer.sprite = selectionDoor;
         }
 
-        if (player.selection == PlayerController.Selection.HIDEOBJECT)
+        if (player.selection == PlayerController.Selection.HIDE_OBJECT)
         {
             thisRenderer.sprite = selectionHideObject;
         }

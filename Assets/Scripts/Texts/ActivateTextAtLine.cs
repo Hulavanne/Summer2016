@@ -69,6 +69,8 @@ public class ActivateTextAtLine : MonoBehaviour
         currentNPC = PlayerController.current.overlappingNpc;
         npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();
 
+        Debug.Log(interact);
+
         if (interact)
         {
             if (npcBehaviour.npcType == NpcBehaviour.Type.DEER)

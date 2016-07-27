@@ -13,6 +13,11 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         current = this;
+
+        foreach (Item item in GameObject.FindObjectsOfType<Item>())
+        {
+            AddItemToInventory(item.gameObject);
+        }
     }
 
 	void OnTriggerEnter2D(Collider2D other)

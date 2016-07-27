@@ -15,12 +15,12 @@ public class Item : MonoBehaviour
 
     public enum Type
     {
-        EMPTY,
+        NONE,
         GLOVES,
         BERRIES,
         DEATH_CAP
     };
-    public Type itemType = Type.EMPTY;
+    public Type itemType = Type.NONE;
 
     public string displayName;
     public Sprite icon;

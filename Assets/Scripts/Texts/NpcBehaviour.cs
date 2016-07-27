@@ -21,7 +21,7 @@ public class NpcBehaviour : MonoBehaviour
         LILIES
     };
     public Type npcType = Type.PASSIVE;
-    public Item.Type requiredItemType = Item.Type.EMPTY;
+    public Item.Type requiredItemType = Item.Type.NONE;
 
     public TextAsset text;
     public bool isAutomatic;

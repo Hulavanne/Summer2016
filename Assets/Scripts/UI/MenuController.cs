@@ -41,84 +41,82 @@ public class MenuController : MonoBehaviour
     
 	void Awake()
     {
-		Time.timeScale = 1;
+        Time.timeScale = 1;
 
-		if (GameObject.Find("LevelManager") != null)
-		{
-			levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-		}
-		if (GameObject.FindGameObjectWithTag("Player") != null)
-		{
-			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-		}
+        if (GameObject.Find("LevelManager") != null)
+        {
+            levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        }
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        }
         if (transform.FindChild("GUI") != null)
         {
             gui = transform.FindChild("GUI").gameObject;
-			floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
-			gameOverScreen = gui.transform.FindChild ("GameOver").gameObject;
+            floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
+            gameOverScreen = gui.transform.FindChild("GameOver").gameObject;
 
-			foreach (Transform child in gameOverScreen.transform)
-			{
-				child.gameObject.SetActive(false);
-			}
-			gameOverScreen.SetActive(false);
+            foreach (Transform child in gameOverScreen.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+            gameOverScreen.SetActive(false);
         }
         if (transform.FindChild("PauseScreen") != null)
-		{
-			pauseOverlay = transform.FindChild("PauseScreen").gameObject;
-			inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
+        {
+            pauseOverlay = transform.FindChild("PauseScreen").gameObject;
+            inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
             inventoryManager.Setup();
-			pauseOverlay.SetActive(false);
-		}
-		if (transform.name != "LoadMenu" && transform.name != "OptionsOverlay" && transform.name != "CreditsOverlay")
-		{
-			menu = transform.gameObject;
+            pauseOverlay.SetActive(false);
+        }
+        if (transform.name != "LoadMenu" && transform.name != "OptionsOverlay" && transform.name != "CreditsOverlay")
+        {
+            menu = transform.gameObject;
 
-			if (GameObject.Find("LoadMenu") != null)
-			{
-				loadMenu = GameObject.Find("LoadMenu");
-				loadMenu.GetComponent<MenuController>().menu = menu;
-			}
-			if (GameObject.Find("OptionsOverlay") != null)
-			{
-				optionsOverlay = GameObject.Find("OptionsOverlay");
-				optionsOverlay.GetComponent<MenuController>().menu = menu;
-			}
-			if (GameObject.Find("CreditsOverlay") != null)
-			{
-				creditsOverlay = GameObject.Find("CreditsOverlay");
-				creditsOverlay.GetComponent<MenuController>().menu = menu;
-			}
-		}
-		else
-		{
-			if (GameObject.Find("LoadMenu") != null)
-			{
-				loadMenu = GameObject.Find("LoadMenu");
-			}
-			if (GameObject.Find("OptionsOverlay") != null)
-			{
-				optionsOverlay = GameObject.Find("OptionsOverlay");
-			}
-			if (GameObject.Find("CreditsOverlay") != null)
-			{
-				creditsOverlay = GameObject.Find("CreditsOverlay");
-			}
-		}
+            if (GameObject.Find("LoadMenu") != null)
+            {
+                loadMenu = GameObject.Find("LoadMenu");
+                loadMenu.GetComponent<MenuController>().menu = menu;
+            }
+            if (GameObject.Find("OptionsOverlay") != null)
+            {
+                optionsOverlay = GameObject.Find("OptionsOverlay");
+                optionsOverlay.GetComponent<MenuController>().menu = menu;
+            }
+            if (GameObject.Find("CreditsOverlay") != null)
+            {
+                creditsOverlay = GameObject.Find("CreditsOverlay");
+                creditsOverlay.GetComponent<MenuController>().menu = menu;
+            }
+        }
+        else
+        {
+            if (GameObject.Find("LoadMenu") != null)
+            {
+                loadMenu = GameObject.Find("LoadMenu");
+            }
+            if (GameObject.Find("OptionsOverlay") != null)
+            {
+                optionsOverlay = GameObject.Find("OptionsOverlay");
+            }
+            if (GameObject.Find("CreditsOverlay") != null)
+            {
+                creditsOverlay = GameObject.Find("CreditsOverlay");
+            }
+        }
 	}
 
 	void Start()
 	{
-		if (transform.name == "OptionsOverlay" || transform.name == "LoadMenu" || transform.name == "CreditsOverlay")
-		{
-			transform.gameObject.SetActive(false);
-		}
+        if (transform.name == "OptionsOverlay" || transform.name == "LoadMenu" || transform.name == "CreditsOverlay")
+        {
+            transform.gameObject.SetActive(false);
+        }
 	}
 
     void Update()
     {
-        #if (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (currentState == State.MAIN_MENU_OR_CLOSED)
@@ -127,7 +125,14 @@ public class MenuController : MonoBehaviour
             }
             else if (currentState == State.INVENTORY)
             {
-                ResumeGame();
+                if (!InventoryItemSlots.inspectingItem)
+                {
+                    ResumeGame();
+                }
+                else
+                {
+                    ItemSlideMenu.current.itemSlides[1].GetComponent<InventoryItemSlots>().StopInspectingItem();
+                }
             }
             else if (currentState == State.LOAD_MENU)
             {
@@ -142,8 +147,6 @@ public class MenuController : MonoBehaviour
                 DeactivateCreditsOverlay();
             }
         }
-
-        #endif
     }
 
 	public void GoToScene(string sceneName)

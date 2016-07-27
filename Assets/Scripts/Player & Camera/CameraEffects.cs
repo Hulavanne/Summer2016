@@ -174,7 +174,7 @@ public class CameraEffects : MonoBehaviour
 		cameraComponent.orthographicSize = size;
 
 		// Making sure the camera is bound to the bottom of the background
-		transform.position = new Vector3(transform.position.x, -25.2375f + cameraComponent.orthographicSize, transform.position.z);
+		transform.position = new Vector3(transform.position.x, -10.2375f + cameraComponent.orthographicSize, transform.position.z);
 
 		// Adjusting the collider to the camera's size
 		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;

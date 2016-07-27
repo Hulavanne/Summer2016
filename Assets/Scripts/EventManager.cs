@@ -79,6 +79,7 @@ public class EventManager : MonoBehaviour
 
     public void InteractWithDeer(NpcBehaviour npcBehaviour, bool givingBerries = false)
     {
+        Debug.Log("asd1");
         int value = 0;
 
         // Add event to triggeredEvents, if it isn't already there

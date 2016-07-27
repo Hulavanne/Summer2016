@@ -20,7 +20,7 @@ public class InventoryItemSlots : MonoBehaviour
 
 	void Awake()
 	{
-		foreach (Transform child in transform)
+        foreach (Transform child in transform)
 		{
 			if (child.name != "ItemDescription")
 			{
@@ -147,8 +147,6 @@ public class InventoryItemSlots : MonoBehaviour
 	{
         if (inspectingItem)
         {
-            Debug.Log("TOIMII");
-
             if (inspectedItemIndex == 0)
             {
                 itemSlots[1].SetActive(true);

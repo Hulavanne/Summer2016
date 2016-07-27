@@ -279,7 +279,7 @@ public class ItemSlideMenu : MonoBehaviour
                 if (distanceToStartPosition < slideSlidingDistance * 0.9f)
                 {
                     RectTransform backgroundTransform = background.GetComponent<RectTransform>();
-                    backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
+                    //backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 
                     // Loop through all the slides
                     for (int i = 0; i < itemSlides.Count; ++i)
@@ -372,7 +372,7 @@ public class ItemSlideMenu : MonoBehaviour
 
 		RectTransform backgroundTransform = background.GetComponent<RectTransform>();
         Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + direction * distanceFromStart, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
-		backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
+		//backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
 
 		// For each item slide:
 		for (int i = 0; i < itemSlides.Count; ++i)

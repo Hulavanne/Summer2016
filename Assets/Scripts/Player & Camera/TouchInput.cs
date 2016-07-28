@@ -96,11 +96,13 @@ public class TouchInput : MonoBehaviour
                             {
                                 runValue++;
                                 runTouchDelay = 0;
+                                isTouchingRight = true;
                             }
                             else
                             {
-                                runValue = 0;
-                                runTouchDelay = 0;
+                                runValue = 1;
+                                runTouchDelay = runTouchDelayMax;
+                                isTouchingRight = true;
                             }
                         }
                         else
@@ -109,11 +111,13 @@ public class TouchInput : MonoBehaviour
                             {
                                 runValue++;
                                 runTouchDelay = 0;
+                                isTouchingRight = false;
                             }
                             else
                             {
-                                runValue = 0;
-                                runTouchDelay = 0;
+                                runValue = 1;
+                                runTouchDelay = runTouchDelayMax;
+                                isTouchingRight = false;
                             }
                         }
                     }
@@ -125,14 +129,15 @@ public class TouchInput : MonoBehaviour
                     {
                         runValue++;
                         runTouchDelay = 0;
+                        isTouchingRight = false;
                     }
                     else
                     {
                         runValue = 1;
-                        runTouchDelay = 0;
+                        runTouchDelay = runTouchDelayMax;
+                        isTouchingRight = true;
                     }
                 }
-
                 runTouchDelay = runTouchDelayMax;
             }
         }
@@ -152,7 +157,7 @@ public class TouchInput : MonoBehaviour
         }
 
         // For touch device
-#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
+//#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
 
         // If user is touching the screen
         if (Input.touchCount > 0)
@@ -203,53 +208,55 @@ public class TouchInput : MonoBehaviour
                         }
                         else if (runValue == 1)
                         {
-                           if (runTouchDelay > 0)
-                    {
-                        // this will check runValue value, and add 1 if its value is either 0, or 1
-                        if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
-                        {
-                            if (isTouchingRight)
+                            if (runTouchDelay > 0)
                             {
-                                runValue++;
-                                runTouchDelay = 0;
+                                // this will check runValue value, and add 1 if its value is either 0, or 1
+                                if (((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2)))
+                                {
+                                    if (isTouchingRight)
+                                    {
+                                        runValue++;
+                                        runTouchDelay = 0;
+                                    }
+                                    else
+                                    {
+                                        runTouchDelay = runTouchDelayMax;
+                                    }
+                                }
+                                else
+                                {
+                                    if (!isTouchingRight)
+                                    {
+                                        runValue++;
+                                        runTouchDelay = 0;
+                                    }
+                                    else
+                                    {
+                                        runTouchDelay = runTouchDelayMax;
+                                    }
+                                }
                             }
-                            else
-                            {
-                                runValue = 0;
-                                runTouchDelay = 0;
-                            }
-                        }
-                        else
-                        {
-                            if (!isTouchingRight)
-                            {
-                                runValue++;
-                                runTouchDelay = 0;
-                            }
-                            else
-                            {
-                                runValue = 0;
-                                runTouchDelay = 0;
-                            }
-                        }
-                    }
                         }
                         else
                         {
                             if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
                             {
-                                runValue++;
-                                runTouchDelay = 0;
+                                if (!isTouchingRight)
+                                {
+                                    runValue++;
+                                    runTouchDelay = 0;
+                                }
                             }
                             else
                             {
-                                runValue = 1;
-                                runTouchDelay = 0;
+                                if (isTouchingRight)
+                                {
+                                    runValue = 1;
+                                    runTouchDelay = runTouchDelayMax;
+                                }
                             }
                         }
                     }
-
-                    runTouchDelay = runTouchDelayMax;
                 }
                 else
                 {

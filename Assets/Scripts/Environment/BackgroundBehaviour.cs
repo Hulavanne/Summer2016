@@ -69,14 +69,13 @@ public class BackgroundBehaviour : MonoBehaviour
             }
             else
             {
-                //distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
-                //totalOffset = mainCamera.transform.position.x + distanceFromStart;
-                //transform.position = new Vector3((mainCamera.transform.position.x + (distanceFromStart * 0.5f)), transform.position.y, transform.position.z);
-
-                transform.position = new Vector3(((mainCamera.transform.position.x
+                distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
+                totalOffset = mainCamera.transform.position.x + distanceFromStart;
+               
+                transform.position = new Vector3(((mainCamera.transform.position.x - (distanceFromStart * 0.75f)
                     + distanceFromStart) * backgroundSpeed) + moveAloneSpeed,
                     transform.position.y, transform.position.z);
-                moveAloneSpeed += 0.2f * Time.deltaTime;
+                moveAloneSpeed += 0.35f * Time.deltaTime;
 
                 if (sprite1 != null && sprite2 != null)
                 {

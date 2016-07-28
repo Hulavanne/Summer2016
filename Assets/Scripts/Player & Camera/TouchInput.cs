@@ -9,7 +9,7 @@ public class TouchInput : MonoBehaviour
     
     public int runValue = 0;
     public float runTouchDelay = 0;
-    public float runTouchDelayMax = 4.0f;
+    public float runTouchDelayMax = 5.0f;
     
     public bool isPressing;
     public bool isTouchingRight;
@@ -99,7 +99,7 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             {
-                                runValue--;
+                                runValue = 0;
                                 runTouchDelay = 0;
                             }
                         }
@@ -112,7 +112,7 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             {
-                                runValue--;
+                                runValue = 0;
                                 runTouchDelay = 0;
                             }
                         }
@@ -124,12 +124,11 @@ public class TouchInput : MonoBehaviour
                     if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
                     {
                         runValue++;
-
                         runTouchDelay = 0;
                     }
                     else
                     {
-                        runValue--;
+                        runValue = 1;
                         runTouchDelay = 0;
                     }
                 }
@@ -216,7 +215,7 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             {
-                                runValue--;
+                                runValue = 0;
                                 runTouchDelay = 0;
                             }
                         }
@@ -229,7 +228,7 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             {
-                                runValue--;
+                                runValue = 0;
                                 runTouchDelay = 0;
                             }
                         }
@@ -244,7 +243,7 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             {
-                                runValue--;
+                                runValue = 1;
                                 runTouchDelay = 0;
                             }
                         }
@@ -261,7 +260,8 @@ public class TouchInput : MonoBehaviour
                     player.PlayerAnimStop();
                     if (runValue == 2)
                     {
-                        runValue = 0; // if at any point the player releases the touch while the value is 2, it resets to 0
+                        runTouchDelay = runTouchDelayMax;
+                        runValue = 1; // if at any point the player releases the touch while the value is 2, it resets to 0    
                     }
                 }
             }
@@ -294,11 +294,11 @@ public class TouchInput : MonoBehaviour
         // keeps checking if player is touching the first time
         if (runValue == 1 && (isPressing))
         {
-            runTouchDelay = 2; // this will always set the timer to 2
+            runTouchDelay = runTouchDelayMax;
         }
 
         // checks if the player hasn't touched for a while after the first touched
-        else if (runValue == 1 && runTouchDelay < 0)
+        else if (runValue == 1 && runTouchDelay <= 0)
         {
             runValue = 0; // the value will then reset to 0
         }

@@ -395,6 +395,12 @@ public class MenuController : MonoBehaviour
 		// Picking a slot to save a new game to
 		if (MenuController.savingGame)
 		{
+            // If the slot already has a save file
+            if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
+            {
+
+            }
+
 			SaveGame(saveSlotIndex);
 		}
 		// Loading an existing game file
@@ -403,6 +409,16 @@ public class MenuController : MonoBehaviour
 			LoadGame(saveSlotIndex);
 		}
 	}
+
+    public void ActivateConfirmationOverlay(int saveSlotIndex)
+    {
+
+    }
+
+    public void DeactivateConfirmationOverlay(int saveSlotIndex)
+    {
+
+    }
 
 	public void SaveGame(int saveSlotIndex)
 	{

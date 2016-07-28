@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
         KITCHEN = 1,
         PARENTS_BEDROOM = 2,
         YARD = 3,
-        FORESTOPENING = 4,
+        FOREST_OPENING = 4,
         FOREST_LEFT = 5,
         FOREST_RIGHT_BELLADONA = 6,
         FOREST_DEER = 7,

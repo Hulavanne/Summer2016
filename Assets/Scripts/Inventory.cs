@@ -13,11 +13,6 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         current = this;
-
-        foreach (Item item in GameObject.FindObjectsOfType<Item>())
-        {
-            AddItemToInventory(item.gameObject);
-        }
     }
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -28,22 +23,29 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-    public void AddItemToInventory(GameObject item)
+    public void AddItemToInventory(GameObject itemObject)
     {
-        Item itemScript = item.GetComponent<Item>();
-        ItemData itemData = itemScript.itemData;
+        Item item = itemObject.GetComponent<Item>();
+        ItemData itemData = item.itemData;
 
-        items.Add(itemScript);
-        itemsData.Add(itemData);
-        itemData.collected = true;
-
-        if (item.GetComponent<SpriteRenderer>() != null)
+        if (!itemData.collected)
         {
-            item.GetComponent<SpriteRenderer>().enabled = false;
+            items.Add(item);
+            itemsData.Add(itemData);
+            itemData.collected = true;
+
+            if (itemObject.GetComponent<SpriteRenderer>() != null)
+            {
+                itemObject.GetComponent<SpriteRenderer>().enabled = false;
+            }
+            if (itemObject.GetComponent<BoxCollider2D>() != null)
+            {
+                itemObject.GetComponent<BoxCollider2D>().enabled = false;
+            }
         }
-        if (item.GetComponent<BoxCollider2D>() != null)
+        else
         {
-            item.GetComponent<BoxCollider2D>().enabled = false;
+            Debug.Log("Item '" + itemObject + "' already collected");
         }
     }
 
@@ -71,9 +73,12 @@ public class Inventory : MonoBehaviour
                     }
                     return;
                 }
+                else
+                {
+                    Debug.Log("Item '" + item.gameObject + "' already collected");
+                }
             }
         }
-
         Debug.Log("No uncollected item of type '" + type + "' found in scene");
     }
 

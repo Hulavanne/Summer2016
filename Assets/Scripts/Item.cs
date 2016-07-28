@@ -17,6 +17,7 @@ public class Item : MonoBehaviour
     {
         NONE,
         GLOVES,
+        NIGHTSHADE,
         BERRIES,
         DEATH_CAP
     };

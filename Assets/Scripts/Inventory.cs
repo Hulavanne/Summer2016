@@ -48,7 +48,7 @@ public class Inventory : MonoBehaviour
     }
 
     public void AddItemToInventory(Item.Type type)
-	{
+    {
         foreach (Item item in InventoryManager.current.sceneItems)
         {
             if (type == item.itemType)

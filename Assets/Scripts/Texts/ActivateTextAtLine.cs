@@ -69,10 +69,12 @@ public class ActivateTextAtLine : MonoBehaviour
         currentNPC = PlayerController.current.overlappingNpc;
         npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();
 
-        Debug.Log(interact);
-
         if (interact)
         {
+            if (npcBehaviour.npcType == NpcBehaviour.Type.BELLADONNA)
+            {
+                EventManager.current.InteractWithBelladonna(npcBehaviour);
+            }
             if (npcBehaviour.npcType == NpcBehaviour.Type.DEER)
             {
                 EventManager.current.InteractWithDeer(npcBehaviour);

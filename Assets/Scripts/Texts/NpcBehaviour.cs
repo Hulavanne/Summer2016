@@ -15,7 +15,7 @@ public class NpcBehaviour : MonoBehaviour
         PARENTS_BED,
         PARENTS_CLOSET,
         OUTHOUSE,
-        BELLADONA,
+        BELLADONNA,
         DEER,
         BLOCKER,
         LILIES
@@ -95,11 +95,9 @@ public class NpcBehaviour : MonoBehaviour
 
     public void TriggerAction()
     {
-        if (npcType == Type.BELLADONA)
+        if (npcType == Type.BELLADONNA)
         {
-            Debug.Log("Deactivated");
-            gameObject.SetActive(false);
-            player.canMove = true;
+            EventManager.current.InteractWithBelladonna(this, true);
         }
         else if (npcType == Type.DEER)
         {

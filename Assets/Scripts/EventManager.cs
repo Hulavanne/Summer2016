@@ -77,9 +77,61 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void InteractWithBelladonna(NpcBehaviour npcBehaviour, bool usingGloves = false)
+    {
+        int value = 0;
+
+        // Add event to triggeredEvents, if it isn't already there
+        Game.current.AddToTriggeredEvents(NpcBehaviour.Type.BELLADONNA);
+
+        // If player is using gloves
+        if (usingGloves && Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONNA] < 1)
+        {
+            // Set state to 2
+            Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONNA] = 1;
+        }
+        else if (usingGloves && Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONNA] >= 1)
+        {
+            npcBehaviour.ChangeLines(4, 4);
+            ActivateTextAtLine.current.TalkToNPC(false);
+            return;
+        }
+
+        value = Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONNA];
+
+        if (!usingGloves)
+        {
+            value = 0;
+        }
+
+        // Default response
+        if (value == 0)
+        {
+            npcBehaviour.ChangeLines(0, 0);
+            //Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONA] = 1;
+        }
+        // If using gloves
+        else if (value == 1)
+        {
+            // Setup correct lines and start talking
+            npcBehaviour.ChangeLines(2, 2);
+            ActivateTextAtLine.current.TalkToNPC(false);
+
+            // Add nightshade to player's inventory
+            Inventory.current.AddItemToInventory(Item.Type.NIGHTSHADE);
+
+            // Set state
+            //Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONA] = 2;
+        }
+        // If spoken once already
+        else if (value >= 2)
+        {
+            //npcBehaviour.ChangeLines(4, 4);
+        }
+    }
+
     public void InteractWithDeer(NpcBehaviour npcBehaviour, bool givingBerries = false)
     {
-        Debug.Log("asd1");
         int value = 0;
 
         // Add event to triggeredEvents, if it isn't already there
@@ -94,7 +146,7 @@ public class EventManager : MonoBehaviour
 
         value = Game.current.triggeredEvents[NpcBehaviour.Type.DEER];
 
-        // Deafult response
+        // Default response
         if (value == 0)
         {
             npcBehaviour.ChangeLines(0, 4);

@@ -69,7 +69,10 @@ public class DoorBehaviour : MonoBehaviour {
         {
             levelManager.currentDoor = thisDoor;
             levelManager.nextDoor = nextDoor;
-            player.ActivateSelection(PlayerController.Selection.DOOR);
+            if (!AutomaticDoor)
+            {
+                player.ActivateSelection(PlayerController.Selection.DOOR);
+            }
         }
     }
     

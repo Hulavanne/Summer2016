@@ -54,7 +54,10 @@ public class LevelManager : MonoBehaviour
     public GameObject QuestionMark;
 
     void Awake()
-	{
+    {
+        darknessPlaneRenderer = GameObject.Find("DarknessModifier").GetComponent<CanvasRenderer>();
+        lightPlaneRenderer = GameObject.Find("LightModifier").GetComponent<CanvasRenderer>();
+
         current = this;
 
 		// Making sure the game starts from level 1 if playing a build version of the game

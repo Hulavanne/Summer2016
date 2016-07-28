@@ -17,6 +17,7 @@ public class LightBehaviour : MonoBehaviour {
         current = this;
         opacity = 0.0f;
         darknessImg = GameObject.Find("Darkness").GetComponent<Image>();
+        fadeSpeed = 2;
     }
 	
     public void SetLighting(bool turnBlack, float amount)

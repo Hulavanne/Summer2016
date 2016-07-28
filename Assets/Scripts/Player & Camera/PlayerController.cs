@@ -418,6 +418,7 @@ public class PlayerController : MonoBehaviour {
             hud.questionMark.GetComponent<SpriteRenderer>().enabled = false;
             isHidden = true;
             canMove = false;
+            unhideTimer = -1;
         }
     }
 

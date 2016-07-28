@@ -23,13 +23,13 @@ public class BackgroundBehaviour : MonoBehaviour
     void Start()
     {
         if (transform.FindChild("sprite1") != null)
-        {
+        { // get sprite 1 spriteRenderer and gameObject
             sprite1 = transform.FindChild("sprite1").GetComponent<SpriteRenderer>();
             sprite1G = transform.FindChild("sprite1").gameObject;
         }
 
         if (transform.FindChild("sprite2") != null)
-        {
+        { // get sprite 2 spriteRenderer and gameObject
             sprite2 = transform.FindChild("sprite2").GetComponent<SpriteRenderer>();
             sprite2G = transform.FindChild("sprite2").gameObject;
         }
@@ -62,16 +62,16 @@ public class BackgroundBehaviour : MonoBehaviour
                 playerStart = false;
             }
             if (!movesAlone)
-            {
+            { // checks camera position, preset offset, distance from start, and executes a funciton out of those values
                 distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
                 totalOffset = mainCamera.transform.position.x + distanceFromStart;
                 transform.position = new Vector3((mainCamera.transform.position.x + (distanceFromStart * 0.5f)), transform.position.y, transform.position.z);
             }
             else
-            {
+            {   // first gets a moveAlone value, and then adds it to a function that mixes those from above with it
                 distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
                 totalOffset = mainCamera.transform.position.x + distanceFromStart;
-               
+                
                 transform.position = new Vector3(((mainCamera.transform.position.x - (distanceFromStart * 0.75f)
                     + distanceFromStart) * backgroundSpeed) + moveAloneSpeed,
                     transform.position.y, transform.position.z);
@@ -80,7 +80,7 @@ public class BackgroundBehaviour : MonoBehaviour
                 if (sprite1 != null && sprite2 != null)
                 {
                     if (sprite1.transform.position.x > (initialPos + 2 * distanceBetweenSprites))
-                    {
+                    { // resets position if it reaches too far out of the initial place
                         sprite1.transform.position = new Vector3(initialPos,
                             transform.position.y, transform.position.z);
                     }

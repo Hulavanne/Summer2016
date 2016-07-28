@@ -64,7 +64,7 @@ public class HideBehaviour : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerController.current.selection = PlayerController.Selection.HIDE_OBJECT;
+            PlayerController.current.ActivateSelection(PlayerController.Selection.HIDE_OBJECT);
         }
     }
 

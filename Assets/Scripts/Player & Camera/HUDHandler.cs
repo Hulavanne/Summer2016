@@ -37,14 +37,14 @@ public class HUDHandler : MonoBehaviour {
     }
 
     public void SetHud(bool option)
-    {
+    { // sets stamina, pause and action button active / inactive (for dialogue box mostly)
         staminaBarObj.SetActive(option);
         pauseButtonObj.SetActive(option);
         actionButtonObj.SetActive(option);
     }
 
     public void GameOverSplash()
-    {
+    { // splashes black screen, fades gameover frame and after that displays buttons.
         gameOverObj.SetActive(true);
         opacity += 0.015f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
@@ -56,5 +56,4 @@ public class HUDHandler : MonoBehaviour {
             backToMenuButton.SetActive(true);
         }
     }
-
 }

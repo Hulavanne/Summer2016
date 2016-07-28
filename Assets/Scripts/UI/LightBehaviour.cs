@@ -23,7 +23,7 @@ public class LightBehaviour : MonoBehaviour {
     public void SetLighting(bool turnBlack, float amount)
     {
         isTurningBlack = turnBlack;
-        targetOpacity = amount;
+        targetOpacity = amount; // can set this to for example 0.5 for 0.5 alpha
         changeOpacity = true;
     }
 
@@ -35,7 +35,7 @@ public class LightBehaviour : MonoBehaviour {
         {
             if (isTurningBlack)
             {
-                opacity += fadeSpeed * Time.deltaTime;
+                opacity += fadeSpeed * Time.deltaTime; // fades dark screen
                 if (opacity >= targetOpacity)
                 {
                     changeOpacity = false;
@@ -43,7 +43,7 @@ public class LightBehaviour : MonoBehaviour {
             }
             else
             {
-                opacity -= fadeSpeed * Time.deltaTime;
+                opacity -= fadeSpeed * Time.deltaTime; // fades back to scene
                 if (opacity <= targetOpacity)
                 {
                     changeOpacity = false;

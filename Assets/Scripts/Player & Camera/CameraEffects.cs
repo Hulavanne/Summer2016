@@ -159,7 +159,7 @@ public class CameraEffects : MonoBehaviour
 	}
 
 	public void FadeToBlack(bool stayBlack)
-	{
+	{ // if true, stays black screen, if false, fades to scene
 		fadeToBlack = stayBlack;
 		opacity = 1.0f;
 	}

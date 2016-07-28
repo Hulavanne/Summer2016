@@ -42,13 +42,15 @@ public class PlayerController : MonoBehaviour {
     public bool isOverlappingNPC;
     public bool isGameOver = false;
     public bool isHidden;
+
+    [HideInInspector]
     public bool isUnhiding = false; // animation for unhiding
     public bool isRunning;
 
     bool isNextRight;
     bool canCameraFollow;
 
-    GameObject rightBoundary;
+    GameObject boundary;
     GameObject leftBoundary;
 
     Camera cameraComponent;
@@ -57,11 +59,11 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
-        CameraEffects.current.FadeToBlack(false);
+        CameraEffects.current.FadeToBlack(false); // begin with black screen, fades to scene
         current = this;
 
-        hud = GetComponent<HUDHandler>();
-        touchRun = GetComponent<TouchInput>();
+        hud = GetComponent<HUDHandler>(); // all hud related components
+        touchRun = GetComponent<TouchInput>(); 
 		LevelManager.current = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		playerAnim = transform.GetComponentInChildren<Animator>();
         
@@ -75,15 +77,21 @@ public class PlayerController : MonoBehaviour {
         
 	}
 
+    void Start()
+    {
+        TextBoxManager.current.EnableTextBox();
+        TextBoxManager.current.DisableTextBox();
+    }
+
 	void Update()
     {
         PlayerFollowObject(canCameraFollow);
 
-        if (unhideTimer >= -0.5f)
+        if (unhideTimer >= -0.5f) // unhide is -1 by default (and this if statement won't run)
         {
-            if (unhideTimer <= 0.0f)
+            if (unhideTimer <= 0.0f) // if unhide is bigger than -0.5f, it means it's running
             {
-                PlayerUnhide(true);
+                PlayerUnhide(true); // unhides after animation
             }
             else
             {
@@ -98,18 +106,18 @@ public class PlayerController : MonoBehaviour {
 			if (selection == Selection.HIDE_OBJECT)
 			{
 				if (isHidden)
-				{
-					PlayerUnhide(false);
+                { // sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
+                    PlayerUnhide(false); 
 				}
 				else if (canHide)
 				{
-					PlayerHide();
+					PlayerHide(); // hides and plays animation right after
 				}
 			}
 
 			else if (selection == Selection.DOOR)
 			{
-				switchingLevel = true;
+				switchingLevel = true; // switches door
 				hud.hasClickedActionButton = false;
 			}
 			else if (selection == Selection.NPC)
@@ -121,26 +129,25 @@ public class PlayerController : MonoBehaviour {
 		if (isGameOver)
 		{
 			hud.GameOverSplash();
-			CameraEffects.current.FadeToBlack(true);
-			return;
+			CameraEffects.current.FadeToBlack(true); // sets everything to black, then fades GAMEOVER, then buttons show up
+            return;
 		}
 
         #region darkScreen
 
         if (switchingLevel) // if true, turns the screen dark
         {
-            CameraEffects.current.fadeToBlack = true; // this reference (in CameraFollowAndEffects) will turn the screen dark
-            switchingLevelTime += 0.8f * Time.deltaTime; // change the 0.8f value to another thing if you want the darkscreen to go faster/slower
+            CameraEffects.current.fadeToBlack = true; // this will fade the screen to black
+            switchingLevelTime += 0.8f * Time.deltaTime; // change 0.8f to another value if to change fade speed.
         }
         
 		if (switchingLevelTime >= 1) // 1 is a timer
 		{
 			canMove = true;
-			LevelManager.current.ChangeLevel();
-
-			//resetting variables
-			switchingLevel = false;
-			switchingLevelTime = 0.0f;
+			LevelManager.current.ChangeLevel(); // changes position and enum values
+            
+			switchingLevel = false; //resetting variables
+            switchingLevelTime = 0.0f;
 		}
 		#endregion
 	}
@@ -149,19 +156,18 @@ public class PlayerController : MonoBehaviour {
     {
         if (other.tag == "Door")
         {
-            currentDoor = other.gameObject;
+            currentDoor = other.gameObject; // get current door
         }
 
         else if (other.tag == "HideObject")
         {
-            currentHideObject = other.gameObject;
-            ActivateSelection(Selection.HIDE_OBJECT);
+            currentHideObject = other.gameObject; // get current hide object
         }
 
         else if (other.tag == "NPC")
         {
-            overlappingNpc = other.gameObject;
-            NpcBehaviour npcBehaviour = null;
+            overlappingNpc = other.gameObject; // get the gameobject of npc
+            NpcBehaviour npcBehaviour = null; // reset the npcbehaviour script
 
             if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
             {
@@ -178,26 +184,16 @@ public class PlayerController : MonoBehaviour {
                 ActivateTextAtLine.current.waitForPress = true;
                 return;
             }
-
-            if (npcBehaviour != null)
-            {
-                if (npcBehaviour.isAutomatic && npcBehaviour.waitTimer <= 0.0f)
-                {
-                    //ActivateTextAtLine.current.TalkToNPC();
-                    //npcBehaviour.isAutomatic = false;
-                    //GameFlowManager.current.isNPCAutomatic = false;
-                }
-            }
         }
         
         else if (other.tag == "PlayerBoundary")
         {
-            rightBoundary = other.gameObject;
+            boundary = other.gameObject;
 
-            if (transform.position.x > rightBoundary.transform.position.x)
+            if (transform.position.x > boundary.transform.position.x)
             {
 				if (movementDirection == 1 && !TextBoxManager.current.isTalkingToNPC)
-				{
+				{ // checks if the player is at the right of the boundary
 					canMove = true;
 				}
 				else
@@ -206,11 +202,11 @@ public class PlayerController : MonoBehaviour {
                     PlayerAnimStop();
                 }
             }
-            else if (transform.position.x < rightBoundary.transform.position.x)
+            else if (transform.position.x < boundary.transform.position.x)
             {
 				if (movementDirection == -1 && !TextBoxManager.current.isTalkingToNPC)
-				{
-					canMove = true;
+                { // checks if the player is at the left of the boundary
+                    canMove = true;
 				}
 				else
 				{
@@ -230,22 +226,13 @@ public class PlayerController : MonoBehaviour {
 
             if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
             {
-                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
-
-                if (npcBehaviour != null)
-                {
-                    if (npcBehaviour.isAutomatic && npcBehaviour.waitTimer <= 0.0f)
-                    {
-                        //ActivateTextAtLine.current.TalkToNPC();
-                        //GameFlowManager.current.isNPCAutomatic = false;
-                    }
-                }
+                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>(); // gets current npcbehav
             }
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
-    {
+    { // resets most of variables
         currentDoor = null;
 
         if (other.transform.tag == "NPC")
@@ -279,12 +266,11 @@ public class PlayerController : MonoBehaviour {
 
     public void OnActionButtonClick()
     {
-        //Debug.Log("Player has clicked Action Button.");
         hud.hasClickedActionButton = true;
     }
 
     void CheckNPCWaitTime()
-    {
+    { // use this script if you want the player to wait for an amount of time (as sort of cut-scene)
         if (overlappingNpc != null)
         {
             if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
@@ -325,11 +311,11 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
-		movementDirection = -1;
+		movementDirection = -1; // -1 stands for left
 
         PlayerAnimWalk(false);
 
-        if (!canMove)// || (!canWalkLeft)) // This is Enabled/Disabled when a dialogue appears
+        if (!canMove)
         {
             return;
         }
@@ -341,14 +327,13 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            //playeranim is walking right
             transform.position -= new Vector3(walkingSpeed * Time.deltaTime, 0, 0);
         }
     }
 
     public void GoRight()
     {
-		movementDirection = 1;
+		movementDirection = 1; // 1 stands for right
 
         PlayerAnimWalk(true);
 
@@ -371,12 +356,12 @@ public class PlayerController : MonoBehaviour {
     void PlayerFollowObject(bool canFollow)
     {
         if (currentHideObject == null)
-        {
+        { // doesn't execute anything if no hideobject is found
             return;
         }
 
-        if (!canFollow)
-        {
+        if (!canFollow) // hideobjectisfound
+        { // will keep track of object's position (left or right) until this function is executed with a "true" reference.
             if (currentHideObject.transform.position.x > transform.position.x)
             {
                 isNextRight = true;
@@ -389,17 +374,17 @@ public class PlayerController : MonoBehaviour {
 
         else
         {
-            if (isNextRight)
-            {
-                transform.position += new Vector3(4*Time.deltaTime, 0, 0);
+            if (isNextRight) // checks if the object (hideobject) is to the player's left or right
+            { // object is the player's right
+                transform.position += new Vector3(4*Time.deltaTime, 0, 0); // moves
                 if (transform.position.x >= currentHideObject.transform.position.x)
                 {
                     canCameraFollow = false;
                 }
             }
             else
-            {
-                transform.position -= new Vector3(4*Time.deltaTime, 0, 0);
+            { // object is to the player's left
+                transform.position -= new Vector3(4*Time.deltaTime, 0, 0); // moves
                 if (transform.position.x <= currentHideObject.transform.position.x)
                 {
                     canCameraFollow = false;
@@ -412,13 +397,13 @@ public class PlayerController : MonoBehaviour {
     {
         if (!isHidden)
         {
-            canCameraFollow = true;
-            LightBehaviour.current.SetLighting(true, 1.0f);
+            canCameraFollow = true; // in PlayerFollowObject()
+            LightBehaviour.current.SetLighting(true, 1.0f); // fade the darkscreen with hole
             playerAnim.SetBool("isHidden", true);
-            hud.questionMark.GetComponent<SpriteRenderer>().enabled = false;
+            hud.questionMark.GetComponent<SpriteRenderer>().enabled = false; // disables selection game object
             isHidden = true;
             canMove = false;
-            unhideTimer = -1;
+            unhideTimer = -1; // deafult value
         }
     }
 
@@ -441,7 +426,7 @@ public class PlayerController : MonoBehaviour {
                     playerAnim.SetBool("isHidden", false);
                     isHidden = false;
                     canMove = true;
-                    unhideTimer = -1;
+                    unhideTimer = -1; // reset value
                     isUnhiding = false;
                 }
             }

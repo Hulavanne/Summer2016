@@ -72,49 +72,49 @@ public class TouchInput : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (runValue == 0)
+                if (runValue == 0) // checks for the first touch input with ButtonDown event
                 {
                     if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                     {
-                        isTouchingRight = false;
+                        isTouchingRight = false; // gets touch left
                         runValue++;
                     }
                     else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
                     {
-                        isTouchingRight = true;
+                        isTouchingRight = true; // gets touch right
                         runValue++;
                     }
                 }
-                else if (runValue == 1)
+                else if (runValue == 1) // checks for the second touch input
                 {
                     if (runTouchDelay > 0)
                     {
                         // this will check runValue value, and add 1 if its value is either 0, or 1
                         if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x > Screen.width / 2)))
-                        {
+                        { // touched right
                             if (isTouchingRight)
-                            {
+                            { // proceeds if touches right again
                                 runValue++;
                                 runTouchDelay = 0;
                                 isTouchingRight = true;
                             }
                             else
-                            {
+                            { // does nothing if touches left after touching right
                                 runValue = 1;
                                 runTouchDelay = runTouchDelayMax;
                                 isTouchingRight = true;
                             }
                         }
                         else
-                        {
+                        { // touched left
                             if (!isTouchingRight)
-                            {
+                            { // proceeds if touches left again
                                 runValue++;
                                 runTouchDelay = 0;
                                 isTouchingRight = false;
                             }
                             else
-                            {
+                            { // does nothing if touches right after touching left
                                 runValue = 1;
                                 runTouchDelay = runTouchDelayMax;
                                 isTouchingRight = false;
@@ -122,17 +122,16 @@ public class TouchInput : MonoBehaviour
                         }
                     }
                 }
-
-                else
+                else // runValue is equal to 2
                 {
                     if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
-                    {
+                    { // keeps running
                         runValue++;
                         runTouchDelay = 0;
                         isTouchingRight = false;
                     }
                     else
-                    {
+                    { // keeps running
                         runValue = 1;
                         runTouchDelay = runTouchDelayMax;
                         isTouchingRight = true;
@@ -157,7 +156,7 @@ public class TouchInput : MonoBehaviour
         }
 
         // For touch device
-//#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
+#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
 
         // If user is touching the screen
         if (Input.touchCount > 0)
@@ -217,10 +216,13 @@ public class TouchInput : MonoBehaviour
                                     {
                                         runValue++;
                                         runTouchDelay = 0;
+                                        isTouchingRight = true;
                                     }
                                     else
                                     {
+                                        runValue = 1;
                                         runTouchDelay = runTouchDelayMax;
+                                        isTouchingRight = true;
                                     }
                                 }
                                 else
@@ -229,10 +231,13 @@ public class TouchInput : MonoBehaviour
                                     {
                                         runValue++;
                                         runTouchDelay = 0;
+                                        isTouchingRight = false;
                                     }
                                     else
                                     {
+                                        runValue = 1;
                                         runTouchDelay = runTouchDelayMax;
+                                        isTouchingRight = false;
                                     }
                                 }
                             }
@@ -241,21 +246,18 @@ public class TouchInput : MonoBehaviour
                         {
                             if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
                             {
-                                if (!isTouchingRight)
-                                {
-                                    runValue++;
-                                    runTouchDelay = 0;
-                                }
+                                runValue++;
+                                runTouchDelay = 0;
+                                isTouchingRight = false;
                             }
                             else
                             {
-                                if (isTouchingRight)
-                                {
-                                    runValue = 1;
-                                    runTouchDelay = runTouchDelayMax;
-                                }
+                                runValue = 1;
+                                runTouchDelay = runTouchDelayMax;
+                                isTouchingRight = true;
                             }
                         }
+                        runTouchDelay = runTouchDelayMax;
                     }
                 }
                 else

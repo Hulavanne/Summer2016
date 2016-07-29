@@ -21,10 +21,6 @@ public class MenuController : MonoBehaviour
 
     public AudioClip buttonSoundEffect;
 
-	LevelManager levelManager;
-	InventoryManager inventoryManager;
-	PlayerController playerController;
-
     GameObject gui;
 	GameObject floatingMessage;
 	GameObject gameOverScreen;
@@ -33,24 +29,46 @@ public class MenuController : MonoBehaviour
 	GameObject pauseOverlay;
 	GameObject loadMenu;
 	GameObject optionsOverlay;
-	GameObject creditsOverlay;
+    GameObject creditsOverlay;
+    GameObject confirmationOverlay;
 
 	string gameScene = "MainScene";
 	string pickSaveSlotString = "Pick a Save Slot";
 	string loadGameString = "Load Game";
+    string quitConfirmationString = "Are you sure you want to exit to the main menu?";
+    string saveConfirmationString = "Are you sure you want to overwrite the existing save file?";
+
+    int index = 0;
     
 	void Awake()
     {
         Time.timeScale = 1;
 
-        if (GameObject.Find("LevelManager") != null)
+        if (GameObject.Find("MainMenuUI") != null)
         {
-            levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+            menu = GameObject.Find("MainMenuUI");
         }
-        if (GameObject.FindGameObjectWithTag("Player") != null)
+        if (GameObject.Find("InGameUI") != null)
         {
-            playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            menu = GameObject.Find("InGameUI");
         }
+        if (GameObject.Find("LoadMenu") != null)
+        {
+            loadMenu = GameObject.Find("LoadMenu");
+        }
+        if (GameObject.Find("OptionsOverlay") != null)
+        {
+            optionsOverlay = GameObject.Find("OptionsOverlay");
+        }
+        if (GameObject.Find("CreditsOverlay") != null)
+        {
+            creditsOverlay = GameObject.Find("CreditsOverlay");
+        }
+        if (GameObject.Find("ConfirmationOverlay") != null)
+        {
+            confirmationOverlay = GameObject.Find("ConfirmationOverlay");
+        }
+
         if (transform.FindChild("GUI") != null)
         {
             gui = transform.FindChild("GUI").gameObject;
@@ -66,50 +84,14 @@ public class MenuController : MonoBehaviour
         if (transform.FindChild("PauseScreen") != null)
         {
             pauseOverlay = transform.FindChild("PauseScreen").gameObject;
-            inventoryManager = pauseOverlay.transform.GetComponentInChildren<InventoryManager>();
-            inventoryManager.Setup();
+            transform.GetComponentInChildren<InventoryManager>().Setup();
             pauseOverlay.SetActive(false);
-        }
-        if (transform.name != "LoadMenu" && transform.name != "OptionsOverlay" && transform.name != "CreditsOverlay")
-        {
-            menu = transform.gameObject;
-
-            if (GameObject.Find("LoadMenu") != null)
-            {
-                loadMenu = GameObject.Find("LoadMenu");
-                loadMenu.GetComponent<MenuController>().menu = menu;
-            }
-            if (GameObject.Find("OptionsOverlay") != null)
-            {
-                optionsOverlay = GameObject.Find("OptionsOverlay");
-                optionsOverlay.GetComponent<MenuController>().menu = menu;
-            }
-            if (GameObject.Find("CreditsOverlay") != null)
-            {
-                creditsOverlay = GameObject.Find("CreditsOverlay");
-                creditsOverlay.GetComponent<MenuController>().menu = menu;
-            }
-        }
-        else
-        {
-            if (GameObject.Find("LoadMenu") != null)
-            {
-                loadMenu = GameObject.Find("LoadMenu");
-            }
-            if (GameObject.Find("OptionsOverlay") != null)
-            {
-                optionsOverlay = GameObject.Find("OptionsOverlay");
-            }
-            if (GameObject.Find("CreditsOverlay") != null)
-            {
-                creditsOverlay = GameObject.Find("CreditsOverlay");
-            }
         }
 	}
 
 	void Start()
 	{
-        if (transform.name == "OptionsOverlay" || transform.name == "LoadMenu" || transform.name == "CreditsOverlay")
+        if (transform.name != "MainMenuUI" && transform.name != "InGameUI")
         {
             transform.gameObject.SetActive(false);
         }
@@ -119,11 +101,7 @@ public class MenuController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (currentState == State.MAIN_MENU_OR_CLOSED)
-            {
-                
-            }
-            else if (currentState == State.INVENTORY)
+            if (currentState == State.INVENTORY)
             {
                 if (!InventoryItemSlots.inspectingItem)
                 {
@@ -230,17 +208,17 @@ public class MenuController : MonoBehaviour
 
 	public void ActionButton()
 	{
-		playerController.OnActionButtonClick();
+		PlayerController.current.OnActionButtonClick();
 	}
 
 	public void ReloadLevel()
 	{
-		levelManager.ReloadLevel();
+		LevelManager.current.ReloadLevel();
 	}
 
 	public void GoToMenu()
 	{
-		levelManager.GoToMenu();
+		LevelManager.current.GoToMenu();
 	}
 
 	public void PauseGame()
@@ -255,8 +233,8 @@ public class MenuController : MonoBehaviour
 		gui.SetActive(false);
 		pauseOverlay.SetActive(true);
 
-		inventoryManager.SetSlideVariables();
-		inventoryManager.FillItemSlots();
+		InventoryManager.current.SetSlideVariables();
+		InventoryManager.current.FillItemSlots();
 	}
 
     public void ResumeGame()
@@ -397,10 +375,13 @@ public class MenuController : MonoBehaviour
             // If the slot already has a save file
             if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
             {
-
+                index = saveSlotIndex;
+                ActivateConfirmationOverlay();
             }
-
-			SaveGame(saveSlotIndex);
+            else
+            {
+                SaveGame(saveSlotIndex);
+            }
 		}
 		// Loading an existing game file
 		else
@@ -409,14 +390,40 @@ public class MenuController : MonoBehaviour
 		}
 	}
 
-    public void ActivateConfirmationOverlay(int saveSlotIndex)
+    public void ActivateConfirmationOverlay()
     {
+        confirmationOverlay.SetActive(true);
+        Text textComponent = confirmationOverlay.transform.FindChild("WarningText").GetComponent<Text>();
 
+        if (currentState == State.INVENTORY)
+        {
+            textComponent.text = quitConfirmationString;
+        }
+        else if (currentState == State.LOAD_MENU)
+        {
+            textComponent.text = saveConfirmationString;
+        }
     }
 
-    public void DeactivateConfirmationOverlay(int saveSlotIndex)
+    public void DeactivateConfirmationOverlay()
     {
+        confirmationOverlay.SetActive(false);
+    }
 
+    public void Confirm(bool confirmed)
+    {
+        if (confirmed)
+        {
+            if (currentState == State.INVENTORY)
+            {
+                GoToScene("MainMenu");
+            }
+            else if (currentState == State.LOAD_MENU)
+            {
+                SaveGame(index);
+            }
+        }
+        DeactivateConfirmationOverlay();
     }
 
 	public void SaveGame(int saveSlotIndex)
@@ -492,7 +499,6 @@ public class MenuController : MonoBehaviour
 		Slider musicVolumeSlider = transform.FindChild("MusicVolumeSlider").GetComponent<Slider>();
 		Slider soundEffectsVolumeSlider = transform.FindChild("SoundEffectsVolumeSlider").GetComponent<Slider>();
 		Slider gammaSlider = transform.FindChild("GammaSlider").GetComponent<Slider>();
-		GameObject mutedImage = transform.FindChild("MuteButton").FindChild("MutedImage").gameObject;
 
 		masterVolumeSlider.value = AudioManager.masterVolume * 100;
         masterVolumeSlider.transform.FindChild("Percentage").GetComponent<Text>().text = masterVolumeSlider.value.ToString() + "%";
@@ -506,13 +512,30 @@ public class MenuController : MonoBehaviour
         gammaSlider.value = GameManager.gammaValue * 100;
         gammaSlider.transform.FindChild("Percentage").GetComponent<Text>().text = gammaSlider.value.ToString() + "%";
 
-		mutedImage.SetActive(AudioManager.audioMuted);
-	}
+        Image unmutedImage = transform.FindChild("MuteButton").GetComponent<Image>();
+        Image mutedImage = transform.FindChild("MuteButton").FindChild("MutedImage").GetComponent<Image>();
+
+        unmutedImage.enabled = !AudioManager.audioMuted;
+        mutedImage.enabled = AudioManager.audioMuted;
+
+        if (AudioManager.audioMuted)
+        {
+            masterVolumeSlider.interactable = false;
+            musicVolumeSlider.interactable = false;
+            soundEffectsVolumeSlider.interactable = false;
+        }
+        else
+        {
+            masterVolumeSlider.interactable = true;
+            musicVolumeSlider.interactable = true;
+            soundEffectsVolumeSlider.interactable = true;
+	    }
+    }
 
 	public void ToggleMute()
 	{
 		AudioManager.current.ToggleMute();
-		transform.FindChild("MuteButton").FindChild("MutedImage").gameObject.SetActive(AudioManager.audioMuted);
+        SetOptionsValues();
 	}
 
 	public void SetMasterVolume(Slider slider)

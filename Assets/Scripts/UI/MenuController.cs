@@ -381,13 +381,12 @@ public class MenuController : MonoBehaviour
 	public string GetSaveInfo(int savedGamesIndex)
 	{
 		// Format the date into yyyy-mm-dd and exclude the time
-		string formattedDateTime = string.Format("{0:yyyy-MM-dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
+		string formattedDateTime = string.Format("{0:yyyy.MM.dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
 
 		return SavingAndLoading.savedGames[savedGamesIndex].levelIndex + "\n" +
 			formattedDateTime + "\n" +
-			SavingAndLoading.savedGames[savedGamesIndex].hours + " hours " +
-			SavingAndLoading.savedGames[savedGamesIndex].minutes + " minutes\n" +
-			"played";
+			SavingAndLoading.savedGames[savedGamesIndex].hours + " h " +
+			SavingAndLoading.savedGames[savedGamesIndex].minutes + " min";
 	}
 
 	public void PickSaveSlot(int saveSlotIndex)

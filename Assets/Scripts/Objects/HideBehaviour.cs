@@ -50,7 +50,7 @@ public class HideBehaviour : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.transform.parent.tag == "Player")
         {
             if (!PlayerController.current.isHidden)
             {

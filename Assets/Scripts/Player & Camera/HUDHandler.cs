@@ -6,7 +6,7 @@ public class HUDHandler : MonoBehaviour {
 
     public GameObject questionMark;
     public GameObject gameOverObj;
-    public Text gameOverImg;
+    public GameObject gameOverImg;
     public GameObject reloadSaveButton;
     public GameObject backToMenuButton;
     public Slider staminaBar;
@@ -28,9 +28,8 @@ public class HUDHandler : MonoBehaviour {
         GameObject gui = inGameUI.transform.FindChild("GUI").gameObject;
 
         questionMark = transform.FindChild("QuestionMark").gameObject;
-        gameOverObj = GameObject.Find("InGameUI").gameObject.transform.FindChild("GUI").gameObject;
         gameOverObj = gui.transform.FindChild("GameOver").gameObject;
-        gameOverImg = gameOverObj.GetComponent<Text>();
+        gameOverImg = gameOverObj.transform.FindChild("Title").gameObject;
         reloadSaveButton = gameOverObj.transform.FindChild("ReloadSave").gameObject;
         backToMenuButton = gameOverObj.transform.FindChild("BackToMenu").gameObject;
         staminaBar = gui.transform.FindChild("StaminaBar").GetComponent<Slider>();
@@ -46,6 +45,7 @@ public class HUDHandler : MonoBehaviour {
     public void GameOverSplash()
     { // splashes black screen, fades gameover frame and after that displays buttons.
         gameOverObj.SetActive(true);
+        gameOverImg.SetActive(true);
         opacity += 0.015f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
 

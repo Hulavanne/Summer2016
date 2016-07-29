@@ -8,11 +8,10 @@ public class SelectionBehaviour : MonoBehaviour {
     public Sprite selectionNPC;
 
     public SpriteRenderer thisRenderer;
-
     public PlayerController player;
 
-    void Start () {
-        player = transform.parent.gameObject.GetComponent<PlayerController>();
+    void Awake () {
+        player = transform.parent.transform.GetComponent<PlayerController>();
         thisRenderer = GetComponent<SpriteRenderer>();
     }
 	

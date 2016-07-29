@@ -12,6 +12,9 @@ public class ForegroundBehaviour : MonoBehaviour
     public SpriteRenderer sprite1;
     public SpriteRenderer sprite2;
     public float distanceFromCentre;
+    public float initPos;
+    public float distanceToInitPos;
+    public bool isOutOfStartLevel;
 
     public Transform boundary1;
     public Transform boundary2;
@@ -20,14 +23,15 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void Start()
     {
+        isOutOfStartLevel = true;
+        initPos = transform.position.x;
         sprite1 = transform.FindChild("sprite1").gameObject.GetComponent<SpriteRenderer>();
         sprite2 = transform.FindChild("sprite2").gameObject.GetComponent<SpriteRenderer>();
         boundary1 = transform.parent.gameObject.transform.FindChild("boundary1").gameObject.transform;
         boundary2 = transform.parent.gameObject.transform.FindChild("boundary2").gameObject.transform;
         mainCamera = GameObject.Find("MainCamera");
         playerControl = GameObject.Find("Player").GetComponent<PlayerController>();
-        boundaryAverage = (boundary2.transform.position.x - boundary1.transform.position.x) / 2;
-    }
+        boundaryAverage = (boundary2.transform.position.x - boundary1.transform.position.x) / 2;    }
 
     void LateUpdate()
     {
@@ -35,6 +39,8 @@ public class ForegroundBehaviour : MonoBehaviour
         {
             if (startLevel) // enables sprites and positions only in the level beggining
             {
+                distanceToInitPos = transform.position.x - initPos;
+
                 sprite1.enabled = true;
                 sprite2.enabled = true;
                 startLevel = false;
@@ -63,10 +69,17 @@ public class ForegroundBehaviour : MonoBehaviour
                 sprite2.transform.position += new Vector3(4 * boundaryAverage, 0, 0);
             }
             // will move the sprites according to the inverse movement of the camera position
-            transform.position = new Vector3((distance - mainCamera.transform.position.x), transform.position.y, transform.position.z);    
+            transform.position = new Vector3((distance - mainCamera.transform.position.x
+                - distanceToInitPos), transform.position.y, transform.position.z);
+
+            initPos = transform.position.x;  
         }
         else
         { // disables sprites when out of the level
+            //if (isOutOfStartLevel)
+            //{
+            //    transform.position = new Vector3(initPos, transform.position.y, transform.position.z);
+            //}
             startLevel = true;
             sprite1.enabled = false;
             sprite2.enabled = false;

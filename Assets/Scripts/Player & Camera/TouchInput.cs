@@ -282,7 +282,10 @@ public class TouchInput : MonoBehaviour
     {
         if ((player.hud.staminaBar.value < 100) && (runValue != 2))
         {
-            player.hud.staminaBar.value += Time.deltaTime * 0.05f;
+            if (!TextBoxManager.current.isActive)
+            {
+                player.hud.staminaBar.value += Time.deltaTime * 0.05f;
+            }
         }
 
         if (runValue == 2)

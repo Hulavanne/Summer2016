@@ -70,12 +70,11 @@ public class TextBoxManager : MonoBehaviour
     {
         current = this;
         DisableAllButtons();
-        DisableTextBox(false);
     }
 
     void Start()
     {
-        DisableTextBox();
+        DisableTextBox(false);
         clickException = false;
     }
     

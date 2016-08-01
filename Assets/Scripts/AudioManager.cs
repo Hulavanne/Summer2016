@@ -40,11 +40,6 @@ public class AudioManager : MonoBehaviour
 		LoadAudioSettings();
 	}
 
-	void Update()
-	{
-		
-	}
-
 	public void PlaySoundEffect(AudioClip clip)
 	{
 		// Play the clip

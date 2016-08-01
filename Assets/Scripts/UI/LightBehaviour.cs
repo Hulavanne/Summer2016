@@ -39,6 +39,7 @@ public class LightBehaviour : MonoBehaviour {
                 if (opacity >= targetOpacity)
                 {
                     changeOpacity = false;
+                    PlayerController.current.canClickActionButton = true;
                 }
             }
             else

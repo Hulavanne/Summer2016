@@ -147,6 +147,7 @@ public class TouchInput : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            TextBoxManager.current.clickException = false;
             player.PlayerAnimStop();
             if (runValue == 2)
             {
@@ -266,6 +267,7 @@ public class TouchInput : MonoBehaviour
                 }
                 if (touch.phase == TouchPhase.Ended)
                 {
+                    TextBoxManager.current.clickException = false;
                     player.PlayerAnimStop();
                     if (runValue == 2)
                     {
@@ -294,7 +296,8 @@ public class TouchInput : MonoBehaviour
         }
 
         if ((player.hud.staminaBar.value <= .01f && Input.GetMouseButton(0))
-            || (player.hud.staminaBar.value <= 0.01f && runValue > 0))
+            || (player.hud.staminaBar.value <= 0.01f && runValue > 0)
+            || EventSystem.current.IsPointerOverGameObject(-1))
         {
             runValue = 0;
             player.PlayerAnimStop();

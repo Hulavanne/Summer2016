@@ -37,7 +37,8 @@ public class PlayerController : MonoBehaviour {
     public bool canMove = true;
     public bool canHide = true; // monsters will set this to false
     public bool canTalkToNPC;
-    
+    public bool canClickActionButton = true;
+
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool isGameOver = false;
@@ -77,12 +78,6 @@ public class PlayerController : MonoBehaviour {
         
 	}
 
-    void Start()
-    {
-        TextBoxManager.current.EnableTextBox();
-        TextBoxManager.current.DisableTextBox();
-    }
-
 	void Update()
     {
         PlayerFollowObject(canCameraFollow);
@@ -100,31 +95,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         CheckNPCWaitTime();
-
-		if ((hud.hasClickedActionButton) && (hud.isSelectionActive))
-		{
-			if (selection == Selection.HIDE_OBJECT)
-			{
-				if (isHidden)
-                { // sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
-                    PlayerUnhide(false); 
-				}
-				else if (canHide)
-				{
-					PlayerHide(); // hides and plays animation right after
-				}
-			}
-
-			else if (selection == Selection.DOOR)
-			{
-				switchingLevel = true; // switches door
-				hud.hasClickedActionButton = false;
-			}
-			else if (selection == Selection.NPC)
-			{
-                ActivateTextAtLine.current.TalkToNPC();
-			}
-		}
         
 		if (isGameOver)
 		{
@@ -266,7 +236,36 @@ public class PlayerController : MonoBehaviour {
 
     public void OnActionButtonClick()
     {
-        hud.hasClickedActionButton = true;
+        if (canClickActionButton)
+        {
+            if (hud.isSelectionActive)
+            {
+                if (selection == Selection.HIDE_OBJECT)
+                {
+                    if (isHidden)
+                    { // sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
+                        PlayerUnhide(false);
+                    }
+                    else if (canHide)
+                    {
+                        PlayerHide(); // hides and plays animation right after
+                    }
+                }
+
+                else if (selection == Selection.DOOR)
+                {
+                    switchingLevel = true; // switches door
+                }
+                else if (selection == Selection.NPC)
+                {
+                    ActivateTextAtLine.current.TalkToNPC();
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 
     void CheckNPCWaitTime()
@@ -311,7 +310,13 @@ public class PlayerController : MonoBehaviour {
 
     public void GoLeft()
     {
-		movementDirection = -1; // -1 stands for left
+        if (TextBoxManager.current.clickException)
+        {
+            touchRun.runValue = 0;
+            return;
+        }
+
+        movementDirection = -1; // -1 stands for left
 
         PlayerAnimWalk(false);
 
@@ -333,7 +338,13 @@ public class PlayerController : MonoBehaviour {
 
     public void GoRight()
     {
-		movementDirection = 1; // 1 stands for right
+        if (TextBoxManager.current.clickException)
+        {
+            touchRun.runValue = 0;
+            return;
+        }
+
+        movementDirection = 1; // 1 stands for right
 
         PlayerAnimWalk(true);
 
@@ -395,7 +406,7 @@ public class PlayerController : MonoBehaviour {
 
     public void PlayerHide()
     {
-        if (!isHidden)
+        if (!isHidden && !isUnhiding)
         {
             canCameraFollow = true; // in PlayerFollowObject()
             LightBehaviour.current.SetLighting(true, 1.0f); // fade the darkscreen with hole
@@ -404,6 +415,7 @@ public class PlayerController : MonoBehaviour {
             isHidden = true;
             canMove = false;
             unhideTimer = -1; // deafult value
+            canClickActionButton = false;
         }
     }
 
@@ -416,6 +428,7 @@ public class PlayerController : MonoBehaviour {
                 LightBehaviour.current.SetLighting(false, 0.0f);
                 unhideTimer = 0.5f;
                 isUnhiding = true;
+                canClickActionButton = false;
             }
             else
             {
@@ -428,6 +441,7 @@ public class PlayerController : MonoBehaviour {
                     canMove = true;
                     unhideTimer = -1; // reset value
                     isUnhiding = false;
+                    canClickActionButton = true;
                 }
             }
         }

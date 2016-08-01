@@ -64,7 +64,6 @@ public class ActivateTextAtLine : MonoBehaviour
     public void TalkToNPC(bool interact = true)
     {
         PlayerController.current.DeactivateSelection();
-        PlayerController.current.hud.hasClickedActionButton = false;
 
         currentNPC = PlayerController.current.overlappingNpc;
         npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();

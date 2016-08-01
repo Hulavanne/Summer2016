@@ -11,7 +11,6 @@ public class HUDHandler : MonoBehaviour {
     public GameObject backToMenuButton;
     public Slider staminaBar;
     public float opacity = 0.0f;
-    public bool hasClickedActionButton;
     public bool isSelectionActive;
     public bool canShowGameOverButtons;
 

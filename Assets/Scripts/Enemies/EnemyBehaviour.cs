@@ -26,11 +26,13 @@ public class EnemyBehaviour : MonoBehaviour {
     public float chaseSpeed = 4.0f; // chase speed
 
     //timers
+    public bool suspiciousTimerActive;
+    public float suspiciousTimer = 0;
     public float turningTime = 0; // this is a Timer that resets everytime it reaches 1  // it will mod (%2) always, and every once in a while (everytime it hits 0.5 or 1) switches direction on enemy
     public int movementDirection = 0;
     int initialMovementDirection;
     public float waitTime;
-    public float suspicionTime;
+    public float chasingTime;
     public float touchPlayerTime = 0.0f; // this will end the game if the enemy touches the player for too long
     public float unhidePlayerTime = 0.0f; // enemy will remove the player if it knows it just hid (is in Suspicious mode too).
     public float startChaseTime = 0.0f;
@@ -59,15 +61,22 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         UnhidePlayer();
 
-        if (currentEnemy == EnemyBehav.SUSPICIOUS)
+        if (currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING)
         {
-            if ((turningTime % 1.0f) > 0.5f && turningTime >= 0.0f)
+            suspiciousTimer -= Time.deltaTime;
+
+            if (suspiciousTimerActive)
             {
-                movementDirection = 1;
+                if (suspiciousTimer <= 0.0f)
+                {
+                    currentEnemy = EnemyBehav.PATROLLING;
+                    suspiciousTimerActive = false;
+                    goToPlayerPos = false;
+                }
             }
             else
             {
-                movementDirection = -1;
+                 suspiciousTimer = 2.0f;
             }
         }
 
@@ -75,7 +84,7 @@ public class EnemyBehaviour : MonoBehaviour {
         {
             case EnemyBehav.PATROLLING:
                 {
-                    areaOfVision = 8.0f;
+                    areaOfVision = 10.0f;
                     break;
                 }
             case EnemyBehav.SUSPICIOUS:
@@ -85,7 +94,7 @@ public class EnemyBehaviour : MonoBehaviour {
                 }
             case EnemyBehav.CHASING:
                 {
-                    areaOfVision = 18.0f;
+                    areaOfVision = 14.0f;
                     break;
                 }
         }
@@ -120,7 +129,7 @@ public class EnemyBehaviour : MonoBehaviour {
         if ((currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING) && isTouchingPlayer)
         {
             unhidePlayerTime += Time.deltaTime;
-            if (unhidePlayerTime > 1.0f)
+            if (unhidePlayerTime > 0.5f)
             {
                 player.isGameOver = true;
             }
@@ -230,11 +239,11 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (goToPlayerPos)
         {
+            suspiciousTimerActive = true;
             currentEnemy = EnemyBehav.SUSPICIOUS;
             EnemyMove();
             if ((transform.position.x > playerObj.transform.position.x - 0.05) && (transform.position.x < playerObj.transform.position.x + 0.05))
             {
-                goToPlayerPos = false;
                 currentEnemy = EnemyBehav.SUSPICIOUS;
                 return;
             }
@@ -278,7 +287,7 @@ public class EnemyBehaviour : MonoBehaviour {
             if (!player.isHidden)
             {
                 startChaseTime += Time.deltaTime;
-                if (startChaseTime > 0.5)
+                if (startChaseTime > 2.0f)
                 {
                     currentEnemy = EnemyBehav.CHASING;
                     startChaseTime = 0;
@@ -286,12 +295,18 @@ public class EnemyBehaviour : MonoBehaviour {
             }
             else if (player.isHidden && currentEnemy != EnemyBehav.PATROLLING)
             {
-                if (suspicionTime > 0)
+                if (chasingTime > 0)
                 {
+                    suspiciousTimerActive = true;
                     currentEnemy = EnemyBehav.SUSPICIOUS;
-                    suspicionTime -= (Time.deltaTime);
+                    chasingTime -= (Time.deltaTime);
+                    if (suspiciousTimer <= 0.0f)
+                    {
+                        goToPlayerPos = false;
+                        currentEnemy = EnemyBehav.PATROLLING;
+                    }
                 }
-                else if (suspicionTime <= 0)
+                else if (chasingTime <= 0)
                 {
                     currentEnemy = EnemyBehav.PATROLLING;
                 }

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ForegroundBehaviour : MonoBehaviour
 {
+    /*
+
     public float speed = 1;
     public PlayerController playerControl;
     public LevelManager.Levels thisLevelValue;
@@ -20,6 +22,131 @@ public class ForegroundBehaviour : MonoBehaviour
     public Transform boundary2;
 
     public float boundaryAverage;
+
+    */
+
+    public float bckgLeft, bckgRight, bckgExtent;
+    public Camera mainCamera;
+    public float cameraPos, levelPos, initPos1, initPos2;
+    public GameObject levelObj;
+    public SpriteRenderer spr1, spr2, background;
+    public LevelManager.Levels thisLevel;
+
+    void Awake()
+    {
+        mainCamera = Camera.main;
+
+        initPos1 = transform.FindChild("sprite1").gameObject.transform.position.x;
+        initPos2 = transform.FindChild("sprite2").gameObject.transform.position.x;
+    }
+
+    void Update()
+    {
+        if (!GetLevel()) // Check current level, get current level position
+        {
+            Debug.LogError("Sprite was not found (GetSprites() func)");
+        }
+        else
+        {
+            if (!GetSprites()) // Get sprite 1 and 2
+            {
+                Debug.LogError("Sprite was not found (GetSprites() func)");
+            }
+            else
+            {
+                GetCameraComponents(); // Get Camara Position and Size
+                CheckLevel(); // Disable Sprites when out of level
+            }
+        }
+    }
+
+    void LateUpdate()
+    {
+        CheckSpritePosition();
+        UpdateSpritePosition();
+    }
+
+    void UpdateSpritePosition()
+    {
+        spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)), 0, 0);
+        //spr2.transform.position = new Vector3((levelObj.transform.position.x + Screen.width - cameraPos), 0, 0);
+    }
+
+    void CheckSpritePosition()
+    {
+        if (spr1.transform.position.x > (bckgRight + bckgExtent / 2))
+        {
+            spr1.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
+        }
+        if (spr2.transform.position.x > (bckgRight + bckgExtent / 2))
+        {
+            spr2.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
+        }
+        if (spr1.transform.position.x < (bckgRight + bckgExtent / 2))
+        {
+            spr1.transform.position += new Vector3(bckgExtent * 2, 0, 0);
+        }
+        if (spr2.transform.position.x < (bckgRight + bckgExtent / 2))
+        {
+            spr2.transform.position += new Vector3(bckgExtent * 2, 0, 0);
+        }
+    }
+
+    bool GetLevel()
+    {
+        bool success = false;
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Level"))
+        {
+            if (obj.GetComponent<Level>().levelName == thisLevel)
+            {
+                Debug.Log(obj.GetComponent<Level>().levelName + " " + thisLevel);
+                levelObj = obj;
+                success = true;
+            }
+        }
+        return success;
+    }
+
+    bool GetSprites()
+    {
+        bool success = false;
+        spr1 = transform.FindChild("sprite1").gameObject.GetComponent<SpriteRenderer>();
+        spr2 = transform.FindChild("sprite2").gameObject.GetComponent<SpriteRenderer>();
+
+        if (spr1 != null && spr2 != null)
+        {
+            success = true;
+        }
+
+        return success;
+    }
+
+    void GetCameraComponents()
+    {
+        levelPos = levelObj.transform.position.x;
+        cameraPos = mainCamera.transform.position.x;
+        background = transform.parent.gameObject.transform.parent.transform.FindChild("Background").gameObject.
+            transform.FindChild("BackStatic").gameObject.GetComponent<SpriteRenderer>();
+        bckgLeft = background.gameObject.transform.position.x - background.sprite.bounds.extents.x;
+        bckgRight = background.gameObject.transform.position.x + background.sprite.bounds.extents.x;
+        bckgExtent = background.sprite.bounds.extents.x * 2; 
+    }
+
+    void CheckLevel()
+    {
+        if (LevelManager.current.currentLevel == thisLevel)
+        {
+            spr1.enabled = true;
+            spr2.enabled = true;
+        }
+        else
+        {
+            spr1.enabled = false;
+            spr2.enabled = false;
+        }
+    }
+
+    /*
 
     void Start()
     {
@@ -71,8 +198,6 @@ public class ForegroundBehaviour : MonoBehaviour
             // will move the sprites according to the inverse movement of the camera position
             transform.position = new Vector3((distance - mainCamera.transform.position.x
                 - distanceToInitPos), transform.position.y, transform.position.z);
-
-            initPos = transform.position.x;  
         }
         else
         { // disables sprites when out of the level
@@ -85,4 +210,5 @@ public class ForegroundBehaviour : MonoBehaviour
             sprite2.enabled = false;
         }
     }
+    */
 }

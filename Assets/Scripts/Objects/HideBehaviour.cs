@@ -21,6 +21,11 @@ public class HideBehaviour : MonoBehaviour {
     
     void Update()
     {
+        if(PlayerController.current.isHidden)
+        {
+            PlayerController.current.ActivateSelection(PlayerController.Selection.HIDE_OBJECT);
+        }
+
         if (transform.name == "Bush")
         {
             if (PlayerController.current.isHidden)

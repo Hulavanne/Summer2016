@@ -28,8 +28,8 @@ public class LevelManager : MonoBehaviour
 	public List<GameObject> levelsList = new List<GameObject>();
     public List<GameObject> savepointsList = new List<GameObject>();
     
-    public GameObject ReloadSaveButton;
-    public GameObject BackToMenuButton;
+    public GameObject reloadSaveButton;
+    public GameObject backToMenuButton;
 
     public GameObject currentDoor;
     public GameObject nextDoor;
@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour
 
     public float lightAmount;
     
-    public GameObject LightInLevel;
+    public GameObject lightInLevel;
 
     MenuController menuController;
 
@@ -51,7 +51,7 @@ public class LevelManager : MonoBehaviour
 
     public PlayerController player;
     public GameObject playerG;
-    public GameObject QuestionMark;
+    public GameObject questionMark;
 
     void Awake()
     {
@@ -196,8 +196,8 @@ public class LevelManager : MonoBehaviour
             menuController.NewGame();
         }
 
-        ReloadSaveButton.SetActive(false);
-        BackToMenuButton.SetActive(false);
+        reloadSaveButton.SetActive(false);
+        backToMenuButton.SetActive(false);
         player.isGameOver = false;
     }
 
@@ -205,8 +205,8 @@ public class LevelManager : MonoBehaviour
     {
         Debug.Log("Going to Menu");
         menuController.GoToScene("MainMenu");
-        ReloadSaveButton.SetActive(false);
-        BackToMenuButton.SetActive(false);
+        reloadSaveButton.SetActive(false);
+        backToMenuButton.SetActive(false);
         player.isGameOver = false;
     }
 

@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour
 {
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
+    public static bool confirming = false;
 
     public enum State
     {
@@ -392,7 +393,9 @@ public class MenuController : MonoBehaviour
 
     public void ActivateConfirmationOverlay()
     {
+        confirming = true;
         confirmationOverlay.SetActive(true);
+
         Text textComponent = confirmationOverlay.transform.FindChild("WarningText").GetComponent<Text>();
 
         if (currentState == State.INVENTORY)
@@ -407,11 +410,14 @@ public class MenuController : MonoBehaviour
 
     public void DeactivateConfirmationOverlay()
     {
+        confirming = false;
         confirmationOverlay.SetActive(false);
     }
 
     public void Confirm(bool confirmed)
     {
+        DeactivateConfirmationOverlay();
+
         if (confirmed)
         {
             if (currentState == State.INVENTORY)
@@ -423,7 +429,6 @@ public class MenuController : MonoBehaviour
                 SaveGame(index);
             }
         }
-        DeactivateConfirmationOverlay();
     }
 
 	public void SaveGame(int saveSlotIndex)
@@ -521,14 +526,24 @@ public class MenuController : MonoBehaviour
         if (AudioManager.audioMuted)
         {
             masterVolumeSlider.interactable = false;
+            masterVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = masterVolumeSlider.colors.disabledColor;
+
             musicVolumeSlider.interactable = false;
+            musicVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = musicVolumeSlider.colors.disabledColor;
+
             soundEffectsVolumeSlider.interactable = false;
+            soundEffectsVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = soundEffectsVolumeSlider.colors.disabledColor;
         }
         else
         {
             masterVolumeSlider.interactable = true;
+            masterVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
             musicVolumeSlider.interactable = true;
+            musicVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
             soundEffectsVolumeSlider.interactable = true;
+            soundEffectsVolumeSlider.transform.FindChild("Fill Area").GetChild(0).GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	    }
     }
 

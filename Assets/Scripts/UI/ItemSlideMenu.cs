@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ItemSlideMenu : MonoBehaviour
@@ -11,10 +12,11 @@ public class ItemSlideMenu : MonoBehaviour
 	public float slideDraggingThreshold = 300.0f; // When dragging the screen if this threshold is reached the sliding will be triggered
 	public float emptyDraggingThreshold = 100.0f; // Replaces the above value when canSlide is false
 	public float slideSlidingDistance = 1000.0f;
-	public List<GameObject> itemSlides = new List<GameObject>();
+    public List<GameObject> itemSlides = new List<GameObject>();
+    public List<GameObject> itemSlots = new List<GameObject>();
 
-	List<float> slideStartPositionsX = new List<float>();
-	public GameObject background;
+    List<float> slideStartPositionsX = new List<float>();
+	GameObject background;
 	float cursorStartPositionX = 0.0f; // Position of the finger / cursor at the start of input
 	float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
 	bool dragging = false; // Is the player dragging the slides
@@ -29,25 +31,28 @@ public class ItemSlideMenu : MonoBehaviour
 	void Awake()
 	{
         current = this;
-
 		background = transform.GetChild(0).gameObject;
 
 		for (int i = 1; i < transform.childCount; ++i)
 		{
 			itemSlides.Add(transform.GetChild(i).gameObject);
-			slideStartPositionsX.Add(0);
-		}
-		for (int i = 0; i < itemSlides.Count; ++i)
-		{
-			slideStartPositionsX[i] = itemSlides[i].GetComponent<RectTransform>().localPosition.x;
+            slideStartPositionsX.Add(transform.GetChild(i).GetComponent<RectTransform>().localPosition.x);
+
+            foreach (Transform child in transform.GetChild(i))
+            {
+                if (child.GetComponent<Button>() != null)
+                {
+                    itemSlots.Add(child.gameObject);
+                }
+            }
 		}
 
-		inventoryManager = transform.GetComponent<InventoryManager>();
+        inventoryManager = transform.GetComponent<InventoryManager>();
 	}
 
 	void Update()
 	{
-        if (!slidesSliding && !InventoryItemSlots.inspectingItem)
+        if (!slidesSliding && !InventoryItemSlots.inspectingItem && !MenuController.confirming)
         {
             // For unity editor and computers
             #if (UNITY_EDITOR || UNITY_STANDALONE)
@@ -60,6 +65,23 @@ public class ItemSlideMenu : MonoBehaviour
 		    TouchInput();
 
             #endif
+        }
+
+        // If slides are moving, make the item slots unpressable
+        if (dragging || slidesSliding || slidesResetting)
+        {
+            for (int i = 0; i < itemSlots.Count; ++i)
+            {
+                itemSlots[i].GetComponent<Image>().raycastTarget = false;
+            }
+        }
+        // If slides arem't moving, make the item slots pressable
+        else
+        {
+            for (int i = 0; i < itemSlots.Count; ++i)
+            {
+                itemSlots[i].GetComponent<Image>().raycastTarget = true;
+            }
         }
 
 		// Updating slides

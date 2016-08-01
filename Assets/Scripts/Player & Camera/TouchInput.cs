@@ -164,7 +164,6 @@ public class TouchInput : MonoBehaviour
         {
             // Only allows for one touch input at a time
             Touch touch = Input.touches[0];
-            //Touch touch = Input.GetTouch(0);
             int pointerID = touch.fingerId;
 
             // If user is not touching a button (eg. pause button)
@@ -174,97 +173,91 @@ public class TouchInput : MonoBehaviour
             }
             else
             {
-                if (!EventSystem.current.IsPointerOverGameObject(-1))
+                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
                 {
-                    if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+                    isPressing = true;
+
+                    if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                     {
-                        isPressing = true;
-
-                        if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
-                        {
-                            player.GoLeft();
-                        }
-
-                        else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
-                        {
-                            player.GoRight();
-                        }
+                        player.GoLeft();
                     }
 
-                    if (touch.phase == TouchPhase.Began)
+                    else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                     {
-                        if (runValue == 0)
+                        player.GoRight();
+                    }
+                }
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    if (runValue == 0)
+                    {
+                        if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                         {
-                            if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
-                            {
-                                isTouchingRight = false;
-                                runValue++;
-                            }
-                            else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
-                            {
-                                isTouchingRight = true;
-                                runValue++;
-                            }
+                            isTouchingRight = false;
+                            runValue++;
                         }
-                        else if (runValue == 1)
+                        else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                         {
-                            if (runTouchDelay > 0)
+                            isTouchingRight = true;
+                            runValue++;
+                        }
+                    }
+                    else if (runValue == 1)
+                    {
+                        if (runTouchDelay > 0)
+                        {
+                            // this will check runValue value, and add 1 if its value is either 0, or 1
+                            if (((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2)))
                             {
-                                // this will check runValue value, and add 1 if its value is either 0, or 1
-                                if (((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2)))
+                                if (isTouchingRight)
                                 {
-                                    if (isTouchingRight)
-                                    {
-                                        runValue++;
-                                        runTouchDelay = 0;
-                                        isTouchingRight = true;
-                                    }
-                                    else
-                                    {
-                                        runValue = 1;
-                                        runTouchDelay = runTouchDelayMax;
-                                        isTouchingRight = true;
-                                    }
+                                    runValue++;
+                                    runTouchDelay = 0;
+                                    isTouchingRight = true;
                                 }
                                 else
                                 {
-                                    if (!isTouchingRight)
-                                    {
-                                        runValue++;
-                                        runTouchDelay = 0;
-                                        isTouchingRight = false;
-                                    }
-                                    else
-                                    {
-                                        runValue = 1;
-                                        runTouchDelay = runTouchDelayMax;
-                                        isTouchingRight = false;
-                                    }
+                                    runValue = 1;
+                                    runTouchDelay = runTouchDelayMax;
+                                    isTouchingRight = true;
                                 }
-                            }
-                        }
-                        else
-                        {
-                            if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
-                            {
-                                runValue++;
-                                runTouchDelay = 0;
-                                isTouchingRight = false;
                             }
                             else
                             {
-                                runValue = 1;
-                                runTouchDelay = runTouchDelayMax;
-                                isTouchingRight = true;
+                                if (!isTouchingRight)
+                                {
+                                    runValue++;
+                                    runTouchDelay = 0;
+                                    isTouchingRight = false;
+                                }
+                                else
+                                {
+                                    runValue = 1;
+                                    runTouchDelay = runTouchDelayMax;
+                                    isTouchingRight = false;
+                                }
                             }
                         }
-                        runTouchDelay = runTouchDelayMax;
                     }
+                    else
+                    {
+                        if (((touch.position.x >= 0) && (touch.position.x < Screen.width / 2)))
+                        {
+                            runValue++;
+                            runTouchDelay = 0;
+                            isTouchingRight = false;
+                        }
+                        else
+                        {
+                            runValue = 1;
+                            runTouchDelay = runTouchDelayMax;
+                            isTouchingRight = true;
+                        }
+                    }
+                    runTouchDelay = runTouchDelayMax;
                 }
-                else
-                {
-                    player.PlayerAnimStop();
-                }
+
                 if (touch.phase == TouchPhase.Ended)
                 {
                     TextBoxManager.current.clickException = false;

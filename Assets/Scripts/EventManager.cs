@@ -56,8 +56,7 @@ public class EventManager : MonoBehaviour
         {
             if (behaviour.npcType == NpcBehaviour.Type.KITCHEN)
             {
-                behaviour.textStartLine = 1;
-                behaviour.textEndLine = 1;
+                behaviour.ChangeLines(2, 2);
             }
             else if (behaviour.npcType == NpcBehaviour.Type.FRONT_DOOR)
             {

@@ -69,11 +69,7 @@ public class TextBoxManager : MonoBehaviour
     {
         current = this;
         DisableAllButtons();
-    }
-
-    void Start()
-    {
-        DisableTextBox();
+        DisableTextBox(false);
     }
     
     void Update()
@@ -265,18 +261,22 @@ public class TextBoxManager : MonoBehaviour
         }
     }
 
-    public void DisableTextBox() // deactivates all text output, enables player movement
+    public void DisableTextBox(bool endDialogue = true) // deactivates all text output, enables player movement
     {
         OptTextBox.SetActive(false);
         textBox.SetActive(false);
         isActive = false;
-        PlayerController.current.canMove = true;
         isTalkingToNPC = false;
-        PlayerController.current.hud.SetHud(true);
 
         if (PlayerController.current != null)
         {
-            EventManager.current.NpcDialogueFinished(PlayerController.current.overlappingNpc); // changes something everytime you finish talking to a NPC
+            PlayerController.current.canMove = true;
+            PlayerController.current.hud.SetHud(true);
+
+            if (endDialogue)
+            {
+                EventManager.current.NpcDialogueFinished(PlayerController.current.overlappingNpc); // changes something everytime you finish talking to a NPC
+            }
         }
     }
 

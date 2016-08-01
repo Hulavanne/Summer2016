@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine.UI;
 public class TextBoxManager : MonoBehaviour
 {
+    public bool clickException;
     public static TextBoxManager current;
 
     public static GameObject currentNPC;
@@ -71,6 +72,12 @@ public class TextBoxManager : MonoBehaviour
         DisableAllButtons();
         DisableTextBox(false);
     }
+
+    void Start()
+    {
+        DisableTextBox();
+        clickException = false;
+    }
     
     void Update()
     {
@@ -113,11 +120,6 @@ public class TextBoxManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    void LateUpdate()
-    {
-        PlayerController.current.hud.hasClickedActionButton = false;
     }
     
     private IEnumerator TextScroll(string lineOfText)
@@ -254,6 +256,8 @@ public class TextBoxManager : MonoBehaviour
             OptTextBox.SetActive(true);
             textBox.SetActive(true);
             isActive = true;
+            SetCurrentYesNoButtons();
+            SetCurrentOptButtons();
             PlayerController.current.canMove = false;
             isTalkingToNPC = true;
             StartCoroutine(TextScroll(textLines[currentLine]));
@@ -267,6 +271,7 @@ public class TextBoxManager : MonoBehaviour
         textBox.SetActive(false);
         isActive = false;
         isTalkingToNPC = false;
+        clickException = true;
 
         if (PlayerController.current != null)
         {

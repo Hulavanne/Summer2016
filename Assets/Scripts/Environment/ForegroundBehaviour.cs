@@ -101,7 +101,7 @@ public class ForegroundBehaviour : MonoBehaviour
         {
             if (obj.GetComponent<Level>().levelName == thisLevel)
             {
-                Debug.Log(obj.GetComponent<Level>().levelName + " " + thisLevel);
+                //Debug.Log(obj.GetComponent<Level>().levelName + " " + thisLevel);
                 levelObj = obj;
                 success = true;
             }

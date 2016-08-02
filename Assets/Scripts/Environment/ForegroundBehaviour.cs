@@ -27,7 +27,7 @@ public class ForegroundBehaviour : MonoBehaviour
 
     public float bckgLeft, bckgRight, bckgExtent;
     public Camera mainCamera;
-    public float cameraPos, levelPos, initPos1, initPos2;
+    public float cameraPos, levelPos, initPos1, initPos2, initPos1Y, initPos2Y;
     public GameObject levelObj;
     public SpriteRenderer spr1, spr2, background;
     public LevelManager.Levels thisLevel;
@@ -37,7 +37,9 @@ public class ForegroundBehaviour : MonoBehaviour
         mainCamera = Camera.main;
 
         initPos1 = transform.FindChild("sprite1").gameObject.transform.position.x;
+        initPos1Y = transform.FindChild("sprite1").gameObject.transform.position.y;
         initPos2 = transform.FindChild("sprite2").gameObject.transform.position.x;
+        initPos2Y = transform.FindChild("sprite2").gameObject.transform.position.y;
     }
 
     void Update()
@@ -54,7 +56,7 @@ public class ForegroundBehaviour : MonoBehaviour
             }
             else
             {
-                GetCameraComponents(); // Get Camara Position and Size
+                GetCameraComponents(); // Get Camera Position and Size
                 CheckLevel(); // Disable Sprites when out of level
             }
         }
@@ -62,14 +64,14 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void LateUpdate()
     {
-        CheckSpritePosition();
-        UpdateSpritePosition();
+        CheckSpritePosition(); // check if sprites are too far out (and teleports it if so)
+        UpdateSpritePosition(); // moves sprites according to camara and level position
     }
 
     void UpdateSpritePosition()
     {
-        spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)), 0, 0);
-        //spr2.transform.position = new Vector3((levelObj.transform.position.x + Screen.width - cameraPos), 0, 0);
+        spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)), initPos1Y, 0);
+        spr2.transform.position = new Vector3((initPos2 + (levelPos - cameraPos)), initPos2Y, 0);
     }
 
     void CheckSpritePosition()
@@ -145,70 +147,4 @@ public class ForegroundBehaviour : MonoBehaviour
             spr2.enabled = false;
         }
     }
-
-    /*
-
-    void Start()
-    {
-        isOutOfStartLevel = true;
-        initPos = transform.position.x;
-        sprite1 = transform.FindChild("sprite1").gameObject.GetComponent<SpriteRenderer>();
-        sprite2 = transform.FindChild("sprite2").gameObject.GetComponent<SpriteRenderer>();
-        boundary1 = transform.parent.gameObject.transform.FindChild("boundary1").gameObject.transform;
-        boundary2 = transform.parent.gameObject.transform.FindChild("boundary2").gameObject.transform;
-        mainCamera = GameObject.Find("MainCamera");
-        playerControl = GameObject.Find("Player").GetComponent<PlayerController>();
-        boundaryAverage = (boundary2.transform.position.x - boundary1.transform.position.x) / 2;    }
-
-    void LateUpdate()
-    {
-        if (LevelManager.current.currentLevel == thisLevelValue)
-        {
-            if (startLevel) // enables sprites and positions only in the level beggining
-            {
-                distanceToInitPos = transform.position.x - initPos;
-
-                sprite1.enabled = true;
-                sprite2.enabled = true;
-                startLevel = false;
-
-                // these get the distance of the player to the foreground, and the position of the camera
-                transform.position = new Vector3(mainCamera.transform.position.x * (-1), transform.position.y, transform.position.z);
-                distance = mainCamera.transform.position.x - transform.position.x;
-                transform.position = new Vector3(distance, transform.position.y, transform.position.z);
-            }
-            // these chunks will teleport the sprite right after it reaches out of the level
-            // boundaryAverage --> half of the level size, considering the boundaries' position
-            if (sprite1.transform.position.x > (boundary2.position.x + boundaryAverage))
-            {
-                sprite1.transform.position -= new Vector3(4 * boundaryAverage, 0, 0);
-            }
-            if (sprite2.transform.position.x > (boundary2.position.x + boundaryAverage))
-            {
-                sprite2.transform.position -= new Vector3(4 * boundaryAverage, 0, 0);
-            }
-            if (sprite1.transform.position.x < (boundary1.position.x - boundaryAverage))
-            {
-                sprite1.transform.position += new Vector3(4 * boundaryAverage, 0, 0);
-            }
-            if (sprite2.transform.position.x < (boundary1.position.x - boundaryAverage))
-            {
-                sprite2.transform.position += new Vector3(4 * boundaryAverage, 0, 0);
-            }
-            // will move the sprites according to the inverse movement of the camera position
-            transform.position = new Vector3((distance - mainCamera.transform.position.x
-                - distanceToInitPos), transform.position.y, transform.position.z);
-        }
-        else
-        { // disables sprites when out of the level
-            //if (isOutOfStartLevel)
-            //{
-            //    transform.position = new Vector3(initPos, transform.position.y, transform.position.z);
-            //}
-            startLevel = true;
-            sprite1.enabled = false;
-            sprite2.enabled = false;
-        }
-    }
-    */
 }

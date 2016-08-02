@@ -116,6 +116,8 @@ public class LevelManager : MonoBehaviour
             }
         }
 
+        TextBoxManager.current.DisableTextBox(false);
+
         if (currentLevel == Levels.CIERAN_BEDROOM)
         {
             GameObject.FindObjectOfType<IsIntro>().StartIntro();

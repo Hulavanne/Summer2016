@@ -243,6 +243,7 @@ public class EventManager : MonoBehaviour
                     npcBehaviour.ChangeLines(3, 4);
                     npcBehaviour.waitTimer = 1.5f;
                     CameraEffects.current.fadeToBlack = false;
+                    PlayerController.current.hud.SetHud(false);
                 }
             }
         }

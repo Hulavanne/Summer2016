@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Brightness))]
 public class CameraEffects : MonoBehaviour
 {
 	public static CameraEffects current;

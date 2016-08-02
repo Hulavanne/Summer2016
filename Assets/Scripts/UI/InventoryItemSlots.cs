@@ -137,7 +137,7 @@ public class InventoryItemSlots : MonoBehaviour
 			itemSlots[index].transform.localPosition = itemSlots[0].transform.localPosition;
 
 			itemDescriptionObject.SetActive(true);
-			itemDescriptionObject.GetComponentInChildren<Text> ().text = itemsInSlots [index].description;// GetComponent<ItemData>().description;
+			itemDescriptionObject.GetComponentInChildren<Text>().text = itemsInSlots[index].description;
 			inspectingItem = true;
 			inspectedItemIndex = index;
 		}

@@ -40,6 +40,8 @@ public class ForegroundBehaviour : MonoBehaviour
         initPos1Y = transform.FindChild("sprite1").gameObject.transform.position.y;
         initPos2 = transform.FindChild("sprite2").gameObject.transform.position.x;
         initPos2Y = transform.FindChild("sprite2").gameObject.transform.position.y;
+
+        GetSprites();
     }
 
     void Update()

@@ -52,7 +52,7 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void Update()
 	{
-        if (!slidesSliding && !InventoryItemSlots.inspectingItem && !MenuController.confirming)
+        if (!slidesSliding && !MenuController.confirming)
         {
             // For unity editor and computers
             #if (UNITY_EDITOR || UNITY_STANDALONE)
@@ -65,23 +65,6 @@ public class ItemSlideMenu : MonoBehaviour
 		    TouchInput();
 
             #endif
-        }
-
-        // If slides are moving, make the item slots unpressable
-        if (dragging || slidesSliding || slidesResetting)
-        {
-            for (int i = 0; i < itemSlots.Count; ++i)
-            {
-                itemSlots[i].GetComponent<Image>().raycastTarget = false;
-            }
-        }
-        // If slides arem't moving, make the item slots pressable
-        else
-        {
-            for (int i = 0; i < itemSlots.Count; ++i)
-            {
-                itemSlots[i].GetComponent<Image>().raycastTarget = true;
-            }
         }
 
 		// Updating slides
@@ -97,12 +80,7 @@ public class ItemSlideMenu : MonoBehaviour
 			Touch touch = Input.touches[0];
 			int pointerID = touch.fingerId;
 
-			// If user is not touching a button (eg. pause button)
-			//if (!EventSystem.current.IsPointerOverGameObject(pointerID))
-			//{
-
 			// If user just began touching the screen
-			//if ((Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary) && !slidesSliding)
 			if (Input.GetTouch(0).phase == TouchPhase.Began)
 			{
 				InputBegan("touch");
@@ -117,8 +95,6 @@ public class ItemSlideMenu : MonoBehaviour
 			{
 				InputEnded();
 			}
-
-			//}
 		}
 	}
 
@@ -167,7 +143,7 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void InputMoving(string inputType)
 	{
-        float inputThreshold = 1.0f;
+        float inputThreshold = 3.0f;
         
 		if (!inputLocked)
 		{
@@ -282,7 +258,7 @@ public class ItemSlideMenu : MonoBehaviour
                 if (cursorDistanceMoved >= draggingThreshold)
                 {
                     // If the slides can be moved:
-                    if (canSlide)
+                    if (canSlide && !InventoryItemSlots.inspectingItem)
                     {
                         // Start sliding the slides when input is released
                         canStartSlide = true;
@@ -296,9 +272,17 @@ public class ItemSlideMenu : MonoBehaviour
                 // Set the distance that the finger / cursor has moved since input began
                 cursorDistanceMoved = Mathf.Abs(cursorStartPositionX - cursorCurrentPositionX);
                 // Calculate the distance the slides have moved
-                float distanceToStartPosition = Mathf.Abs(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition);
+                float distanceToStartPosition = Mathf.Abs(slideStartPositionsX[1] - 0.7f * cursorDistanceToStartPosition);
+                // Maximum distance the slides can be dragged
+                float maxDistance = slideSlidingDistance * 0.9f;
 
-                if (distanceToStartPosition < slideSlidingDistance * 0.9f)
+                // If inspecting an item, shorten the maximum dragging distance
+                if (InventoryItemSlots.inspectingItem)
+                {
+                    maxDistance = slideSlidingDistance * 0.1f;
+                }
+
+                if (distanceToStartPosition < maxDistance)
                 {
                     RectTransform backgroundTransform = background.GetComponent<RectTransform>();
                     //backgroundTransform.localPosition = new Vector3(slideStartPositionsX[1] - 1.0f * cursorDistanceToStartPosition, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
@@ -308,7 +292,7 @@ public class ItemSlideMenu : MonoBehaviour
                     {
                         // Update the local position of the slide so that it follows the finger / cursor
                         RectTransform slideTranform = itemSlides[i].GetComponent<RectTransform>();
-                        slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 1.0f * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
+                        slideTranform.localPosition = new Vector3(slideStartPositionsX[i] - 0.7f * cursorDistanceToStartPosition, slideTranform.localPosition.y, slideTranform.localPosition.z);
                     }
                 }
             }
@@ -317,16 +301,14 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void InputEnded()
 	{
-		// If input is locked:
+        // If slide can be started:
         if (canStartSlide)
-		//if (inputLocked)
 		{
+            // Start the slide and release the input lock
             slidesSliding = true;
-
-			// Release the lock
             inputLocked = true;
 		}
-		// If input isn't locked:
+		// If not:
 		else
 		{
 			// If the cursor distance moved is long enough:
@@ -337,11 +319,22 @@ public class ItemSlideMenu : MonoBehaviour
             }
 		}
 
-
-
 		// Slides are no longer being dragged
 		dragging = false;
 	}
+
+    public void ItemSlotPressed()
+    {
+        // If the cursor distance moved is long enough:
+        if (cursorDistanceMoved != 0.0f)
+        {
+            // Reset the slides back to their original position
+            slidesResetting = true;
+        }
+
+        // Slides are no longer being dragged
+        dragging = false;
+    }
 
 	void UpdateSlides()
 	{

@@ -7,23 +7,17 @@ public class EventManager : MonoBehaviour
 {
     public static EventManager current;
 
-    /*public enum Events
-    {
-        OPEN_KITCHEN_DOOR,
-        CHANGE_DEER_STATE,
-        CHANGE_LILIES_STATE,
-        CHANGE_BLOCKER_STATE,
-    }*/
-
-    public List<NpcBehaviour> npcBehaviours = new List<NpcBehaviour>();
     public List<EventTrigger> eventTriggers = new List<EventTrigger>();
+    public List<NpcBehaviour> npcBehaviours = new List<NpcBehaviour>();
+    public List<DoorBehaviour> doorBehaviours = new List<DoorBehaviour>();
 
 	void Awake()
     {
         current = this;
 
-        npcBehaviours = GameObject.FindObjectsOfType<NpcBehaviour>().ToList();
         eventTriggers = GameObject.FindObjectsOfType<EventTrigger>().ToList();
+        npcBehaviours = GameObject.FindObjectsOfType<NpcBehaviour>().ToList();
+        doorBehaviours = GameObject.FindObjectsOfType<DoorBehaviour>().ToList();
 	}
 
     void Start()
@@ -50,8 +44,10 @@ public class EventManager : MonoBehaviour
 
     public void OpenKitchenDoor()
     {
+        // Add event to triggeredEvents, if it isn't already there
         Game.current.AddToTriggeredEvents(NpcBehaviour.Type.FRONT_DOOR);
 
+        // Setup lines for hitchen table and deactivate the NPC at the front door
         foreach (NpcBehaviour behaviour in npcBehaviours)
         {
             if (behaviour.npcType == NpcBehaviour.Type.KITCHEN)
@@ -64,9 +60,16 @@ public class EventManager : MonoBehaviour
             }
         }
 
-        GameObject doorKitchen = GameObject.Find("Levels").transform.FindChild("Kitchen").FindChild("Objects").GetChild(1).gameObject;
-        doorKitchen.SetActive(true);
+        // Enable the front door's collider
+        foreach (DoorBehaviour behaviour in doorBehaviours)
+        {
+            if (behaviour.thisDoorLevel == LevelManager.Levels.KITCHEN)
+            {
+                behaviour.GetComponent<BoxCollider2D>().enabled = true;
+            }
+        }
 
+        // Deactivate the trigger
         foreach (EventTrigger trigger in eventTriggers)
         {
             if (trigger.eventType == NpcBehaviour.Type.FRONT_DOOR)

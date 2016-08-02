@@ -27,9 +27,6 @@ public class LevelManager : MonoBehaviour
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
 	public List<GameObject> levelsList = new List<GameObject>();
     public List<GameObject> savepointsList = new List<GameObject>();
-    
-    public GameObject reloadSaveButton;
-    public GameObject backToMenuButton;
 
     public GameObject currentDoor;
     public GameObject nextDoor;
@@ -136,11 +133,11 @@ public class LevelManager : MonoBehaviour
         {
             if (level.GetComponent<Level>().levelName != currentLevel)
             {
-                //level.SetActive(false);
+                level.SetActive(false);
             }
             else
             {
-                //level.SetActive(true);
+                level.SetActive(true);
             }
         }
 	}
@@ -197,19 +194,6 @@ public class LevelManager : MonoBehaviour
         {
             menuController.NewGame();
         }
-
-        reloadSaveButton.SetActive(false);
-        backToMenuButton.SetActive(false);
-        player.isGameOver = false;
-    }
-
-    public void GoToMenu()
-    {
-        Debug.Log("Going to Menu");
-        menuController.GoToScene("MainMenu");
-        reloadSaveButton.SetActive(false);
-        backToMenuButton.SetActive(false);
-        player.isGameOver = false;
     }
 
     public void ChangeLevel()

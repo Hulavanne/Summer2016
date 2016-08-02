@@ -102,6 +102,12 @@ public class MenuController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (confirming)
+            {
+                DeactivateConfirmationOverlay();
+                return;
+            }
+
             if (currentState == State.INVENTORY)
             {
                 if (!InventoryItemSlots.inspectingItem)
@@ -215,11 +221,6 @@ public class MenuController : MonoBehaviour
 	public void ReloadLevel()
 	{
 		LevelManager.current.ReloadLevel();
-	}
-
-	public void GoToMenu()
-	{
-		LevelManager.current.GoToMenu();
 	}
 
 	public void PauseGame()

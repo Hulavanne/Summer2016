@@ -10,6 +10,7 @@ public class EnemyBehaviour : MonoBehaviour {
     public GameObject boundary;
     public GameObject playerObj;
     public PlayerController player;
+    public Animator anim;
 
     //distances
     // distance from enemy to Player (placeholder) : will modulate and subtract playerPos with enemyPos and create a vector for it.
@@ -55,10 +56,12 @@ public class EnemyBehaviour : MonoBehaviour {
         playerObj = GameObject.Find("Player");
         player = playerObj.GetComponent<PlayerController>();
         currentEnemy = EnemyBehav.PATROLLING;
+        anim = transform.GetChild(0).gameObject.GetComponent<Animator>();
     }
 
     void Update()
     {
+        CheckAnim();
         UnhidePlayer();
 
         if (currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING)
@@ -273,6 +276,39 @@ public class EnemyBehaviour : MonoBehaviour {
         if (turningTime > 1.0f)
         {
             turningTime = Random.Range(-2.0f, -1.0f);
+        }
+    }
+
+    void CheckAnim()
+    {
+        if (currentEnemy == EnemyBehav.CHASING)
+        {
+            anim.SetBool("isChasing", true);
+        }
+        else if (currentEnemy == EnemyBehav.SUSPICIOUS)
+        {
+            anim.SetBool("isChasing", false);
+            anim.SetBool("isPatrolling", true);
+        }
+        else if (currentEnemy == EnemyBehav.PATROLLING)
+        {
+            anim.SetBool("isChasing", false);
+            anim.SetBool("isPatrolling", true);
+        }
+
+        if (movementDirection == 1)
+        {
+            anim.SetBool("isRight", true);
+        }
+        else if (movementDirection == -1)
+        {
+            anim.SetBool("isRight", false);
+        }
+
+        if (thisEnemyLevel != LevelManager.current.currentLevel)
+        {
+            anim.SetBool("isChasing", false);
+            anim.SetBool("isPatrolling", false);
         }
     }
 

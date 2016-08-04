@@ -27,7 +27,7 @@ public class Item : MonoBehaviour
     public Sprite icon;
     public string description;
 
-    public ItemData itemData;
+    public ItemData itemData = null;
 
     void Awake()
     {

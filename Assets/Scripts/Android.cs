@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Android : MonoBehaviour
 {
-	static void Awake()
+    void Awake()
     {
-        Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
-        Debug.Log("DONE");
+        //Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        //Debug.Log(Screen.sleepTimeout);
 	}
 }

@@ -8,6 +8,8 @@ public class DoorPuzzle : MonoBehaviour
 {
     public static DoorPuzzle current;
 
+    public List<Sprite> deactiveSprites = new List<Sprite>(new Sprite[5]);
+    public List<Sprite> activeSprites = new List<Sprite>(new Sprite[5]);
     public List<int> correctSequence = new List<int>(new int[5]);
     public List<int> sequence = new List<int>();
 
@@ -54,13 +56,13 @@ public class DoorPuzzle : MonoBehaviour
     {
         int index = int.Parse(button.name[button.name.Count() - 1].ToString()) - 1;
         sequence.Add(index);
+
+        button.transform.GetChild(0).GetComponent<Image>().sprite = activeSprites[index];
         button.interactable = false;
     }
 
     public void Activate(bool active)
     {
-        Reset();
-
         // Activate / deactivate all children
         foreach (Transform child in transform)
         {
@@ -70,6 +72,7 @@ public class DoorPuzzle : MonoBehaviour
         // Pause game
         if (active)
         {
+            Reset();
             inGameUi.PauseGame();
             inGameUi.transform.GetChild(0).gameObject.SetActive(false);
         }
@@ -85,9 +88,10 @@ public class DoorPuzzle : MonoBehaviour
     {
         sequence.Clear();
 
-        foreach (Button button in buttons)
+        for (int i = 0; i < deactiveSprites.Count; ++i)
         {
-            button.interactable = true;
+            buttons[i].transform.GetChild(0).GetComponent<Image>().sprite = deactiveSprites[i];
+            buttons[i].interactable = true;
         }
     }
 

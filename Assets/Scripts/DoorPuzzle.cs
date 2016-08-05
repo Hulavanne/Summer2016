@@ -6,19 +6,22 @@ using System.Linq;
 
 public class DoorPuzzle : MonoBehaviour
 {
+    public static DoorPuzzle current;
+
     public List<int> correctSequence = new List<int>(new int[5]);
     public List<int> sequence = new List<int>();
 
     List<Button> buttons = new List<Button>();
+    MenuController inGameUi;
 
 	void Awake()
     {
-        buttons = GetComponentsInChildren<Button>().ToList();
+        current = this;
 
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(false);
-        }
+        buttons = GetComponentsInChildren<Button>().ToList();
+        inGameUi = GameObject.Find("InGameUI").GetComponent<MenuController>();
+
+        Activate(false);
 	}
 
 	void Update()
@@ -37,44 +40,15 @@ public class DoorPuzzle : MonoBehaviour
 
             if (correct)
             {
-                Debug.Log("Correct sequence");
-                Reset();
+                EventManager.current.OpenDoorPuzzle();
+                Activate(false);
             }
             else
             {
-                Debug.Log("Incorrect sequence");
                 Reset();
             }
         }
 	}
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.transform.parent.tag == "Player")
-        {
-            sequence.Clear();
-
-            foreach (Transform child in transform)
-            {
-                child.gameObject.SetActive(true);
-            }
-
-            Reset();
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.tag == "Player")
-        {
-            Reset();
-
-            foreach (Transform child in transform)
-            {
-                child.gameObject.SetActive(false);
-            }
-        }
-    }
 
     public void ButtonPressed(Button button)
     {
@@ -83,12 +57,31 @@ public class DoorPuzzle : MonoBehaviour
         button.interactable = false;
     }
 
-    public void PlayButtonSoundEffect()
+    public void Activate(bool active)
     {
+        Reset();
 
+        // Activate / deactivate all children
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(active);
+        }
+
+        // Pause game
+        if (active)
+        {
+            inGameUi.PauseGame();
+            inGameUi.transform.GetChild(0).gameObject.SetActive(false);
+        }
+        // Resume game
+        else
+        {
+            inGameUi.ResumeGame();
+            inGameUi.transform.GetChild(0).gameObject.SetActive(true);
+        }
     }
 
-    void Reset()
+    public void Reset()
     {
         sequence.Clear();
 
@@ -96,5 +89,10 @@ public class DoorPuzzle : MonoBehaviour
         {
             button.interactable = true;
         }
+    }
+
+    public void PlayButtonSoundEffect()
+    {
+
     }
 }

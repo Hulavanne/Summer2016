@@ -40,6 +40,10 @@ public class EventManager : MonoBehaviour
         {
             OpenKitchenDoor();
         }
+        if (eventType == NpcBehaviour.Type.DOOR_PUZZLE)
+        {
+            OpenDoorPuzzle();
+        }
     }
 
     public void OpenKitchenDoor()
@@ -47,7 +51,7 @@ public class EventManager : MonoBehaviour
         // Add event to triggeredEvents, if it isn't already there
         Game.current.AddToTriggeredEvents(NpcBehaviour.Type.FRONT_DOOR);
 
-        // Setup lines for hitchen table and deactivate the NPC at the front door
+        // Setup lines for kitchen table and deactivate the NPC at the front door
         foreach (NpcBehaviour behaviour in npcBehaviours)
         {
             if (behaviour.npcType == NpcBehaviour.Type.KITCHEN)
@@ -228,6 +232,30 @@ public class EventManager : MonoBehaviour
         else
         {
             PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>().ChangeLines(1, 1);
+        }
+    }
+
+    public void OpenDoorPuzzle()
+    {
+        // Add event to triggeredEvents, if it isn't already there
+        Game.current.AddToTriggeredEvents(NpcBehaviour.Type.DOOR_PUZZLE);
+
+        // Deactivate the puzzle NPC
+        foreach (NpcBehaviour behaviour in npcBehaviours)
+        {
+            if (behaviour.npcType == NpcBehaviour.Type.DOOR_PUZZLE)
+            {
+                behaviour.gameObject.SetActive(false);
+            }
+        }
+
+        // Enable the door's collider
+        foreach (DoorBehaviour behaviour in doorBehaviours)
+        {
+            if (behaviour.thisDoorLevel == LevelManager.Levels.CAVE_PUZZLE)
+            {
+                behaviour.GetComponent<BoxCollider2D>().enabled = true;
+            }
         }
     }
 

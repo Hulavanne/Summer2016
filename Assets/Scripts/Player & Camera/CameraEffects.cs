@@ -51,6 +51,8 @@ public class CameraEffects : MonoBehaviour
 
 	void Update ()
 	{
+        Debug.Log(GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject.GetComponent<CanvasRenderer>().GetAlpha());
+
 		AdjustCameraSize();
 		FadingToBlack();
         
@@ -166,7 +168,7 @@ public class CameraEffects : MonoBehaviour
 	{ // if true, stays black screen, if false, fades to scene
         fadeToBlack = stayBlack;
         opacity = 1.0f;
-        
+
         if (isGameOver)
         {
             darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;

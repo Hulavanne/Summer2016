@@ -214,11 +214,25 @@ public class EnemyBehaviour : MonoBehaviour {
             }
             if (movementDirection == 1)
             {
-                transform.position += tempVecRunX * Time.deltaTime;
+                if (transform.position.x > player.transform.position.x + 0.1f || transform.position.x < player.transform.position.x - 0.1f)
+                {
+                    transform.position += tempVecRunX * Time.deltaTime;
+                }
+                else
+                {
+                    anim.SetBool("isPatrolling", false);
+                }
             }
             else if (movementDirection == -1)
             {
-                transform.position -= tempVecRunX * Time.deltaTime;
+                if (transform.position.x > player.transform.position.x + 0.1f || transform.position.x < player.transform.position.x - 0.1f)
+                {
+                    transform.position -= tempVecRunX * Time.deltaTime;
+                }
+                else
+                {
+                    anim.SetBool("isPatrolling", false);
+                }
             }
         }
         

@@ -7,6 +7,7 @@ public class CameraEffects : MonoBehaviour
 {
 	public static CameraEffects current;
 
+    public GameObject gameOverScreen;
     public GameObject darkScreen; // reference for the actual black plane
     public CanvasRenderer darkScreenRenderer; // reference for its renderer
     public Color opacityManager; // a color for (0 > red, 0 > green, 0 > blue, 0~1 > opacity)
@@ -29,10 +30,12 @@ public class CameraEffects : MonoBehaviour
 	void Awake()
 	{
 		current = this;
-
+        
 		darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("DarkScreen").gameObject;
 		darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
-		
+        gameOverScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;
+        gameOverScreen.GetComponent<CanvasRenderer>().SetAlpha(0);
+
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
@@ -159,13 +162,19 @@ public class CameraEffects : MonoBehaviour
 		}
 	}
 
-	public void FadeToBlack(bool stayBlack)
+	public void FadeToBlack(bool stayBlack, bool isGameOver)
 	{ // if true, stays black screen, if false, fades to scene
-		fadeToBlack = stayBlack;
-		opacity = 1.0f;
-	}
+        fadeToBlack = stayBlack;
+        opacity = 1.0f;
+        
+        if (isGameOver)
+        {
+            darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;
+            darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
+        }
+    }
 
-	void AdjustCameraSize()
+    void AdjustCameraSize()
 	{
 		// Adjusting the size of the camera to fit the current screen resolution
 		float ratio = (float)Screen.height / (float)Screen.width;

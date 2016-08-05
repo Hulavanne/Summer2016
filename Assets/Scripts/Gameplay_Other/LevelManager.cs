@@ -200,12 +200,28 @@ public class LevelManager : MonoBehaviour
     public void ChangeLevel()
     {
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
-
+        
         currentLevel = nextDoorBehav.thisDoorLevel;
 		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
         player.playerAnim.SetBool("isFacingRight", player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight);
+
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            EnemyBehaviour enemyBehav = enemy.GetComponent<EnemyBehaviour>();
+
+            if (player.transform.position.x > enemy.transform.position.x)
+            {
+                enemyBehav.initialMovementDirection = -1;
+                enemyBehav.movementDirection = -1;
+            }
+            else
+            {
+                enemyBehav.initialMovementDirection = 1;
+                enemyBehav.movementDirection = 1;
+            }
+        }
 
         CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
         CameraEffects.current.fadeToBlack = false;

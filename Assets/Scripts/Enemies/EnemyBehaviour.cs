@@ -31,7 +31,7 @@ public class EnemyBehaviour : MonoBehaviour {
     public float suspiciousTimer = 0;
     public float turningTime = 0; // this is a Timer that resets everytime it reaches 1  // it will mod (%2) always, and every once in a while (everytime it hits 0.5 or 1) switches direction on enemy
     public int movementDirection = 0;
-    int initialMovementDirection;
+    public int initialMovementDirection;
     public float waitTime;
     public float chasingTime;
     public float touchPlayerTime = 0.0f; // this will end the game if the enemy touches the player for too long

@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
-        CameraEffects.current.FadeToBlack(false); // begin with black screen, fades to scene
+        CameraEffects.current.FadeToBlack(false, false); // begin with black screen, fades to scene
         current = this;
 
         hud = GetComponent<HUDHandler>(); // all hud related components
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour {
 		if (isGameOver)
 		{
 			hud.GameOverSplash();
-			CameraEffects.current.FadeToBlack(true); // sets everything to black, then fades GAMEOVER, then buttons show up
+			CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
             return;
 		}
 
@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviour {
         {
             currentHideObject = other.gameObject; // get current hide object
         }
-
+        
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject; // get the gameobject of npc

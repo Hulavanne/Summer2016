@@ -31,7 +31,7 @@ public class IsIntro : MonoBehaviour
     public void StartIntro()
     {
         introPlaying = true;
-        CameraEffects.current.FadeToBlack(true);
+        CameraEffects.current.FadeToBlack(true, false);
         npcBehaviour.isAutomatic = true;
         Intro();
     }

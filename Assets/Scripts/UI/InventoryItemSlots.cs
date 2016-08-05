@@ -180,7 +180,7 @@ public class InventoryItemSlots : MonoBehaviour
 
             // Stop the inspection and then resume game
             StopInspectingItem();
-            transform.parent.parent.parent.GetComponent<MenuController>().ResumeGame();
+            GameObject.Find("InGameUI").GetComponent<MenuController>().CloseInventory();
 
             // Play sound effect for successfully using the item
             AudioManager.current.PlayRandomizedSoundEffect(useItemSuccessSound);

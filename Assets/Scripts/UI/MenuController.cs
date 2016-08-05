@@ -112,7 +112,7 @@ public class MenuController : MonoBehaviour
             {
                 if (!InventoryItemSlots.inspectingItem)
                 {
-                    ResumeGame();
+                    CloseInventory();
                 }
                 else
                 {
@@ -223,13 +223,12 @@ public class MenuController : MonoBehaviour
 		LevelManager.current.ReloadLevel();
 	}
 
-	public void PauseGame()
+	public void OpenInventory()
 	{
         // Set state
         currentState = State.INVENTORY;
 
-		Time.timeScale = 0;
-		MenuController.gamePaused = true;
+        PauseGame();
 
         //TextBoxManager.current.DisableTextBox();
 		gui.SetActive(false);
@@ -239,17 +238,28 @@ public class MenuController : MonoBehaviour
 		InventoryManager.current.FillItemSlots();
 	}
 
-    public void ResumeGame()
+    public void CloseInventory()
     {
         // Set state
         currentState = State.MAIN_MENU_OR_CLOSED;
 
-        Time.timeScale = 1;
-		MenuController.gamePaused = false;
+        ResumeGame();
 
         ItemSlideMenu.current.itemSlides[1].GetComponent<InventoryItemSlots>().StopInspectingItem();
 		gui.SetActive(true);
         pauseOverlay.SetActive(false);
+    }
+
+    public void PauseGame()
+    {
+        MenuController.gamePaused = true;
+        Time.timeScale = 0;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;
+        MenuController.gamePaused = false;
     }
 
 	//---------------------LOAD MENU---------------------

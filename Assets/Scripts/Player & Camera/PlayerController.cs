@@ -222,8 +222,12 @@ public class PlayerController : MonoBehaviour {
 
     public void ActivateSelection(Selection currentSelection)
     {
+        if (!TextBoxManager.current.isTalkingToNPC)
+        {
+            hud.questionMark.SetActive(true);
+        }
+
         hud.isSelectionActive = true;
-        hud.questionMark.SetActive(true);
         selection = currentSelection;
     }
 

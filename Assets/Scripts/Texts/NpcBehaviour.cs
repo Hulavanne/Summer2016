@@ -18,7 +18,8 @@ public class NpcBehaviour : MonoBehaviour
         BELLADONNA,
         DEER,
         BLOCKER,
-        LILIES
+        LILIES,
+        DOOR_PUZZLE
     };
     public Type npcType = Type.PASSIVE;
     public Item.Type requiredItemType = Item.Type.NONE;
@@ -110,8 +111,6 @@ public class NpcBehaviour : MonoBehaviour
 
     public void ChangeLines(int startLine, int endLine)
     {
-        PlayerController.current.DeactivateSelection();
-
         textStartLine = startLine;
         textEndLine = endLine;
     }

@@ -49,7 +49,6 @@ public class Savepoint : MonoBehaviour
         {
             MenuController.savingGame = true;
 			GameManager.current.collidingSavepoint = this;
-			textManager.DisableTextBox();
             menuController.OpenLoadMenu();
         }
     }

@@ -14,6 +14,7 @@ public class TextBoxManager : MonoBehaviour
 
     public bool showCurrentYesNoButtons;
     public bool showCurrentOptButtons;
+    public bool buttonClickException;
 
     public GameObject OptTextBox;
     public ActivateTextAtLine textRef;
@@ -153,24 +154,28 @@ public class TextBoxManager : MonoBehaviour
 
     public void OnOpt1Click()
     {
+        buttonClickException = true;
         // > check current NPC
         // > do something specific
         OnOptButtonClick();
     }
     public void OnOpt2Click()
     {
+        buttonClickException = true;
         // > check current NPC
         // > do something specific
         OnOptButtonClick();
     }
     public void OnOpt3Click()
     {
+        buttonClickException = true;
         // > check current NPC
         // > do something specific
         OnOptButtonClick();
     }
     public void OnOpt4Click()
     {
+        buttonClickException = true;
         // > check current NPC
         // > do something specific
         OnOptButtonClick();
@@ -178,7 +183,8 @@ public class TextBoxManager : MonoBehaviour
 
     public void OnYesClick()
     {
-        currentNPC = GameObject.Find(PlayerController.current.overlappingNpc.name);
+        buttonClickException = true;
+        currentNPC = PlayerController.current.overlappingNpc;
 
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
@@ -190,7 +196,16 @@ public class TextBoxManager : MonoBehaviour
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
 
+            DisableTextBox();
             currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
+        }
+        if (currentNPC.GetComponent<NpcBehaviour>().npcType == NpcBehaviour.Type.DOOR_PUZZLE)
+        {
+            hasClickedYesNoButton = false;
+            hasClickedOptButton = false;
+
+            DisableTextBox();
+            DoorPuzzle.current.Activate(true);
         }
     }
 
@@ -198,6 +213,7 @@ public class TextBoxManager : MonoBehaviour
     {
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
+        buttonClickException = true;
     }
     
     public void GetYesNoButtonLines()
@@ -249,27 +265,33 @@ public class TextBoxManager : MonoBehaviour
 
     public void EnableTextBox() // activates all text output, disables player movement
     {
-        if (PlayerController.current.canTalkToNPC)
-        {
-            OptTextBox.SetActive(true);
-            textBox.SetActive(true);
-            isActive = true;
-            SetCurrentYesNoButtons();
-            SetCurrentOptButtons();
-            PlayerController.current.canMove = false;
-            isTalkingToNPC = true;
-            StartCoroutine(TextScroll(textLines[currentLine]));
-            PlayerController.current.hud.SetHud(false);
-        }
+        OptTextBox.SetActive(true);
+        textBox.SetActive(true);
+        isActive = true;
+        SetCurrentYesNoButtons();
+        SetCurrentOptButtons();
+        PlayerController.current.canMove = false;
+        isTalkingToNPC = true;
+        StartCoroutine(TextScroll(textLines[currentLine]));
+        PlayerController.current.hud.SetHud(false);
     }
 
     public void DisableTextBox(bool endDialogue = true) // deactivates all text output, enables player movement
     {
+        if (buttonClickException)
+        {
+            buttonClickException = false;
+            clickException = false;
+        }
+        else
+        {
+            clickException = true;
+        }
+
         OptTextBox.SetActive(false);
         textBox.SetActive(false);
         isActive = false;
         isTalkingToNPC = false;
-        clickException = true;
 
         if (PlayerController.current != null)
         {

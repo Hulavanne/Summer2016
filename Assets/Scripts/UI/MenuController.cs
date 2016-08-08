@@ -206,6 +206,11 @@ public class MenuController : MonoBehaviour
 		creditsOverlay.SetActive(false);
 	}
 
+    public void SwitchMusic()
+    {
+        AudioManager.current.SwitchMusic();
+    }
+
 	public void PlayButtonSoundEffect()
 	{
 		AudioManager.current.PlayRandomizedSoundEffect(buttonSoundEffect);

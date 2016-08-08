@@ -40,6 +40,8 @@ public class AudioManager : MonoBehaviour
 		LoadAudioSettings();
 	}
 
+    // ---SOUND EFFECTS----
+
 	public void PlaySoundEffect(AudioClip clip)
 	{
 		// Play the clip
@@ -69,6 +71,38 @@ public class AudioManager : MonoBehaviour
 		effectsSource.clip = clip;
 		effectsSource.Play();
 	}
+
+    // -------MUSIC--------
+
+    public void SwitchMusic()
+    {
+        AudioManager.musicVolume = musicSource.volume;
+
+        StartCoroutine("FadeMusic");
+
+        // Fade current music
+        //musicSource.volume
+
+        // Play the new clip
+        //musicSource.clip = clip;
+        //musicSource.Play();
+    }
+
+    IEnumerator FadeMusic()
+    {
+        Debug.Log("asd0");
+
+        while (musicSource.volume > 0.0f)
+        {
+            Debug.Log("asd1");
+            musicSource.volume -= 0.01f;
+            yield return null;
+        }
+
+        Debug.Log("asd2");
+    }
+
+    // ---AUDIO SETTINGS---
 
 	public void LoadAudioSettings()
 	{

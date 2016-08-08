@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
+    public static string currentScene = "MainMenu";
+    public static bool inLoadingScene = false;
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
     public static bool confirming = false;
@@ -139,8 +141,22 @@ public class MenuController : MonoBehaviour
         // Set state
         currentState = State.MAIN_MENU_OR_CLOSED;
 
-		// If heading out of the Main Menu:
-		if (SceneManager.GetActiveScene().name == "MainMenu")
+        Time.timeScale = 1.0f;
+        gamePaused = false;
+
+        MenuController.inLoadingScene = true;
+        currentScene = sceneName;
+        SceneManager.LoadScene("LoadingScene");
+        //StartCoroutine(Load(sceneName));
+
+        /*
+        // Set state
+        currentState = State.MAIN_MENU_OR_CLOSED;
+        // Fade out current music track
+        StartCoroutine(AudioManager.current.FadeMusic(true, 1.0f, false));
+
+		// If loading the main scene
+        if (sceneName == "MainScene")
 		{
 			// If current game exists, load its variables into the game manager
 			if (Game.current != null)
@@ -148,10 +164,15 @@ public class MenuController : MonoBehaviour
 				GameManager.current.LoadCurrentGameVariables();
 			}
 		}
-        gamePaused = false;
+        // If returning to the main menu
+        else if (sceneName == "MainMenu")
+        {
+            // Switching to the correct track
+            //AudioManager.current.SwitchMusic(AudioManager.current.menuMusic);
+        }
 
 		SceneManager.LoadSceneAsync("LoadingScene");
-		SceneManager.LoadSceneAsync(sceneName);
+		SceneManager.LoadSceneAsync(sceneName);*/
 	}
 
 	public void ActivateOptionsOverlay()
@@ -205,11 +226,6 @@ public class MenuController : MonoBehaviour
 		optionsOverlay.SetActive(true);
 		creditsOverlay.SetActive(false);
 	}
-
-    public void SwitchMusic()
-    {
-        AudioManager.current.SwitchMusic();
-    }
 
 	public void PlayButtonSoundEffect()
 	{
@@ -432,8 +448,6 @@ public class MenuController : MonoBehaviour
 
     public void Confirm(bool confirmed)
     {
-        DeactivateConfirmationOverlay();
-
         if (confirmed)
         {
             if (currentState == State.INVENTORY)
@@ -445,6 +459,8 @@ public class MenuController : MonoBehaviour
                 SaveGame(index);
             }
         }
+
+        DeactivateConfirmationOverlay();
     }
 
 	public void SaveGame(int saveSlotIndex)

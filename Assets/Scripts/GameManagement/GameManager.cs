@@ -39,22 +39,30 @@ public class GameManager : MonoBehaviour
 
 	void Update ()
 	{
-		if (SceneManager.GetActiveScene().name != "LoadingScene")
-		{
-			if (SceneManager.GetActiveScene().name != "MainMenu")
-			{
-				// Update date and time in the manager
-				dateTime = System.DateTime.Now;
+        if (SceneManager.GetActiveScene().name != "LoadingScene")
+        {
+            if (SceneManager.GetActiveScene().name != "MainMenu")
+            {
+                // Update date and time in the manager
+                dateTime = System.DateTime.Now;
 
-				// Update played time in the manager
-				playedTime += Time.deltaTime;
+                // Update played time in the manager
+                playedTime += Time.deltaTime;
 
-				// Update seconds, minutes and hours in the manager
-				seconds = (int)playedTime % 60;
-				minutes = ((int)playedTime / 60) % 60;
+                // Update seconds, minutes and hours in the manager
+                seconds = (int)playedTime % 60;
+                minutes = ((int)playedTime / 60) % 60;
                 hours = ((int)playedTime / 3600);
-			}
-		}
+            }
+        }
+        else
+        {
+            if (MenuController.inLoadingScene)
+            {
+                MenuController.inLoadingScene = false;
+                StartCoroutine(LoadSceneAfterMusicFade());
+            }
+        }
 	}
 
     public void UpdateCurrentGameVariables()
@@ -100,6 +108,29 @@ public class GameManager : MonoBehaviour
             // Update the items in the player's inventory of the current game
             game.itemsDataInventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>().itemsData;
         }
+    }
+
+    public IEnumerator LoadSceneAfterMusicFade()
+    {
+        yield return StartCoroutine(AudioManager.current.FadeMusic(true, 0.5f, false));
+
+        // If loading the main scene
+        if (MenuController.currentScene == "MainScene")
+        {
+            // If current game exists, load its variables into the game manager
+            if (Game.current != null)
+            {
+                LoadCurrentGameVariables();
+            }
+        }
+        // If returning to the main menu
+        else if (MenuController.currentScene == "MainMenu")
+        {
+            // Switching to the correct track
+            AudioManager.current.SwitchMusic(AudioManager.current.menuMusic);
+        }
+
+        SceneManager.LoadScene(MenuController.currentScene);
     }
 
 	public void LoadCurrentGameVariables()

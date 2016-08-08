@@ -33,7 +33,7 @@ public class CameraEffects : MonoBehaviour
         
 		darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("DarkScreen").gameObject;
 		darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
-        gameOverScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverFrame").gameObject;
+        gameOverScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;
         gameOverScreen.GetComponent<CanvasRenderer>().SetAlpha(0);
         gameOverScreen.SetActive(false);
 
@@ -172,8 +172,8 @@ public class CameraEffects : MonoBehaviour
         if (isGameOver)
         {
             gameOverScreen.SetActive(true);
-            darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;
-            darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
+            darkScreen = gameOverScreen;
+            darkScreenRenderer = gameOverScreen.GetComponent<CanvasRenderer>();
         }
     }
 

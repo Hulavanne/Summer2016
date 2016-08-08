@@ -118,8 +118,12 @@ public class LevelManager : MonoBehaviour
 
         if (currentLevel == Levels.CIERAN_BEDROOM)
         {
+            // Start intro dialogue
             GameObject.FindObjectOfType<IsIntro>().StartIntro();
         }
+
+        // Play the music track of the level
+        AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
 	}
 
 	void Update()
@@ -225,6 +229,14 @@ public class LevelManager : MonoBehaviour
 
         CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
         CameraEffects.current.fadeToBlack = false;
+
+        AudioClip levelTrack = levelsList[(int)currentLevel].GetComponent<Level>().levelMusic;
+
+        if (levelTrack != AudioManager.current.musicSource.clip)
+        {
+            // Play the music track of the level
+            AudioManager.current.SwitchMusic(levelTrack);
+        }
     }
 
 	public void LoadSavedLevel()

@@ -41,9 +41,9 @@ public class InventoryManager : MonoBehaviour
                 // If current game is a loaded game
                 if (!Game.current.newGame)
                 {
+                    // If saved items are found, set their data and deactivate their renderer and collider
                     for (int j = 0; j < sceneItems.Count; ++j)
                     {
-                        // If saved items are found, set itemData to what was found and deactivate gameObject
                         if (savedData[i].id == sceneItems[j].GetComponent<UniqueId>().uniqueId)
                         {
                             sceneItems[j].itemData = savedData[i];
@@ -67,78 +67,28 @@ public class InventoryManager : MonoBehaviour
                 }
             }
 
+            // If the saved item wasn't found in the scene, print an error
             if (!dataFound)
             {
                 Debug.LogError("No item found in scene for ID '" + savedData[i].id + "' | " + i);
             }
         }
 
-        // Search for saved scene items
-        for (int i = 0; i < sceneItems.Count; ++i)
-        {
-            if (string.IsNullOrEmpty(sceneItems[i].itemData.id))
-            {
-                Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
-                sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
-            }
-        }
-
-        // Search for saved scene items
-        /*for (int i = 0; i < sceneItems.Count; ++i)
-        {
-            bool dataLoaded = false;
-
-            if (Game.current != null)
-            {
-                // If current game is a loaded game
-                if (!Game.current.newGame)
-                {
-                    // Load in the items of the current game
-                    //List<ItemData> savedData = Game.current.itemsDataScene;
-
-                    for (int j = 0; j < savedData.Count; ++j)
-                    {
-                        // If saved items are found, set itemData to what was found and deactivate gameObject
-                        if (sceneItems[i].GetComponent<UniqueId>().uniqueId == savedData[j].id)
-                        {
-                            sceneItems[i].itemData = savedData[j];
-                            dataLoaded = true;
-                            break;
-                        }
-                    }
-
-                    if (!dataLoaded)
-                    {
-                        Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
-                    }
-                    else
-                    {
-                        if (sceneItems[i].itemData.collected)
-                        {
-                            if (sceneItems[i].gameObject.GetComponent<SpriteRenderer>() != null)
-                            {
-                                sceneItems[i].gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                            }
-                            if (sceneItems[i].gameObject.GetComponent<BoxCollider2D>() != null)
-                            {
-                                sceneItems[i].gameObject.GetComponent<BoxCollider2D>().enabled = false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!dataLoaded)
-            {
-                sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
-            }
-        }*/
-
         if (Game.current != null)
         {
             // If current game is a loaded game
             if (!Game.current.newGame)
             {
+                // Goes through all items in the scene and checks their item data, if nothing is found, new item data is attached
+                for (int i = 0; i < sceneItems.Count; ++i)
+                {
+                    if (string.IsNullOrEmpty(sceneItems[i].itemData.id))
+                    {
+                        Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
+                        sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
+                    }
+                }
+
                 // Adding saved items' data to inventory
                 inventory.itemsData = Game.current.itemsDataInventory;
 

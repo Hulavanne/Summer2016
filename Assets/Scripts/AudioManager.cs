@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,17 @@ public class AudioManager : MonoBehaviour
 	public static float masterVolume = 1.0f;
 	public static float soundEffectsVolume = 1.0f;
 	public static float musicVolume = 1.0f;
+    public static AudioClip nextTrack;
 
 	public float lowPitchRange = 0.9f;
 	public float highPitchRange = 1.1f;
 
-	AudioSource effectsSource;
-	AudioSource musicSource;
+    public AudioClip menuMusic;
+
+    [HideInInspector]
+    public AudioSource effectsSource;
+    [HideInInspector]
+    public AudioSource musicSource;
 
 	void Awake()
 	{
@@ -74,32 +80,85 @@ public class AudioManager : MonoBehaviour
 
     // -------MUSIC--------
 
-    public void SwitchMusic()
+    public void SwitchMusic(AudioClip track)
     {
-        AudioManager.musicVolume = musicSource.volume;
+        // Set volume
+        musicSource.volume = AudioManager.musicVolume;
 
-        StartCoroutine("FadeMusic");
-
-        // Fade current music
-        //musicSource.volume
-
-        // Play the new clip
-        //musicSource.clip = clip;
-        //musicSource.Play();
+        // Play the new track
+        AudioManager.nextTrack = track;
+        musicSource.clip = AudioManager.nextTrack;
+        musicSource.Play();
     }
 
-    IEnumerator FadeMusic()
+    public void SwitchMusicGradually(AudioClip track = null, int phase = 0)
     {
-        Debug.Log("asd0");
-
-        while (musicSource.volume > 0.0f)
+        if (track != null)
         {
-            Debug.Log("asd1");
-            musicSource.volume -= 0.01f;
-            yield return null;
+            AudioManager.nextTrack = track;
         }
 
-        Debug.Log("asd2");
+        if (phase == 0)
+        {
+            AudioManager.musicVolume = musicSource.volume;
+            // Fade current music
+            StartCoroutine(FadeMusic(true, 0.5f, true));
+        }
+        else if (phase == 1)
+        {
+            if (AudioManager.nextTrack != null)
+            {
+                // Play the new track
+                musicSource.clip = AudioManager.nextTrack;
+                musicSource.Play();
+            }
+        }
+    }
+
+    public IEnumerator FadeMusic(bool fadeOut, float fadeTime, bool fadeBack)
+    {
+        // Portion to be added or subtracted each frame
+        float fadePortion = Time.deltaTime / fadeTime * AudioManager.musicVolume;
+
+        // Fading out
+        if (fadeOut)
+        {
+            while (musicSource.volume > 0.0f)
+            {
+                musicSource.volume -= fadePortion;
+
+                if (musicSource.volume <= 0.0f)
+                {
+                    musicSource.volume = 0.0f;
+                    musicSource.Stop();
+                }
+
+                yield return null;
+            }
+        }
+        // Fading in
+        else
+        {
+            musicSource.Play();
+
+            while (musicSource.volume < AudioManager.musicVolume)
+            {
+                musicSource.volume += fadePortion;
+
+                if (musicSource.volume >= AudioManager.musicVolume)
+                {
+                    musicSource.volume = AudioManager.musicVolume;
+                }
+
+                yield return null;
+            }
+        }
+
+        if (fadeBack)
+        {
+            SwitchMusicGradually(null, 1);
+            StartCoroutine(FadeMusic(!fadeOut, fadeTime, false));
+        }
     }
 
     // ---AUDIO SETTINGS---

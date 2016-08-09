@@ -14,7 +14,7 @@ public class Game
     public KeyValuePair<float, float> spawnPosition;
 
     //public List<bool> eventFlags;
-    public Dictionary<NpcBehaviour.Type, int> triggeredEvents;
+    public Dictionary<CharacterBehaviour.Type, int> triggeredEvents;
     public List<ItemData> itemsDataScene;
     public List<ItemData> itemsDataInventory;
 
@@ -32,7 +32,7 @@ public class Game
         spawnPosition = new KeyValuePair<float, float>(0.0f, 0.0f);
 
         //eventFlags = new List<bool>();
-        triggeredEvents = new Dictionary<NpcBehaviour.Type, int>();
+        triggeredEvents = new Dictionary<CharacterBehaviour.Type, int>();
         itemsDataScene = new List<ItemData>();
         itemsDataInventory = new List<ItemData>();
 
@@ -43,7 +43,7 @@ public class Game
         hours = 0;
 	}
 
-    public bool AddToTriggeredEvents(NpcBehaviour.Type eventType, int value = 0)
+    public bool AddToTriggeredEvents(CharacterBehaviour.Type eventType, int value = 0)
     {
         if (!triggeredEvents.ContainsKey(eventType))
         {

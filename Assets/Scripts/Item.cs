@@ -63,11 +63,23 @@ public class Item : MonoBehaviour
         charges = itemData.charges;
     }
 
-    public void UseItem()
+    public bool UseItem()
     {
+        if (itemType == Type.BERRIES && PlayerController.current.overlappingNpc == null)
+        {
+            EventManager.current.EatBerries(0);
+            return true;
+        }
+
+        if (!usable)
+        {
+            Debug.Log("Not usable");
+            return false;
+        }
+
         if (PlayerController.current.overlappingNpc != null)
         {
-            NpcBehaviour npcBehaviour = PlayerController.current.overlappingNpc.GetComponent<NpcBehaviour>();
+            CharacterBehaviour npcBehaviour = PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>();
 
             if (itemType == npcBehaviour.requiredItemType)
             {
@@ -77,8 +89,15 @@ public class Item : MonoBehaviour
         else
         {
             Debug.Log("No NpcBehaviour found");
+            return false;
         }
 
+        RemoveFromInventory();
+        return true;
+    }
+
+    void RemoveFromInventory()
+    {
         --itemData.charges;
 
         if (itemData.charges == 0)

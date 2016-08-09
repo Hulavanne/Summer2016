@@ -34,7 +34,6 @@ public class EnemyBehaviour : MonoBehaviour {
     public int initialMovementDirection;
     public float waitTime;
     public float chasingTime;
-    public float touchPlayerTime = 0.0f; // this will end the game if the enemy touches the player for too long
     public float unhidePlayerTime = 0.0f; // enemy will remove the player if it knows it just hid (is in Suspicious mode too).
     public float startChaseTime = 0.0f;
 
@@ -159,14 +158,7 @@ public class EnemyBehaviour : MonoBehaviour {
         {
             if (!player.isHidden)
             {
-                {
-                    touchPlayerTime += Time.deltaTime;
-                }
-
-                if (touchPlayerTime >= 0.4f)
-                {
-                    player.isGameOver = true;
-                }
+                player.isGameOver = true;
             }
         }
     }
@@ -176,7 +168,6 @@ public class EnemyBehaviour : MonoBehaviour {
         if (col.gameObject.transform.parent.tag == "Player")
         {
             isTouchingPlayer = false;
-            touchPlayerTime = 0;
         }
     }
 

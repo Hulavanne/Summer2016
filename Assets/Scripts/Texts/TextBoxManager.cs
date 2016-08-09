@@ -9,7 +9,6 @@ public class TextBoxManager : MonoBehaviour
     public static TextBoxManager current;
 
     public static GameObject currentNPC;
-    public bool hasClickedYesButton;
     public bool isTalkingToNPC;
 
     public bool showCurrentYesNoButtons;
@@ -43,6 +42,8 @@ public class TextBoxManager : MonoBehaviour
     public bool showOptButtons = true;
 
     public bool hasClickedYesNoButton;
+    public bool hasClickedYesButton;
+    public bool hasClickedNoButton;
     public bool hasClickedOptButton;
 
     public GameObject textBox;
@@ -92,7 +93,7 @@ public class TextBoxManager : MonoBehaviour
             SetCurrentYesNoButtons(); // sets active or not active
             SetCurrentOptButtons(); // sets active or not active
 
-            if ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
+            if ((Input.GetMouseButtonDown(0)  && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
                 hasClickedYesNoButton || hasClickedOptButton)
             {
                 // executes every click without buttons, or every successful button press
@@ -188,8 +189,16 @@ public class TextBoxManager : MonoBehaviour
 
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
+        hasClickedYesButton = true;
 
-        // Getting save component
+        // Player self dialogue
+        if (currentNPC == null)
+        {
+            EventManager.current.EatBerries(1);
+            return;
+        }
+
+        // Savepoint interaction
         if (currentNPC.GetComponent<Savepoint>() != null)
         {
             //player.talkToNPC = false;
@@ -199,7 +208,8 @@ public class TextBoxManager : MonoBehaviour
             DisableTextBox();
             currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
         }
-        if (currentNPC.GetComponent<NpcBehaviour>().npcType == NpcBehaviour.Type.DOOR_PUZZLE)
+        // Door puzzle interaction
+        if (currentNPC.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
         {
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
@@ -213,6 +223,7 @@ public class TextBoxManager : MonoBehaviour
     {
         showCurrentYesNoButtons = false;
         hasClickedYesNoButton = true;
+        hasClickedNoButton = true;
         buttonClickException = true;
     }
     

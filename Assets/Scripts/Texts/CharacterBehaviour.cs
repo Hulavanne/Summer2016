@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NpcBehaviour : MonoBehaviour
+public class CharacterBehaviour : MonoBehaviour
 {
     public enum Type
     {
@@ -48,17 +48,17 @@ public class NpcBehaviour : MonoBehaviour
     {
         if (npcType == Type.DEER)
         {
-            if (Game.current.triggeredEvents.ContainsKey(NpcBehaviour.Type.DEER))
+            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
             {
-                if (Game.current.triggeredEvents[NpcBehaviour.Type.DEER] >= 2)
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2)
                 {
                     // Setup new animation
                     transform.GetComponent<Animator>().SetBool("hasBerries", true);
                 }
-                if ((Game.current.triggeredEvents[NpcBehaviour.Type.DEER] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
-                    Game.current.triggeredEvents[NpcBehaviour.Type.DEER] == 4)
+                if ((Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] == 4)
                 {
-                    Game.current.triggeredEvents[NpcBehaviour.Type.DEER] = 4;
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 4;
                     gameObject.SetActive(false);
                     //GameObject.Find(name).SetActive(false);
                 }
@@ -66,9 +66,9 @@ public class NpcBehaviour : MonoBehaviour
         }
         else if (npcType == Type.BLOCKER)
         {
-            if (Game.current.triggeredEvents.ContainsKey(NpcBehaviour.Type.BLOCKER))
+            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.BLOCKER))
             {
-                if (Game.current.triggeredEvents[NpcBehaviour.Type.BLOCKER] >= 2)
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER] >= 2)
                 {
                     transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
                 }
@@ -124,5 +124,17 @@ public class NpcBehaviour : MonoBehaviour
                 inventory.items[i].usable = usable;
             }
         }
+    }
+
+    public void PlayerSelfDialogue()
+    {
+        PlayerController.current.canMove = false;
+        PlayerController.current.isOverlappingNPC = true;
+        PlayerController.current.canTalkToNPC = true;
+
+        PlayerController.current.ActivateSelection(PlayerController.Selection.NPC);
+        PlayerController.current.PlayerAnimStop();
+
+        ActivateTextAtLine.current.TalkToNPC();
     }
 }

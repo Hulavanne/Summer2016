@@ -38,8 +38,7 @@ public class ActivateTextAtLine : MonoBehaviour
     public bool requireButtonPress;
     public bool waitForPress;
 
-    public GameObject currentNPC;
-    public NpcBehaviour npcBehaviour;
+    public CharacterBehaviour npcBehaviour;
 
     public bool destroyWhenActivated;
 
@@ -55,31 +54,36 @@ public class ActivateTextAtLine : MonoBehaviour
     {
         if (PlayerController.current.canTalkToNPC)
         {
-            PlayerController.current.DeactivateSelection();
-
-            currentNPC = PlayerController.current.overlappingNpc;
-            npcBehaviour = currentNPC.GetComponent<NpcBehaviour>();
-
-            if (interact)
+            if (PlayerController.current.overlappingNpc != null)
             {
-                if (npcBehaviour.npcType == NpcBehaviour.Type.BELLADONNA)
+                npcBehaviour = PlayerController.current.overlappingNpc.GetComponentInChildren<CharacterBehaviour>();
+
+                if (interact)
                 {
-                    EventManager.current.InteractWithBelladonna(npcBehaviour);
-                }
-                if (npcBehaviour.npcType == NpcBehaviour.Type.DEER)
-                {
-                    EventManager.current.InteractWithDeer(npcBehaviour);
-                }
-                if (npcBehaviour.npcType == NpcBehaviour.Type.BLOCKER)
-                {
-                    EventManager.current.InteractWithBlocker(npcBehaviour);
-                }
-                if (npcBehaviour.npcType == NpcBehaviour.Type.LILIES)
-                {
-                    EventManager.current.InteractWithLilies();
+                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BELLADONNA)
+                    {
+                        EventManager.current.InteractWithBelladonna(npcBehaviour);
+                    }
+                    if (npcBehaviour.npcType == CharacterBehaviour.Type.DEER)
+                    {
+                        EventManager.current.InteractWithDeer(npcBehaviour);
+                    }
+                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BLOCKER)
+                    {
+                        EventManager.current.InteractWithBlocker(npcBehaviour);
+                    }
+                    if (npcBehaviour.npcType == CharacterBehaviour.Type.LILIES)
+                    {
+                        EventManager.current.InteractWithLilies();
+                    }
                 }
             }
+            else
+            {
+                npcBehaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
+            }
 
+            PlayerController.current.DeactivateSelection();
             ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
                 npcBehaviour.textStartLine, npcBehaviour.textEndLine);
         }
@@ -96,7 +100,7 @@ public class ActivateTextAtLine : MonoBehaviour
 
         theTextBox.ReloadScript(currentText, currentYesNoButtons, currentOptButtons,
             GetComponent<ActivateTextAtLine>(), npcStartLine, npcEndLine);       
-        
+
         theTextBox.EnableTextBox();
     }
 }

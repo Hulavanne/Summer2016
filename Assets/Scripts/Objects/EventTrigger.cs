@@ -4,7 +4,7 @@ using System.Collections;
 public class EventTrigger : MonoBehaviour
 {
     //public EventManager.Events eventAction = EventManager.Events.OPEN_KITCHEN_DOOR;
-    public NpcBehaviour.Type eventType = NpcBehaviour.Type.PASSIVE;
+    public CharacterBehaviour.Type eventType = CharacterBehaviour.Type.PASSIVE;
 
     void OnTriggerStay2D(Collider2D col)
     {

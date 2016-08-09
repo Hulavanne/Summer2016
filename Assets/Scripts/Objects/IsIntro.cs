@@ -5,12 +5,12 @@ public class IsIntro : MonoBehaviour
 {
     public bool introPlaying;
 
-    NpcBehaviour npcBehaviour;
+    CharacterBehaviour npcBehaviour;
     bool destroyIntro = false;
 
     void Awake()
     {
-        npcBehaviour = transform.GetComponent<NpcBehaviour>();
+        npcBehaviour = transform.GetComponent<CharacterBehaviour>();
         npcBehaviour.isAutomatic = true;
     }
 
@@ -33,25 +33,16 @@ public class IsIntro : MonoBehaviour
         introPlaying = true;
         CameraEffects.current.FadeToBlack(true, false);
         npcBehaviour.isAutomatic = true;
-        Intro();
+
+        PlayerController.current.overlappingNpc = gameObject;
+        npcBehaviour.PlayerSelfDialogue();
     }
 
     public void ContinueIntro()
     {
         npcBehaviour.isAutomatic = false;
-        Intro();
-    }
 
-    void Intro()
-    {
-        PlayerController.current.canMove = false;
-        PlayerController.current.isOverlappingNPC = true;
-        PlayerController.current.canTalkToNPC = true;
         PlayerController.current.overlappingNpc = gameObject;
-
-        PlayerController.current.ActivateSelection(PlayerController.Selection.NPC);
-        PlayerController.current.PlayerAnimStop();
-
-        ActivateTextAtLine.current.TalkToNPC();
+        npcBehaviour.PlayerSelfDialogue();
     }
 }

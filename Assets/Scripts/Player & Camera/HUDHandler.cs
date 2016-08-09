@@ -18,7 +18,8 @@ public class HUDHandler : MonoBehaviour {
     public GameObject pauseButtonObj;
     public GameObject actionButtonObj;
 
-    void Awake () {
+    void Awake ()
+    {
         staminaBarObj = GameObject.Find("StaminaBar");
         pauseButtonObj = GameObject.Find("Pause");
         actionButtonObj = GameObject.Find("ActionButton");
@@ -35,24 +36,35 @@ public class HUDHandler : MonoBehaviour {
     }
 
     public void SetHud(bool option)
-    { // sets stamina, pause and action button active / inactive (for dialogue box mostly)
+    {
+        // Sets stamina, pause and action button active / inactive (for dialogue box mostly)
         staminaBarObj.SetActive(option);
         pauseButtonObj.SetActive(option);
         actionButtonObj.SetActive(option);
     }
 
     public void GameOverSplash()
-    { // splashes black screen, fades gameover frame and after that displays buttons.
+    {
+        // Splashes black screen, fades gameover frame and after that displays buttons.
         gameOverObj.SetActive(true);
         gameOverImg.SetActive(true);
-        opacity += 0.015f;
-        gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
 
-        if ((opacity >= 1.0f) && (canShowGameOverButtons))
+        if (opacity >= 1.0f)
         {
-            canShowGameOverButtons = false;
-            reloadSaveButton.SetActive(true);
-            backToMenuButton.SetActive(true);
+            opacity = 1.0f;
+
+            if (canShowGameOverButtons)
+            {
+                canShowGameOverButtons = false;
+                reloadSaveButton.SetActive(true);
+                backToMenuButton.SetActive(true);
+            }
         }
+        else
+        {
+            opacity += 0.015f;
+        }
+
+        gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
     }
 }

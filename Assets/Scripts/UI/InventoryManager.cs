@@ -74,21 +74,21 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        // Goes through all items in the scene and checks their item data, if nothing is found, new item data is attached
+        for (int i = 0; i < sceneItems.Count; ++i)
+        {
+            if (string.IsNullOrEmpty(sceneItems[i].itemData.id))
+            {
+                Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
+                sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
+            }
+        }
+
         if (Game.current != null)
         {
             // If current game is a loaded game
             if (!Game.current.newGame)
             {
-                // Goes through all items in the scene and checks their item data, if nothing is found, new item data is attached
-                for (int i = 0; i < sceneItems.Count; ++i)
-                {
-                    if (string.IsNullOrEmpty(sceneItems[i].itemData.id))
-                    {
-                        Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
-                        sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
-                    }
-                }
-
                 // Adding saved items' data to inventory
                 inventory.itemsData = Game.current.itemsDataInventory;
 
@@ -127,10 +127,16 @@ public class InventoryManager : MonoBehaviour
 
 	public void SetSlideVariables()
 	{
-        // Clear item slots in item slides
         for (int i = 0; i < itemSlideMenu.itemSlides.Count; ++i)
         {
-            itemSlideMenu.itemSlides[i].GetComponent<InventoryItemSlots>().ClearItemSlots();
+            GameObject itemSlide = itemSlideMenu.itemSlides[i];
+
+            // Clear item slots in item slides
+            itemSlide.GetComponent<InventoryItemSlots>().ClearItemSlots();
+            // Reset item slots' positions
+            itemSlide.transform.localPosition = new Vector3(itemSlideMenu.slideStartPositionsX[i],
+                itemSlide.transform.localPosition.y,
+                itemSlide.transform.localPosition.z);
         }
 
         // Get itemsData from inventory and convert the data to references for matching items in scene

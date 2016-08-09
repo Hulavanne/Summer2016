@@ -14,8 +14,8 @@ public class ItemSlideMenu : MonoBehaviour
 	public float slideSlidingDistance = 1000.0f;
     public List<GameObject> itemSlides = new List<GameObject>();
     public List<GameObject> itemSlots = new List<GameObject>();
+    public List<float> slideStartPositionsX = new List<float>();
 
-    List<float> slideStartPositionsX = new List<float>();
 	GameObject background;
 	float cursorStartPositionX = 0.0f; // Position of the finger / cursor at the start of input
 	float cursorDistanceMoved = 0.0f; // Distance the finger / cursor has moved since the input started
@@ -100,17 +100,17 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void MouseInput()
 	{
-		// If the left mouse button was just clicked:
+		// If the left mouse button was just clicked
 		if (Input.GetMouseButtonDown(0))
 		{
 			InputBegan("mouse");
 		}
-		// If the left mouse button is still pressed down:
+		// If the left mouse button is still pressed down
 		if (Input.GetMouseButton(0))
 		{
 			InputMoving("mouse");
 		}
-		// If the left mouse button was just released:
+		// If the left mouse button was just released
 		if (Input.GetMouseButtonUp(0))
 		{
 			InputEnded();
@@ -168,7 +168,7 @@ public class ItemSlideMenu : MonoBehaviour
 			// Set the distance of the finger / cursor to the start position
 			float cursorDistanceToStartPosition = cursorStartPositionX - cursorCurrentPositionX;
 
-			// If the slides are not yet being dragged:
+			// If the slides are not yet being dragged
 			if (!dragging)
 			{
 				// If dragging left
@@ -177,7 +177,7 @@ public class ItemSlideMenu : MonoBehaviour
 					// Set direction
 					slidingDirection = -1;
 
-					// If the slides can be moved:
+					// If the slides can be moved
 					if (canSlide)
 					{
 						// Fill the item slots of the slides
@@ -193,7 +193,7 @@ public class ItemSlideMenu : MonoBehaviour
                     // Set direction
 					slidingDirection = 1;
 
-					// If the slides can be moved:
+					// If the slides can be moved
 					if (canSlide)
 					{
 						// Fill the item slots of the slides
@@ -215,7 +215,7 @@ public class ItemSlideMenu : MonoBehaviour
                         // Set direction
                         slidingDirection = 1;
 
-                        // If the slides can be moved:
+                        // If the slides can be moved
                         if (canSlide)
                         {
                             // Clear slides
@@ -234,7 +234,7 @@ public class ItemSlideMenu : MonoBehaviour
                         // Set direction
                         slidingDirection = -1;
 
-                        // If the slides can be moved:
+                        // If the slides can be moved
                         if (canSlide)
                         {
                             // Clear slides
@@ -254,10 +254,10 @@ public class ItemSlideMenu : MonoBehaviour
                     draggingThreshold = emptyDraggingThreshold;
                 }
 
-                // If the distance moved is long enough:
+                // If the distance moved is long enough
                 if (cursorDistanceMoved >= draggingThreshold)
                 {
-                    // If the slides can be moved:
+                    // If the slides can be moved
                     if (canSlide && !InventoryItemSlots.inspectingItem)
                     {
                         // Start sliding the slides when input is released
@@ -301,17 +301,24 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void InputEnded()
 	{
-        // If slide can be started:
+        // If inspecting an item
+        if (InventoryItemSlots.inspectingItem)
+        {
+            // Prevent the slide from starting
+            canStartSlide = false;
+        }
+
+        // If slide can be started
         if (canStartSlide)
 		{
             // Start the slide and release the input lock
             slidesSliding = true;
             inputLocked = true;
 		}
-		// If not:
+		// If not
 		else
 		{
-			// If the cursor distance moved is long enough:
+			// If the cursor distance moved is long enough
             if (cursorDistanceMoved != 0.0f)
             {
                 // Reset the slides back to their original position
@@ -325,7 +332,7 @@ public class ItemSlideMenu : MonoBehaviour
 
     public void ItemSlotPressed()
     {
-        // If the cursor distance moved is long enough:
+        // If the cursor distance moved is long enough
         if (cursorDistanceMoved != 0.0f)
         {
             // Reset the slides back to their original position
@@ -338,7 +345,7 @@ public class ItemSlideMenu : MonoBehaviour
 
 	void UpdateSlides()
 	{
-		// If slides are sliding:
+		// If slides are sliding
 		if (slidesSliding)
 		{
 			// Update the position of the slides
@@ -347,7 +354,7 @@ public class ItemSlideMenu : MonoBehaviour
 			dragging = false;
 		}
 
-		// If slides are resetting:
+		// If slides are resetting
 		if (slidesResetting)
 		{
             if (dragging)
@@ -389,7 +396,7 @@ public class ItemSlideMenu : MonoBehaviour
         Vector3 targetPosition = new Vector3(slideStartPositionsX[1] + direction * distanceFromStart, backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 		//backgroundTransform.localPosition = Vector3.Lerp(backgroundTransform.localPosition, targetPosition, slidingSpeed * Time.unscaledDeltaTime);
 
-		// For each item slide:
+		// For each item slide
 		for (int i = 0; i < itemSlides.Count; ++i)
 		{
 			// Lerp the slide's local position towards the target distance
@@ -403,7 +410,7 @@ public class ItemSlideMenu : MonoBehaviour
             {
                 if (direction == -1)
                 {
-                    // If the slide has moved the wanted distance or more:
+                    // If the slide has moved the wanted distance or more
                     if (slideTransform.localPosition.x <= slideStartPositionsX[i] + direction * distance)
                     {
                         destinationReached = true;
@@ -411,7 +418,7 @@ public class ItemSlideMenu : MonoBehaviour
                 }
                 else
                 {
-                    // If the slide has moved the wanted distance or more:
+                    // If the slide has moved the wanted distance or more
                     if (slideTransform.localPosition.x >= slideStartPositionsX[i] + direction * distance)
                     {
                         destinationReached = true;
@@ -422,7 +429,7 @@ public class ItemSlideMenu : MonoBehaviour
             {
                 if (direction == -1)
                 {
-                    // If the slide has moved the wanted distance or more:
+                    // If the slide has moved the wanted distance or more
                     if (slideTransform.localPosition.x >= slideStartPositionsX[i] + direction * distance)
                     {
                         destinationReached = true;
@@ -430,7 +437,7 @@ public class ItemSlideMenu : MonoBehaviour
                 }
                 else
                 {
-                    // If the slide has moved the wanted distance or more:
+                    // If the slide has moved the wanted distance or more
                     if (slideTransform.localPosition.x <= slideStartPositionsX[i] + direction * distance)
                     {
                         destinationReached = true;
@@ -442,7 +449,7 @@ public class ItemSlideMenu : MonoBehaviour
 			{
 				backgroundTransform.localPosition = new Vector3 (slideStartPositionsX[1], backgroundTransform.localPosition.y, backgroundTransform.localPosition.z);
 
-				// For each item slide:
+				// For each item slide
 				for (int j = 0; j < itemSlides.Count; ++j)
 				{
 					// Set the slide's local position to the target distance
@@ -488,7 +495,7 @@ public class ItemSlideMenu : MonoBehaviour
 			// Update currentSlideIndex in inventoryManager by adding 1
 			++inventoryManager.currentSlideIndex;
 
-			// If this was the last slide in the list:
+			// If this was the last slide in the list
 			if (inventoryManager.currentSlideIndex > inventoryManager.numberOfSlides - 1)
 			{
 				inventoryManager.currentSlideIndex = 0;
@@ -512,7 +519,7 @@ public class ItemSlideMenu : MonoBehaviour
 			// Update currentSlideIndex in inventoryManager by subtracting 1
 			--inventoryManager.currentSlideIndex;
 
-			// If this was the first slide in the list:
+			// If this was the first slide in the list
 			if (inventoryManager.currentSlideIndex < 0)
 			{
 				inventoryManager.currentSlideIndex = inventoryManager.numberOfSlides - 1;

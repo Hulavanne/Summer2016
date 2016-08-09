@@ -172,12 +172,10 @@ public class InventoryItemSlots : MonoBehaviour
 
 	public void UseItem()
 	{
-        // If the item can be used
-        if (itemsInSlots[inspectedItemIndex].usable)
+        // Try using the item,
+        // if the item can be used
+        if (itemsInSlots[inspectedItemIndex].GetComponent<Item>().UseItem())
         {
-            // Use the item
-            itemsInSlots[inspectedItemIndex].GetComponent<Item>().UseItem();
-
             // Stop the inspection and then resume game
             StopInspectingItem();
             GameObject.Find("InGameUI").GetComponent<MenuController>().CloseInventory();

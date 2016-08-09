@@ -137,11 +137,11 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject; // get the gameobject of npc
-            NpcBehaviour npcBehaviour = null; // reset the npcbehaviour script
+            CharacterBehaviour npcBehaviour = null; // reset the npcbehaviour script
 
-            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
+                npcBehaviour = overlappingNpc.GetComponent<CharacterBehaviour>();
                 npcBehaviour.SetItemsUsability(true);
             }
 
@@ -192,11 +192,11 @@ public class PlayerController : MonoBehaviour {
         if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject;
-            NpcBehaviour npcBehaviour;
+            CharacterBehaviour npcBehaviour;
 
-            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>(); // gets current npcbehav
+                npcBehaviour = overlappingNpc.GetComponent<CharacterBehaviour>(); // gets current npcbehav
             }
         }
     }
@@ -207,16 +207,14 @@ public class PlayerController : MonoBehaviour {
 
         if (other.transform.tag == "NPC")
         {
-            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                overlappingNpc.GetComponent<NpcBehaviour>().SetItemsUsability(false);
+                overlappingNpc.GetComponent<CharacterBehaviour>().SetItemsUsability(false);
             }
 
             overlappingNpc = null;
             isOverlappingNPC = false;
             DeactivateSelection();
-
-            ActivateTextAtLine.current.waitForPress = false;
         }
     }
 
@@ -236,6 +234,7 @@ public class PlayerController : MonoBehaviour {
         hud.isSelectionActive = false;
         hud.questionMark.SetActive(false);
         selection = Selection.DEFAULT;
+        ActivateTextAtLine.current.waitForPress = false;
     }
 
     public void OnActionButtonClick()
@@ -276,9 +275,9 @@ public class PlayerController : MonoBehaviour {
     { // use this script if you want the player to wait for an amount of time (as sort of cut-scene)
         if (overlappingNpc != null)
         {
-            if (overlappingNpc.GetComponent<NpcBehaviour>() != null)
+            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                NpcBehaviour npcBehaviour = overlappingNpc.GetComponent<NpcBehaviour>();
+                CharacterBehaviour npcBehaviour = overlappingNpc.GetComponent<CharacterBehaviour>();
 
                 if (npcBehaviour.waitTimer > 0.0f)
                 {

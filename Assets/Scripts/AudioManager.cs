@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
 	public float highPitchRange = 1.1f;
 
     public AudioClip menuMusic;
+    public AudioClip gameOverMusic;
 
     [HideInInspector]
     public AudioSource effectsSource;
@@ -82,6 +83,7 @@ public class AudioManager : MonoBehaviour
 
     public void SwitchMusic(AudioClip track)
     {
+        Debug.Log(track);
         // Set volume
         musicSource.volume = AudioManager.musicVolume;
 

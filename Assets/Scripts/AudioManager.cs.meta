@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: 79e61bbef1f6bdc40aa0cc60d474d516
-timeCreated: 1470650690
+timeCreated: 1470810044
 licenseType: Pro
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - menuMusic: {fileID: 8300000, guid: a7c428459a5ea29408e5ea169079b2b6, type: 3}
-  - houseMusic: {fileID: 8300000, guid: d11cb5dc0a5c6e6498d15c1ebb3307fd, type: 3}
-  - forestMusic: {fileID: 8300000, guid: 33724d38a25b1a344bc7ee2194a96067, type: 3}
-  - cavernMusic: {fileID: 8300000, guid: 904bff382f7712d4fa3b6b09254fd910, type: 3}
+  - gameOverMusic: {fileID: 8300000, guid: 64c216fa4fb973e4495729f5548be442, type: 3}
+  - effectsSource: {instanceID: 0}
+  - musicSource: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

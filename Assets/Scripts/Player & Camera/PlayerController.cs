@@ -99,7 +99,9 @@ public class PlayerController : MonoBehaviour {
 		if (isGameOver)
 		{
 			hud.GameOverSplash();
+            AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
 			CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
+
             return;
 		}
 

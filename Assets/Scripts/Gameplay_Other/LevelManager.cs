@@ -215,15 +215,18 @@ public class LevelManager : MonoBehaviour
         {
             EnemyBehaviour enemyBehav = enemy.GetComponent<EnemyBehaviour>();
 
-            if (player.transform.position.x > enemy.transform.position.x)
+            if (enemyBehav.thisEnemyLevel == Levels.CAVE_CREVICE)
             {
-                enemyBehav.initialMovementDirection = -1;
-                enemyBehav.movementDirection = -1;
-            }
-            else
-            {
-                enemyBehav.initialMovementDirection = 1;
-                enemyBehav.movementDirection = 1;
+                if (player.transform.position.x > enemy.transform.position.x)
+                {
+                    enemyBehav.initialMovementDirection = -1;
+                    enemyBehav.movementDirection = -1;
+                }
+                else
+                {
+                    enemyBehav.initialMovementDirection = 1;
+                    enemyBehav.movementDirection = 1;
+                }
             }
         }
 

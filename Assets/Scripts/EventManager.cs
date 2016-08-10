@@ -251,6 +251,7 @@ public class EventManager : MonoBehaviour
         else if (phase == 1)
         {
             behaviour.ChangeLines(3, 4);
+            TextBoxManager.current.hasClickedYesNoButton = false;
         }
         else if (phase == 2)
         {

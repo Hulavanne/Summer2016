@@ -209,7 +209,7 @@ public class LevelManager : MonoBehaviour
 		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
-        player.playerAnim.SetBool("isFacingRight", player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight);
+        player.isFacingRight = player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight;
 
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {

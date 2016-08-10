@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour {
     public HUDHandler hud;
     public TouchInput touchRun;
     public Animator playerAnim;
+    public SpriteRenderer spriteRenderer;
 
     public GameObject currentHideObject;
     public GameObject currentDoor;
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour {
 
     [HideInInspector]
     public bool isUnhiding = false; // animation for unhiding
+    public bool isFacingRight;
     public bool isRunning;
 
     bool isNextRight;
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour {
         touchRun = GetComponent<TouchInput>(); 
 		LevelManager.current = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		playerAnim = transform.GetComponentInChildren<Animator>();
+        spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         
         cameraComponent = Camera.main;
 
@@ -92,6 +95,15 @@ public class PlayerController : MonoBehaviour {
             {
                 unhideTimer -= Time.deltaTime;
             }
+        }
+
+        if (isFacingRight)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else
+        {
+            spriteRenderer.flipX = false;
         }
 
         CheckNPCWaitTime();
@@ -303,11 +315,11 @@ public class PlayerController : MonoBehaviour {
         playerAnim.SetBool("isIdle", true);
     }
 
-    public void PlayerAnimWalk(bool isFacingRight)
+    public void PlayerAnimWalk(bool facingRight)
     {
         if (canMove)
         {
-            playerAnim.SetBool("isFacingRight", isFacingRight);
+            isFacingRight = facingRight;
             playerAnim.SetBool("isWalking", true);
             playerAnim.SetBool("isIdle", false);
         }
@@ -439,7 +451,7 @@ public class PlayerController : MonoBehaviour {
             {
                 if (canHide)
                 {
-                    playerAnim.SetBool("isFacingRight", false);
+                    isFacingRight = false;
                     hud.questionMark.GetComponent<SpriteRenderer>().enabled = true;
                     playerAnim.SetBool("isHidden", false);
                     isHidden = false;

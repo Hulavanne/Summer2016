@@ -11,6 +11,7 @@ public class EnemyBehaviour : MonoBehaviour {
     public GameObject playerObj;
     public PlayerController player;
     public Animator anim;
+    public SpriteRenderer spriteRenderer;
 
     //distances
     // distance from enemy to Player (placeholder) : will modulate and subtract playerPos with enemyPos and create a vector for it.
@@ -56,6 +57,7 @@ public class EnemyBehaviour : MonoBehaviour {
         player = playerObj.GetComponent<PlayerController>();
         currentEnemy = EnemyBehav.PATROLLING;
         anim = transform.GetChild(0).gameObject.GetComponent<Animator>();
+        spriteRenderer = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -303,11 +305,11 @@ public class EnemyBehaviour : MonoBehaviour {
 
         if (movementDirection == 1)
         {
-            anim.SetBool("isRight", true);
+            spriteRenderer.flipX = true;
         }
         else if (movementDirection == -1)
         {
-            anim.SetBool("isRight", false);
+            spriteRenderer.flipX = false;
         }
 
         if (thisEnemyLevel != LevelManager.current.currentLevel)

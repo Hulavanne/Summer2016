@@ -43,28 +43,27 @@ public class HUDHandler : MonoBehaviour {
         actionButtonObj.SetActive(option);
     }
 
-    public void GameOverSplash()
+    public IEnumerator GameOverSplash()
     {
         // Splashes black screen, fades gameover frame and after that displays buttons.
         gameOverObj.SetActive(true);
         gameOverImg.SetActive(true);
 
-        if (opacity >= 1.0f)
-        {
-            opacity = 1.0f;
-
-            if (canShowGameOverButtons)
-            {
-                canShowGameOverButtons = false;
-                reloadSaveButton.SetActive(true);
-                backToMenuButton.SetActive(true);
-            }
-        }
-        else
+        while (opacity < 1.0f)
         {
             opacity += 0.015f;
+            gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
+            yield return null;
         }
 
+        opacity = 1.0f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
+
+        if (canShowGameOverButtons)
+        {
+            canShowGameOverButtons = false;
+            reloadSaveButton.SetActive(true);
+            backToMenuButton.SetActive(true);
+        }
     }
 }

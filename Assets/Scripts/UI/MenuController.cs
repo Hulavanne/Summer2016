@@ -7,7 +7,6 @@ using System.Collections.Generic;
 public class MenuController : MonoBehaviour
 {
     public static string currentScene = "MainMenu";
-    public static bool inLoadingScene = false;
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
     public static bool confirming = false;
@@ -141,38 +140,14 @@ public class MenuController : MonoBehaviour
         // Set state
         currentState = State.MAIN_MENU_OR_CLOSED;
 
+        // Make sure the game isn't paused
         Time.timeScale = 1.0f;
         gamePaused = false;
 
-        MenuController.inLoadingScene = true;
+        // Set currentScene, that will be used in GameManager to move on from the loading scene
+        // and then go to the loading scene
         currentScene = sceneName;
-        SceneManager.LoadScene("LoadingScene");
-        //StartCoroutine(Load(sceneName));
-
-        /*
-        // Set state
-        currentState = State.MAIN_MENU_OR_CLOSED;
-        // Fade out current music track
-        StartCoroutine(AudioManager.current.FadeMusic(true, 1.0f, false));
-
-		// If loading the main scene
-        if (sceneName == "MainScene")
-		{
-			// If current game exists, load its variables into the game manager
-			if (Game.current != null)
-			{
-				GameManager.current.LoadCurrentGameVariables();
-			}
-		}
-        // If returning to the main menu
-        else if (sceneName == "MainMenu")
-        {
-            // Switching to the correct track
-            //AudioManager.current.SwitchMusic(AudioManager.current.menuMusic);
-        }
-
-		SceneManager.LoadSceneAsync("LoadingScene");
-		SceneManager.LoadSceneAsync(sceneName);*/
+        GameManager.sceneLoadOperation = SceneManager.LoadSceneAsync("LoadingScene");
 	}
 
 	public void ActivateOptionsOverlay()
@@ -202,7 +177,7 @@ public class MenuController : MonoBehaviour
         }
 
 		// Saving the settings
-		AudioManager.current.SaveAudioSettings();
+        AudioManager.current.SaveAudioSettings();
 		GameManager.current.SaveGraphicalSettings();
 
 		menu.SetActive(true);
@@ -229,7 +204,7 @@ public class MenuController : MonoBehaviour
 
 	public void PlayButtonSoundEffect()
 	{
-		AudioManager.current.PlayRandomizedSoundEffect(buttonSoundEffect);
+        AudioManager.current.PlayRandomSoundEffect(buttonSoundEffect);
 	}
 
 	//----------------------IN-GAME----------------------
@@ -519,10 +494,13 @@ public class MenuController : MonoBehaviour
 	{
         // Set state
         currentState = State.MAIN_MENU_OR_CLOSED;
+        savingGame = false;
 
-		Time.timeScale = 1;
-		MenuController.gamePaused = false;
-		MenuController.savingGame = false;
+        if (!PlayerController.current.isGameOver)
+        {
+            Time.timeScale = 1;
+            gamePaused = false;
+        }
 
 		menu.SetActive(true);
 		loadMenu.SetActive(false);
@@ -537,7 +515,7 @@ public class MenuController : MonoBehaviour
 		Slider soundEffectsVolumeSlider = transform.FindChild("SoundEffectsVolumeSlider").GetComponent<Slider>();
 		Slider gammaSlider = transform.FindChild("GammaSlider").GetComponent<Slider>();
 
-		masterVolumeSlider.value = AudioManager.masterVolume * 100;
+        masterVolumeSlider.value = AudioManager.masterVolume * 100;
         masterVolumeSlider.transform.FindChild("Percentage").GetComponent<Text>().text = masterVolumeSlider.value.ToString() + "%";
 
         musicVolumeSlider.value = AudioManager.musicVolume * 100;
@@ -581,13 +559,13 @@ public class MenuController : MonoBehaviour
 
 	public void ToggleMute()
 	{
-		AudioManager.current.ToggleMute();
+        AudioManager.current.ToggleMute();
         SetOptionsValues();
 	}
 
 	public void SetMasterVolume(Slider slider)
 	{
-		AudioManager.current.SetMasterVolume(slider.value / 100);
+        AudioManager.current.SetMasterVolume(slider.value / 100);
         slider.transform.FindChild("Percentage").GetComponent<Text>().text = slider.value.ToString() + "%";
 	}
 
@@ -604,8 +582,7 @@ public class MenuController : MonoBehaviour
 
 		if (gameObject.activeSelf)
 		{
-			AudioManager.current.PlaySoundEffect(buttonSoundEffect);
-			//AudioManager.instance.PlayPitchedSoundEffect(buttonSoundEffect, 1.0f, 2.5f);
+            AudioManager.current.PlaySoundEffect(buttonSoundEffect);
 		}
 	}
 

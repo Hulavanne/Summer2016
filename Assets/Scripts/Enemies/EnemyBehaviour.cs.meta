@@ -1,10 +1,18 @@
 fileFormatVersion: 2
 guid: 0b709c46ed4aadc4a9a5a40d0acd4a3a
-timeCreated: 1466157221
+timeCreated: 1470917307
 licenseType: Pro
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - patrolSound: {fileID: 8300000, guid: 460555e62480a0142a7bbacc92e9ca0f, type: 3}
+  - chasingSound: {fileID: 8300000, guid: 6214aba869d33b64690a2a549f5e035e, type: 3}
+  - boundary: {instanceID: 0}
+  - playerObj: {instanceID: 0}
+  - player: {instanceID: 0}
+  - anim: {instanceID: 0}
+  - spriteRenderer: {instanceID: 0}
+  - audioSource: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

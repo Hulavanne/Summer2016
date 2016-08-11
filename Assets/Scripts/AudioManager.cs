@@ -24,6 +24,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource effectsSource;
     [HideInInspector]
     public AudioSource musicSource;
+    [HideInInspector]
+    public List<AudioSource> effectsSources = new List<AudioSource>();
 
 	void Awake()
 	{
@@ -42,10 +44,46 @@ public class AudioManager : MonoBehaviour
 
 		effectsSource = transform.GetComponentsInChildren<AudioSource>()[0];
 		musicSource = transform.GetComponentsInChildren<AudioSource>()[1];
+        FindEffectsSources();
 
 		// Load audio values
 		LoadAudioSettings();
 	}
+
+    void Update()
+    {
+        // Executed during the first frame of a non-loading scene
+        if (GameManager.sceneLoadOperation != null && GameManager.sceneLoadOperation.isDone && SceneManager.GetActiveScene().name != "LoadingScene")
+        {
+            GameManager.sceneLoadOperation = null;
+
+            FindEffectsSources();
+            StopAllCoroutines();
+
+            if (SceneManager.GetActiveScene().name == "MainMenu")
+            {
+                SwitchMusic(menuMusic);
+            }
+            else
+            {
+                // Play the music track of the current level
+                SwitchMusic(LevelManager.current.levelsList[(int)LevelManager.current.currentLevel].GetComponent<Level>().levelMusic);
+            }
+        }
+    }
+
+    public void FindEffectsSources()
+    {
+        effectsSources.Clear();
+
+        foreach (AudioSource source in FindObjectsOfType<AudioSource>())
+        {
+            if (source != musicSource)
+            {
+                effectsSources.Add(source);
+            }
+        }
+    }
 
     // ---SOUND EFFECTS----
 
@@ -56,7 +94,7 @@ public class AudioManager : MonoBehaviour
 		effectsSource.Play();
 	}
 
-	public void PlayRandomizedSoundEffect(params AudioClip[] clips)
+	public void PlayRandomSoundEffect(params AudioClip[] clips)
 	{
 		// Get a random pitch and a random clip
 		float randomPitch = Random.Range(lowPitchRange, highPitchRange);
@@ -86,12 +124,13 @@ public class AudioManager : MonoBehaviour
         if (track != musicSource.clip)
         {
             // Set volume
-            musicSource.volume = AudioManager.musicVolume;
+            SetMusicVolume(musicVolume);
 
             // Play the new track
-            AudioManager.nextTrack = track;
-            musicSource.clip = AudioManager.nextTrack;
+            nextTrack = track;
+            musicSource.clip = nextTrack;
             musicSource.Play();
+            musicSource.loop = true;
         }
     }
 
@@ -99,30 +138,35 @@ public class AudioManager : MonoBehaviour
     {
         if (track != null)
         {
-            AudioManager.nextTrack = track;
+            nextTrack = track;
         }
 
         if (phase == 0)
         {
-            AudioManager.musicVolume = musicSource.volume;
+            musicVolume = musicSource.volume;
             // Fade current music
-            StartCoroutine(FadeMusic(true, 0.5f, true));
+            StartFadeMusic(true, 0.5f, true);
         }
         else if (phase == 1)
         {
-            if (AudioManager.nextTrack != null)
+            if (nextTrack != null)
             {
                 // Play the new track
-                musicSource.clip = AudioManager.nextTrack;
+                musicSource.clip = nextTrack;
                 musicSource.Play();
             }
         }
     }
 
+    public void StartFadeMusic(bool fadeOut, float fadeTime, bool fadeBack)
+    {
+        StartCoroutine(FadeMusic(fadeOut, fadeTime, fadeBack));
+    }
+
     public IEnumerator FadeMusic(bool fadeOut, float fadeTime, bool fadeBack)
     {
         // Portion to be added or subtracted each frame
-        float fadePortion = Time.deltaTime / fadeTime * AudioManager.musicVolume;
+        float fadePortion = Time.deltaTime / fadeTime * musicVolume;
 
         // Fading out
         if (fadeOut)
@@ -145,13 +189,13 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.Play();
 
-            while (musicSource.volume < AudioManager.musicVolume)
+            while (musicSource.volume < musicVolume)
             {
                 musicSource.volume += fadePortion;
 
-                if (musicSource.volume >= AudioManager.musicVolume)
+                if (musicSource.volume >= musicVolume)
                 {
-                    musicSource.volume = AudioManager.musicVolume;
+                    musicSource.volume = musicVolume;
                 }
 
                 yield return null;
@@ -161,7 +205,7 @@ public class AudioManager : MonoBehaviour
         if (fadeBack)
         {
             SwitchMusicGradually(null, 1);
-            StartCoroutine(FadeMusic(!fadeOut, fadeTime, false));
+            StartFadeMusic(!fadeOut, fadeTime, false);
         }
     }
 
@@ -169,62 +213,65 @@ public class AudioManager : MonoBehaviour
 
 	public void LoadAudioSettings()
 	{
-		AudioManager.audioMuted = System.Convert.ToBoolean(PlayerPrefs.GetInt("AudioMuted", 0));
-		AudioManager.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
-		AudioManager.soundEffectsVolume = PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
-		AudioManager.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+		audioMuted = System.Convert.ToBoolean(PlayerPrefs.GetInt("AudioMuted", 0));
+		masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
+		soundEffectsVolume = PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
+		musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
 
 		// Update mute audio
-		effectsSource.mute = AudioManager.audioMuted;
-		musicSource.mute = AudioManager.audioMuted;
+		effectsSource.mute = audioMuted;
+		musicSource.mute = audioMuted;
 
 		// Update volumes
-		SetMasterVolume(AudioManager.masterVolume);
-		SetSoundEffectsVolume(AudioManager.soundEffectsVolume);
-		SetMusicVolume(AudioManager.musicVolume);
+		SetMasterVolume(masterVolume);
+		SetSoundEffectsVolume(soundEffectsVolume);
+		SetMusicVolume(musicVolume);
 	}
 
 	public void SaveAudioSettings()
 	{
-		PlayerPrefs.SetInt("AudioMuted", System.Convert.ToInt32(AudioManager.audioMuted));
-		PlayerPrefs.SetFloat("MasterVolume", AudioManager.masterVolume);
-		PlayerPrefs.SetFloat("SoundEffectsVolume", AudioManager.soundEffectsVolume);
-		PlayerPrefs.SetFloat("MusicVolume", AudioManager.musicVolume);
+		PlayerPrefs.SetInt("AudioMuted", System.Convert.ToInt32(audioMuted));
+		PlayerPrefs.SetFloat("MasterVolume", masterVolume);
+		PlayerPrefs.SetFloat("SoundEffectsVolume", soundEffectsVolume);
+		PlayerPrefs.SetFloat("MusicVolume", musicVolume);
 
 		PlayerPrefs.Save();
 	}
 
 	public void ToggleMute()
 	{
-		AudioManager.audioMuted = !AudioManager.audioMuted;
+		audioMuted = !audioMuted;
 
 		// Update mute audio
-		effectsSource.mute = AudioManager.audioMuted;
-		musicSource.mute = AudioManager.audioMuted;
+		effectsSource.mute = audioMuted;
+		musicSource.mute = audioMuted;
 	}
 
 	public void SetMasterVolume(float newValue)
 	{
-		AudioManager.masterVolume = newValue;
+		masterVolume = newValue;
 
 		// Update volumes
-		effectsSource.volume = AudioManager.soundEffectsVolume * AudioManager.masterVolume;
-		musicSource.volume = AudioManager.musicVolume * AudioManager.masterVolume;
+        SetSoundEffectsVolume(soundEffectsVolume);
+		musicSource.volume = musicVolume * masterVolume;
 	}
 
-	public void SetMusicVolume(float newValue)
+    public void SetMusicVolume(float newValue)
 	{
-		AudioManager.musicVolume = newValue;
+		musicVolume = newValue;
 
 		// Update volume
-		musicSource.volume = AudioManager.musicVolume * AudioManager.masterVolume;
+		musicSource.volume = musicVolume * masterVolume;
 	}
 
 	public void SetSoundEffectsVolume(float newValue)
 	{
-		AudioManager.soundEffectsVolume = newValue;
+		soundEffectsVolume = newValue;
 
-		// Update volume
-		effectsSource.volume = AudioManager.soundEffectsVolume * AudioManager.masterVolume;
+		// Update volumes
+        foreach (AudioSource source in effectsSources)
+        {
+            source.volume = soundEffectsVolume * masterVolume;
+        }
 	}
 }

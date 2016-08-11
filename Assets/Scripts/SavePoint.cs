@@ -12,16 +12,7 @@ public class Savepoint : MonoBehaviour
 
 	void Awake()
 	{
-        #if UNITY_EDITOR
-
-        if (transform.GetComponent<UniqueId>() == null)
-        {
-            gameObject.AddComponent<UniqueId>();
-        }
-
-        #endif
-
-		if (GameObject.Find("InGameUI") != null)
+        if (GameObject.Find("InGameUI") != null)
 		{
 			menuController = GameObject.Find("InGameUI").GetComponent<MenuController>();
             textManager = GameObject.Find("InGameUI").GetComponent<TextBoxManager>();

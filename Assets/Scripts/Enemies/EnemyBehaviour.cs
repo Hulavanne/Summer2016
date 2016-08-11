@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyBehaviour : MonoBehaviour {
-
-    //new
-
-    //player references
+public class EnemyBehaviour : MonoBehaviour
+{
+    public AudioClip patrolSound;
+    public AudioClip chasingSound;
 
     public GameObject boundary;
     public GameObject playerObj;
     public PlayerController player;
     public Animator anim;
     public SpriteRenderer spriteRenderer;
+    public AudioSource audioSource;
 
     //distances
     // distance from enemy to Player (placeholder) : will modulate and subtract playerPos with enemyPos and create a vector for it.
@@ -56,8 +56,9 @@ public class EnemyBehaviour : MonoBehaviour {
         playerObj = GameObject.Find("Player");
         player = playerObj.GetComponent<PlayerController>();
         currentEnemy = EnemyBehav.PATROLLING;
-        anim = transform.GetChild(0).gameObject.GetComponent<Animator>();
-        spriteRenderer = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+        anim = transform.GetChild(0).GetComponent<Animator>();
+        spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        audioSource = transform.GetComponent<AudioSource>();
     }
 
     void Update()
@@ -89,16 +90,19 @@ public class EnemyBehaviour : MonoBehaviour {
             case EnemyBehav.PATROLLING:
                 {
                     areaOfVision = 10.0f;
+                    ChangeBreathingSound(patrolSound);
                     break;
                 }
             case EnemyBehav.SUSPICIOUS:
                 {
                     areaOfVision = 12.0f;
+                    ChangeBreathingSound(patrolSound);
                     break;
                 }
             case EnemyBehav.CHASING:
                 {
                     areaOfVision = 14.0f;
+                    ChangeBreathingSound(chasingSound);
                     break;
                 }
         }
@@ -125,18 +129,6 @@ public class EnemyBehaviour : MonoBehaviour {
         else if ((currentEnemy == EnemyBehav.CHASING))
         {
             EnemyMove();
-        }
-    }
-    
-    void UnhidePlayer()
-    {
-        if ((currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING) && isTouchingPlayer)
-        {
-            unhidePlayerTime += Time.deltaTime;
-            if (unhidePlayerTime > 0.5f)
-            {
-                player.isGameOver = true;
-            }
         }
     }
 
@@ -170,6 +162,27 @@ public class EnemyBehaviour : MonoBehaviour {
         if (col.gameObject.transform.parent.tag == "Player")
         {
             isTouchingPlayer = false;
+        }
+    }
+
+    void ChangeBreathingSound(AudioClip sound)
+    {
+        if (audioSource.clip != sound)
+        {
+            audioSource.clip = sound;
+            audioSource.Play();
+        }
+    }
+
+    void UnhidePlayer()
+    {
+        if ((currentEnemy == EnemyBehav.SUSPICIOUS || currentEnemy == EnemyBehav.CHASING) && isTouchingPlayer)
+        {
+            unhidePlayerTime += Time.deltaTime;
+            if (unhidePlayerTime > 0.5f)
+            {
+                player.isGameOver = true;
+            }
         }
     }
 

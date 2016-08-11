@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
 	public static GameManager current = null;
-
+    public static AsyncOperation sceneLoadOperation = null;
 	public static float gammaValue = 0.5f;
 
 	public Savepoint collidingSavepoint; // Savepoint that the player is colliding currently
@@ -57,10 +57,21 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (MenuController.inLoadingScene)
+            // Executed during the first frame of the loading scene
+            if (GameManager.sceneLoadOperation != null && GameManager.sceneLoadOperation.isDone)
             {
-                MenuController.inLoadingScene = false;
-                StartCoroutine(LoadSceneAfterMusicFade());
+                // Fade the current music
+                AudioManager.current.StartFadeMusic(true, 0.5f, false);
+
+                // If loading the main scene and if current game exists
+                if (MenuController.currentScene == "MainScene" && Game.current != null)
+                {
+                    // Load saved variables
+                    LoadCurrentGameVariables();
+                }
+
+                // Load scene and set sceneLoadOperation
+                sceneLoadOperation = SceneManager.LoadSceneAsync(MenuController.currentScene);
             }
         }
 	}
@@ -78,11 +89,6 @@ public class GameManager : MonoBehaviour
             if (collidingSavepoint != null)
             {
                 game.spawnPosition = new KeyValuePair<float, float>(PlayerController.current.transform.position.x, PlayerController.current.transform.position.y);
-                game.savepointId = collidingSavepoint.gameObject.GetComponent<UniqueId>().uniqueId;
-            }
-            else
-            {
-                game.savepointId = "";
             }
 
             // Update date and time in the current game
@@ -110,7 +116,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadSceneAfterMusicFade()
+    /*public IEnumerator LoadSceneAfterMusicFade()
     {
         yield return StartCoroutine(AudioManager.current.FadeMusic(true, 0.5f, false));
 
@@ -130,8 +136,9 @@ public class GameManager : MonoBehaviour
             AudioManager.current.SwitchMusic(AudioManager.current.menuMusic);
         }
 
-        SceneManager.LoadScene(MenuController.currentScene);
-    }
+        // Load scene and set sceneLoadOperation
+        sceneLoadOperation = SceneManager.LoadSceneAsync(MenuController.currentScene);
+    }*/
 
 	public void LoadCurrentGameVariables()
 	{

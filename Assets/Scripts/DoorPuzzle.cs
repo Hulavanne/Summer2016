@@ -8,11 +8,13 @@ public class DoorPuzzle : MonoBehaviour
 {
     public static DoorPuzzle current;
 
+    public List<AudioClip> buttonSounds = new List<AudioClip>();
     public List<Sprite> deactiveSprites = new List<Sprite>(new Sprite[5]);
     public List<Sprite> activeSprites = new List<Sprite>(new Sprite[5]);
     public List<int> correctSequence = new List<int>(new int[5]);
     public List<int> sequence = new List<int>();
 
+    AudioSource audioSource;
     List<Button> buttons = new List<Button>();
     MenuController inGameUi;
 
@@ -20,6 +22,7 @@ public class DoorPuzzle : MonoBehaviour
     {
         current = this;
 
+        //audioSource = AudioManager.current
         buttons = GetComponentsInChildren<Button>().ToList();
         inGameUi = GameObject.Find("InGameUI").GetComponent<MenuController>();
 
@@ -97,6 +100,6 @@ public class DoorPuzzle : MonoBehaviour
 
     public void PlayButtonSoundEffect()
     {
-
+        AudioManager.current.PlayRandomSoundEffect(buttonSounds.ToArray());
     }
 }

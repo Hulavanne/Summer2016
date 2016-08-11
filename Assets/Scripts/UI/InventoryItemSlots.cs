@@ -181,13 +181,13 @@ public class InventoryItemSlots : MonoBehaviour
             GameObject.Find("InGameUI").GetComponent<MenuController>().CloseInventory();
 
             // Play sound effect for successfully using the item
-            AudioManager.current.PlayRandomizedSoundEffect(useItemSuccessSound);
+            AudioManager.current.PlayRandomSoundEffect(useItemSuccessSound);
         }
         // If the item can't be used
         else
         {
             // Play sound effect for failing to use the item
-            AudioManager.current.PlayRandomizedSoundEffect(useItemFailureSound);
+            AudioManager.current.PlayRandomSoundEffect(useItemFailureSound);
         }
 	}
 }

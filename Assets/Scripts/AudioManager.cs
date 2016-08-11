@@ -83,14 +83,16 @@ public class AudioManager : MonoBehaviour
 
     public void SwitchMusic(AudioClip track)
     {
-        Debug.Log(track);
-        // Set volume
-        musicSource.volume = AudioManager.musicVolume;
+        if (track != musicSource.clip)
+        {
+            // Set volume
+            musicSource.volume = AudioManager.musicVolume;
 
-        // Play the new track
-        AudioManager.nextTrack = track;
-        musicSource.clip = AudioManager.nextTrack;
-        musicSource.Play();
+            // Play the new track
+            AudioManager.nextTrack = track;
+            musicSource.clip = AudioManager.nextTrack;
+            musicSource.Play();
+        }
     }
 
     public void SwitchMusicGradually(AudioClip track = null, int phase = 0)

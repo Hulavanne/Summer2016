@@ -83,6 +83,14 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
     {
+        if (isGameOver)
+        {
+            hud.GameOverSplash();
+            AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
+            CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
+            return;
+        }
+
         PlayerFollowObject(canCameraFollow);
 
         if (unhideTimer >= -0.5f) // unhide is -1 by default (and this if statement won't run)
@@ -107,15 +115,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         CheckNPCWaitTime();
-        
-		if (isGameOver)
-		{
-			hud.GameOverSplash();
-            AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
-			CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
-
-            return;
-		}
 
         #region darkScreen
 

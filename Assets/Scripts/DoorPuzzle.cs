@@ -46,6 +46,7 @@ public class DoorPuzzle : MonoBehaviour
             if (correct)
             {
                 EventManager.current.OpenDoorPuzzle();
+                SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.cavernDoorSound, SoundEffectsManager.current.doorOpenSource);
                 Activate(false);
             }
             else

@@ -116,10 +116,16 @@ public class LevelManager : MonoBehaviour
 
         TextBoxManager.current.DisableTextBox(false);
 
+        // If game starts in Cieran's room
         if (currentLevel == Levels.CIERAN_BEDROOM)
         {
             // Start intro dialogue
             GameObject.FindObjectOfType<IsIntro>().StartIntro();
+        }
+        else
+        {
+            // Destroy intro dialogue
+            Destroy(GameObject.FindObjectOfType<IsIntro>().gameObject);
         }
 	}
 

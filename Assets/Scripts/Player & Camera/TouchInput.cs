@@ -61,12 +61,12 @@ public class TouchInput : MonoBehaviour
 
                 if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                 {
-                    player.GoLeft();
+                    player.Move(-1);
                 }
 
                 else if ((Input.mousePosition.x <= Screen.width) && (Input.mousePosition.x > Screen.width / 2))
                 {
-                    player.GoRight();
+                    player.Move(1);
                 }
             }
 
@@ -179,12 +179,12 @@ public class TouchInput : MonoBehaviour
 
                     if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
                     {
-                        player.GoLeft();
+                        player.Move(-1);
                     }
 
                     else if ((touch.position.x <= Screen.width) && (touch.position.x > Screen.width / 2))
                     {
-                        player.GoRight();
+                        player.Move(1);
                     }
                 }
 

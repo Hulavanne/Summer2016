@@ -458,9 +458,6 @@ public class MenuController : MonoBehaviour
 
 		if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
 		{
-			//Game oldGame = SavingAndLoading.savedGames[saveSlotIndex];
-			//Destroy(oldGame);
-
 			SavingAndLoading.savedGames[saveSlotIndex] = game;
 			Game.currentIndex = saveSlotIndex;
 		}
@@ -476,7 +473,6 @@ public class MenuController : MonoBehaviour
 		CloseLoadMenu();
 
 		// Display "Game Saved" message
-		//menu.GetComponent<MenuController>().floatingMessage.SetActive(true);
 		menu.GetComponent<MenuController>().floatingMessage.GetComponent<Text>().text = "Game Saved";
 		menu.GetComponent<MenuController>().floatingMessage.GetComponent<FadeText>().StartTimer();
 	}
@@ -496,7 +492,7 @@ public class MenuController : MonoBehaviour
         currentState = State.MAIN_MENU_OR_CLOSED;
         savingGame = false;
 
-        if (!PlayerController.current.isGameOver)
+        if (PlayerController.current != null && !PlayerController.current.isGameOver)
         {
             Time.timeScale = 1;
             gamePaused = false;

@@ -10,6 +10,7 @@ public class DoorBehaviour : MonoBehaviour {
 
     public bool AutomaticDoor;
     public bool willFaceRight;
+    public bool playSoundEffect;
 
 	public LevelManager levelManager;
     public PlayerController player;

@@ -293,6 +293,11 @@ public class EventManager : MonoBehaviour
                 behaviour.GetComponent<BoxCollider2D>().enabled = true;
             }
         }
+
+        // Deactivate the puzzle
+        DoorPuzzle puzzle = FindObjectOfType<DoorPuzzle>();
+        puzzle.enabled = false;
+        puzzle.gameObject.SetActive(false);
     }
 
     // This gets called after speaking with an NPC

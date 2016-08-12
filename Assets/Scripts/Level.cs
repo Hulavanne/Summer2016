@@ -5,6 +5,14 @@ using System.Collections.Generic;
 public class Level : MonoBehaviour
 {
     public LevelManager.Levels levelName;
+
+    public enum Floor
+    {
+        WOOD,
+        LEAVES
+    }
+    public Floor floorType;
+
     public AudioClip levelMusic;
 	public bool fixedCamera = false;
 	public float levelLightAmount;

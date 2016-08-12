@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject currentDoor;
     public GameObject overlappingNpc;
 
+    public bool moving;
     public int movementDirection = 1;
     public float unhideTimer = -0.5f;
     public float walkingSpeed = 3.0f; // Add X move position to player
@@ -78,7 +80,6 @@ public class PlayerController : MonoBehaviour {
 
 		hud.staminaBar.value = 100.0f;
 		hud.questionMark.SetActive(false); // Activates once the player reaches a clickable object
-        
 	}
 
 	void Update()
@@ -146,6 +147,30 @@ public class PlayerController : MonoBehaviour {
 		}
 		#endregion
 	}
+
+    void LateUpdate()
+    {
+        if (moving)
+        {
+            Level currentLevel = LevelManager.current.levelsList[(int)LevelManager.current.currentLevel].GetComponent<Level>();
+
+            // Loop footstep sounds that vary depending on the floor type
+            if (currentLevel.floorType == Level.Floor.WOOD)
+            {
+                SoundEffectsManager.current.StartRandomSoundEffectsLoop(SoundEffectsManager.current.footstepSoundsFloor, SoundEffectsManager.current.footstepsSource);
+            }
+            else if (currentLevel.floorType == Level.Floor.LEAVES)
+            {
+                SoundEffectsManager.current.StartRandomSoundEffectsLoop(SoundEffectsManager.current.footstepSoundsLeaves, SoundEffectsManager.current.footstepsSource);
+            }
+
+            moving = false;
+        }
+        else
+        {
+            SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource);
+        }
+    }
 
     void OnTriggerStay2D(Collider2D other)
     {
@@ -283,6 +308,12 @@ public class PlayerController : MonoBehaviour {
                 else if (selection == Selection.DOOR)
                 {
                     switchingLevel = true; // switches door
+
+                    // Play sound effect if needed
+                    if (currentDoor.GetComponent<DoorBehaviour>().playSoundEffect)
+                    {
+                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.doorCreakSound, SoundEffectsManager.current.doorOpenSource);
+                    }
                 }
                 else if (selection == Selection.NPC)
                 {
@@ -336,7 +367,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public void GoLeft()
+    public void Move(int direction)
     {
         if (TextBoxManager.current.clickException)
         {
@@ -344,51 +375,32 @@ public class PlayerController : MonoBehaviour {
             return;
         }
 
-        movementDirection = -1; // -1 stands for left
+        movementDirection = direction;
 
-        PlayerAnimWalk(false);
-
-        if (!canMove)
+        // Left
+        if (direction == -1)
         {
-            return;
+            PlayerAnimWalk(false);
         }
-
-        if (isRunning) // reference for this in TouchInput
-        {
-            playerAnim.SetBool("isRunning", true);
-            transform.position -= new Vector3(runningSpeed * Time.deltaTime, 0, 0);
-        }
+        // Right
         else
         {
-            transform.position -= new Vector3(walkingSpeed * Time.deltaTime, 0, 0);
-        }
-    }
-
-    public void GoRight()
-    {
-        if (TextBoxManager.current.clickException)
-        {
-            touchRun.runValue = 0;
-            return;
+            PlayerAnimWalk(true);
         }
 
-        movementDirection = 1; // 1 stands for right
-
-        PlayerAnimWalk(true);
-
-        if (!canMove)
+        if (canMove)
         {
-            return;
-        }
+            moving = true;
 
-        if (isRunning)
-        {
-            playerAnim.SetBool("isRunning", true);
-            transform.position += new Vector3(runningSpeed * Time.deltaTime, 0, 0);
-        }
-        else
-        {
-            transform.position += new Vector3(walkingSpeed * Time.deltaTime, 0, 0);
+            if (isRunning) // reference for this in TouchInput
+            {
+                playerAnim.SetBool("isRunning", true);
+                transform.position += new Vector3(movementDirection * runningSpeed * Time.deltaTime, 0, 0);
+            }
+            else
+            {
+                transform.position += new Vector3(movementDirection * walkingSpeed * Time.deltaTime, 0, 0);
+            }
         }
     }
 

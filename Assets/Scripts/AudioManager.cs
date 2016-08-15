@@ -24,7 +24,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource effectsSource;
     [HideInInspector]
     public AudioSource musicSource;
-    [HideInInspector]
+    //[HideInInspector]
     public List<AudioSource> effectsSources = new List<AudioSource>();
 
 	void Awake()
@@ -44,7 +44,7 @@ public class AudioManager : MonoBehaviour
 
 		effectsSource = transform.GetComponentsInChildren<AudioSource>()[0];
 		musicSource = transform.GetComponentsInChildren<AudioSource>()[1];
-        FindEffectsSources();
+        effectsSources = FindEffectsSources();
 
 		// Load audio values
 		LoadAudioSettings();
@@ -57,7 +57,7 @@ public class AudioManager : MonoBehaviour
         {
             GameManager.sceneLoadOperation = null;
 
-            FindEffectsSources();
+            effectsSources = FindEffectsSources();
             StopAllCoroutines();
 
             if (SceneManager.GetActiveScene().name == "MainMenu")
@@ -69,20 +69,25 @@ public class AudioManager : MonoBehaviour
                 // Play the music track of the current level
                 SwitchMusic(LevelManager.current.levelsList[(int)LevelManager.current.currentLevel].GetComponent<Level>().levelMusic);
             }
+
+            // Load audio values
+            LoadAudioSettings();
         }
     }
 
-    public void FindEffectsSources()
+    public List<AudioSource> FindEffectsSources()
     {
-        effectsSources.Clear();
+        List<AudioSource> sources = new List<AudioSource>();
 
         foreach (AudioSource source in FindObjectsOfType<AudioSource>())
         {
             if (source != musicSource)
             {
-                effectsSources.Add(source);
+                sources.Add(source);
             }
         }
+
+        return sources;
     }
 
     // ---SOUND EFFECTS----
@@ -226,6 +231,15 @@ public class AudioManager : MonoBehaviour
 		SetMasterVolume(masterVolume);
 		SetSoundEffectsVolume(soundEffectsVolume);
 		SetMusicVolume(musicVolume);
+
+
+        foreach (AudioSource source in effectsSources)
+        {
+            if (source != musicSource)
+            {
+                //Debug.Log(source + " | " + source.volume);
+            }
+        }
 	}
 
 	public void SaveAudioSettings()
@@ -271,6 +285,7 @@ public class AudioManager : MonoBehaviour
 		// Update volumes
         foreach (AudioSource source in effectsSources)
         {
+            Debug.Log(source);
             source.volume = soundEffectsVolume * masterVolume;
         }
 	}

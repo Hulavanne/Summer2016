@@ -296,12 +296,18 @@ public class PlayerController : MonoBehaviour {
                 if (selection == Selection.HIDE_OBJECT)
                 {
                     if (isHidden)
-                    { // sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
+                    {
+                        // Sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
                         PlayerUnhide(false);
+                        // Play sound effect
+                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
                     }
                     else if (canHide)
                     {
-                        PlayerHide(); // hides and plays animation right after
+                        // Hides and plays animation right after
+                        PlayerHide();
+                        // Play sound effect
+                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
                     }
                 }
 
@@ -312,7 +318,7 @@ public class PlayerController : MonoBehaviour {
                     // Play sound effect if needed
                     if (currentDoor.GetComponent<DoorBehaviour>().playSoundEffect)
                     {
-                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.doorCreakSound, SoundEffectsManager.current.doorOpenSource);
+                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.doorCreakSound, SoundEffectsManager.current.actionSource);
                     }
                 }
                 else if (selection == Selection.NPC)

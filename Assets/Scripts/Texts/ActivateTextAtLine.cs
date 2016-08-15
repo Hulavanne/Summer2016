@@ -68,9 +68,9 @@ public class ActivateTextAtLine : MonoBehaviour
                     {
                         EventManager.current.InteractWithDeer(npcBehaviour);
                     }
-                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BLOCKER)
+                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BEAR)
                     {
-                        EventManager.current.InteractWithBlocker(npcBehaviour);
+                        EventManager.current.InteractWithBear(npcBehaviour);
                     }
                     if (npcBehaviour.npcType == CharacterBehaviour.Type.LILIES)
                     {

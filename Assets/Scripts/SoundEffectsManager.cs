@@ -9,20 +9,21 @@ public class SoundEffectsManager : MonoBehaviour
     public AudioClip[] footstepSoundsFloor;
     public AudioClip[] footstepSoundsLeaves;
     public AudioClip doorCreakSound;
+    public AudioClip leafRustleSound;
     public AudioClip cavernDoorSound;
 
     // Sound effect sources
     [HideInInspector]
     public AudioSource footstepsSource;
     [HideInInspector]
-    public AudioSource doorOpenSource;
+    public AudioSource actionSource;
 
 	void Awake()
     {
         current = this;
 
         footstepsSource = AddAudio(gameObject, footstepSoundsFloor[0], false, false, 1.0f);
-        doorOpenSource = AddAudio(gameObject, doorCreakSound, false, false, 1.0f);
+        actionSource = AddAudio(gameObject, doorCreakSound, false, false, 1.0f);
 	}
 
     public static AudioSource AddAudio(GameObject sourceParent, AudioClip clip, bool loop, bool playAwake, float vol)

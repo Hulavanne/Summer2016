@@ -23,6 +23,8 @@ public class LevelManager : MonoBehaviour
         CAVE_ENTRANCE = 10,
         CAVE_CREVICE = 11,
         CAVE_PUZZLE = 12,
+        CAVE_AFTER_PUZZLE = 13,
+        AREA_AFTER_CAVE = 14,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;

@@ -147,7 +147,6 @@ public class InventoryItemSlots : MonoBehaviour
 	{
         if (inspectingItem)
         {
-            Debug.Log(inspectedItemIndex);
             if (inspectedItemIndex == 0)
             {
                 itemSlots[1].SetActive(true);

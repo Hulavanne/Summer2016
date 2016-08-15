@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CharacterBehaviour : MonoBehaviour
 {
@@ -17,12 +18,12 @@ public class CharacterBehaviour : MonoBehaviour
         OUTHOUSE,
         BELLADONNA,
         DEER,
-        BLOCKER,
+        BEAR,
         LILIES,
         DOOR_PUZZLE
     };
     public Type npcType = Type.PASSIVE;
-    public Item.Type requiredItemType = Item.Type.NONE;
+    public List<Item.Type> requiredItemTypes = new List<Item.Type>();
 
     public TextAsset text;
     public bool isAutomatic;
@@ -64,11 +65,11 @@ public class CharacterBehaviour : MonoBehaviour
                 }
             }
         }
-        else if (npcType == Type.BLOCKER)
+        else if (npcType == Type.BEAR)
         {
-            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.BLOCKER))
+            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.BEAR))
             {
-                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER] >= 2)
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] >= 2)
                 {
                     transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
                 }
@@ -93,7 +94,7 @@ public class CharacterBehaviour : MonoBehaviour
         }
     }
 
-    public void TriggerAction()
+    public void TriggerAction(Item.Type itemType)
     {
         if (npcType == Type.BELLADONNA)
         {
@@ -103,9 +104,16 @@ public class CharacterBehaviour : MonoBehaviour
         {
             EventManager.current.InteractWithDeer(this, true);
         }
-        else if (npcType == Type.BLOCKER)
+        else if (npcType == Type.BEAR)
         {
-            EventManager.current.InteractWithBlocker(this, true);
+            if (itemType == Item.Type.DEATH_CAP)
+            {
+                EventManager.current.InteractWithBear(this, true, false);
+            }
+            else if (itemType == Item.Type.BERRIES)
+            {
+                EventManager.current.InteractWithBear(this, false, true);
+            }
         }
     }
 
@@ -119,7 +127,7 @@ public class CharacterBehaviour : MonoBehaviour
     {
         for (int i = 0; i < inventory.items.Count; ++i)
         {
-            if (inventory.items[i].itemType == requiredItemType)
+            if (requiredItemTypes.Contains(inventory.items[i].itemType))
             {
                 inventory.items[i].usable = usable;
             }

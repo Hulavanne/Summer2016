@@ -183,36 +183,53 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void InteractWithBlocker(CharacterBehaviour npcBehaviour, bool givingDeathCap = false)
+    public void InteractWithBear(CharacterBehaviour npcBehaviour, bool givingDeathCap = false, bool givingBerries = false)
     {
         int value = 0;
 
         // Add event to triggeredEvents, if it isn't already there
-        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.BLOCKER);
+        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.BEAR);
 
-        if (givingDeathCap && Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER] < 1)
+        if (givingDeathCap && Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] < 2)
         {
-            Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER] = 1;
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 2;
         }
 
-        value = Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER];
+        value = Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR];
 
-        // Default response
-        if (value == 0)
+        if (givingBerries && Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] < 2)
         {
-            npcBehaviour.ChangeLines(0, 1);
+            value = -1;
+        }
+
+        // If giving berries
+        if (value == -1)
+        {
+            npcBehaviour.ChangeLines(7, 8);
+            ActivateTextAtLine.current.TalkToNPC(false);
+        }
+        // Default response
+        else if (value == 0)
+        {
+            npcBehaviour.ChangeLines(0, 3);
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 1;
+        }
+        // If spoken once already
+        else if (value == 1)
+        {
+            npcBehaviour.ChangeLines(5, 5);
         }
         // If giving death cap
-        if (value == 1)
+        else if (value == 2)
         {
-            npcBehaviour.ChangeLines(3, 4);
+            npcBehaviour.ChangeLines(7, 8);
             ActivateTextAtLine.current.TalkToNPC(false);
-            Game.current.triggeredEvents[CharacterBehaviour.Type.BLOCKER] = 2;
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
         }
         // If NPC is dead
-        else if (value >= 2)
+        else if (value >= 3)
         {
-            npcBehaviour.ChangeLines(6, 6);
+            npcBehaviour.ChangeLines(7, 8);
         }
     }
 

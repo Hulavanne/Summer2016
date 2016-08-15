@@ -15,6 +15,7 @@ public class Level : MonoBehaviour
 
     public AudioClip levelMusic;
 	public bool fixedCamera = false;
+    public bool setCameraManually = false;
 	public float levelLightAmount;
 
     GameObject boundaries;
@@ -34,21 +35,25 @@ public class Level : MonoBehaviour
                 playerBoundaries = boundaries.transform.FindChild("PlayerBoundary").gameObject;
             }
 
+
             // Camera boundaries
-            if (boundaries.transform.FindChild("CameraBoundary") != null)
+            if (!setCameraManually)
             {
-                cameraBoundaries = boundaries.transform.FindChild("CameraBoundary").gameObject;
-
-                // Set boundaries to the edges of the background
-                if (transform.FindChild("Background").transform.FindChild("BackStatic") != null)
+                if (boundaries.transform.FindChild("CameraBoundary") != null)
                 {
-                    Sprite background = transform.FindChild("Background").transform.FindChild("BackStatic").GetComponent<SpriteRenderer>().sprite;
+                    cameraBoundaries = boundaries.transform.FindChild("CameraBoundary").gameObject;
 
-                    float leftX = transform.position.x - background.bounds.extents.x;
-                    float rightX = transform.position.x + background.bounds.extents.x;
+                    // Set boundaries to the edges of the background
+                    if (transform.FindChild("Background").transform.FindChild("BackStatic") != null)
+                    {
+                        Sprite background = transform.FindChild("Background").transform.FindChild("BackStatic").GetComponent<SpriteRenderer>().sprite;
 
-                    cameraBoundaries.transform.position = new Vector3(leftX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
-                    cameraBoundaries.transform.GetChild(0).position = new Vector3(rightX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
+                        float leftX = transform.position.x - background.bounds.extents.x;
+                        float rightX = transform.position.x + background.bounds.extents.x;
+
+                        cameraBoundaries.transform.position = new Vector3(leftX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
+                        cameraBoundaries.transform.GetChild(0).position = new Vector3(rightX, cameraBoundaries.transform.position.y, cameraBoundaries.transform.position.z);
+                    }
                 }
             }
         }

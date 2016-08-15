@@ -65,10 +65,20 @@ public class Item : MonoBehaviour
 
     public bool UseItem()
     {
-        if (itemType == Type.BERRIES && PlayerController.current.overlappingNpc == null)
+        int chargesToRemove = 1;
+
+        // Exceptions for when using berries
+        if (itemType == Type.BERRIES)
         {
-            EventManager.current.EatBerries(0);
-            return true;
+            if (PlayerController.current.overlappingNpc == null)
+            {
+                EventManager.current.EatBerries(0);
+                return true;
+            }
+            else if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.BEAR)
+            {
+                chargesToRemove = 0;
+            }
         }
 
         if (!usable)
@@ -81,9 +91,9 @@ public class Item : MonoBehaviour
         {
             CharacterBehaviour npcBehaviour = PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>();
 
-            if (itemType == npcBehaviour.requiredItemType)
+            if (npcBehaviour.requiredItemTypes.Contains(itemType))
             {
-                npcBehaviour.TriggerAction();
+                npcBehaviour.TriggerAction(itemType);
             }
         }
         else
@@ -92,14 +102,14 @@ public class Item : MonoBehaviour
             return false;
         }
 
+        itemData.charges -= chargesToRemove;
         RemoveFromInventory();
+
         return true;
     }
 
     void RemoveFromInventory()
     {
-        --itemData.charges;
-
         if (itemData.charges == 0)
         {
             // Remove the item from inventory

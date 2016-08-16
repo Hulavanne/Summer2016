@@ -13,6 +13,7 @@ public class CameraEffects : MonoBehaviour
     public Color opacityManager; // a color for (0 > red, 0 > green, 0 > blue, 0~1 > opacity)
     public float opacity = 1.0f; // the changeable opacity variable
     public bool fadeToBlack; // once this is true, the plane gradually turns black
+    public bool fadeBack; // once this is true, the plane gradually turns black
 
     public float cameraPos = 0.0f, playerPos = 0.0f;
     public float xDistanceToPlayer = 0.0f;
@@ -54,7 +55,7 @@ public class CameraEffects : MonoBehaviour
 	void Update ()
 	{
 		AdjustCameraSize();
-		FadingToBlack();
+		UpdateFading();
         
 		if (!fixedCamera)
         {
@@ -110,9 +111,6 @@ public class CameraEffects : MonoBehaviour
 
 		Transform boundary = GetNearestBoundary(level);
 
-        //Debug.Log(Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x);
-        //Debug.Log(cameraCollider.bounds.extents.x);
-
 		if (boundary != null)
 		{
             if (Mathf.Abs(boundary.position.x - player.transform.position.x) - boundary.GetComponent<BoxCollider2D>().bounds.extents.x < cameraCollider.bounds.extents.x)
@@ -164,8 +162,27 @@ public class CameraEffects : MonoBehaviour
 		}
 	}
 
+    void AdjustCameraSize()
+    {
+        // Adjusting the size of the camera to fit the current screen resolution
+        float ratio = (float)Screen.height / (float)Screen.width;
+        float screenWidth = 1920.0f;
+        float screenHeight = screenWidth * ratio;
+        float size = screenHeight / 150.0f;
+        cameraComponent.orthographicSize = size;
+
+        // Making sure the camera is bound to the bottom of the background
+        transform.position = new Vector3(transform.position.x, -10.2375f + cameraComponent.orthographicSize, transform.position.z);
+
+        // Adjusting the collider to the camera's size
+        float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;
+        float colliderHeight = size * 2;
+        cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
+    }
+
 	public void FadeToBlack(bool stayBlack, bool isGameOver)
-	{ // if true, stays black screen, if false, fades to scene
+	{
+        // If true, stays black screen, if false, fades to scene
         fadeToBlack = stayBlack;
         opacity = 1.0f;
 
@@ -177,39 +194,37 @@ public class CameraEffects : MonoBehaviour
         }
     }
 
-    void AdjustCameraSize()
+    public void FadeToBlackAndBack()
+    {
+        fadeToBlack = true;
+        fadeBack = true;
+    }
+
+	void UpdateFading()
 	{
-		// Adjusting the size of the camera to fit the current screen resolution
-		float ratio = (float)Screen.height / (float)Screen.width;
-		float screenWidth = 1920.0f;
-		float screenHeight = screenWidth * ratio;
-		float size = screenHeight / 150.0f;
-		cameraComponent.orthographicSize = size;
-
-		// Making sure the camera is bound to the bottom of the background
-		transform.position = new Vector3(transform.position.x, -10.2375f + cameraComponent.orthographicSize, transform.position.z);
-
-		// Adjusting the collider to the camera's size
-		float colliderWidth = size * 2 * (float)Screen.width / (float)Screen.height;
-		float colliderHeight = size * 2;
-		cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
-	}
-
-	void FadingToBlack()
-	{
-		if (fadeToBlack)
+        if (fadeToBlack && opacity < 1.0f)
 		{
-			if (opacity <= 1)
-			{
-				opacity += 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything               
+            opacity += 1.0f * Time.deltaTime; // Note that this "1" is a timer and isn't changing anything
+
+            if (opacity >= 1.0f)
+            {
+                opacity = 1.0f;
+
+                if (fadeBack)
+                {
+                    fadeToBlack = false;
+                    fadeBack = false;
+                }
             }
 		}
-		else
+        else if (!fadeToBlack && opacity > 0.0f)
 		{
-			if (opacity >= 0)
-			{
-				opacity -= 1 * Time.deltaTime; // note that this "1" is a timer and isn't changing anything
-			}
+            opacity -= 1.0f * Time.deltaTime; // Note that this "1" is a timer and isn't changing anything
+
+            if (opacity <= 0.0f)
+            {
+                opacity = 0.0f;
+            }
 		}
 
         if (opacity >= 1.0f)

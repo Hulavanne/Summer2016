@@ -83,7 +83,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void InteractWithBelladonna(CharacterBehaviour npcBehaviour, bool usingGloves = false)
+    public void InteractWithBelladonna(CharacterBehaviour behaviour, bool usingGloves = false)
     {
         int value = 0;
 
@@ -98,7 +98,7 @@ public class EventManager : MonoBehaviour
         }
         else if (usingGloves && Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] >= 1)
         {
-            npcBehaviour.ChangeLines(4, 4);
+            behaviour.ChangeLines(4, 4);
             ActivateTextAtLine.current.TalkToNPC(false);
             return;
         }
@@ -113,30 +113,21 @@ public class EventManager : MonoBehaviour
         // Default response
         if (value == 0)
         {
-            npcBehaviour.ChangeLines(0, 0);
-            //Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONA] = 1;
+            behaviour.ChangeLines(0, 0);
         }
         // If using gloves
         else if (value == 1)
         {
             // Setup correct lines and start talking
-            npcBehaviour.ChangeLines(2, 2);
+            behaviour.ChangeLines(2, 2);
             ActivateTextAtLine.current.TalkToNPC(false);
 
             // Add nightshade to player's inventory
             Inventory.current.AddItemToInventory(Item.Type.NIGHTSHADE);
-
-            // Set state
-            //Game.current.triggeredEvents[NpcBehaviour.Type.BELLADONA] = 2;
-        }
-        // If spoken once already
-        else if (value >= 2)
-        {
-            //npcBehaviour.ChangeLines(4, 4);
         }
     }
 
-    public void InteractWithDeer(CharacterBehaviour npcBehaviour, bool givingBerries = false)
+    public void InteractWithDeer(CharacterBehaviour behaviour, bool givingBerries = false)
     {
         int value = 0;
 
@@ -155,35 +146,48 @@ public class EventManager : MonoBehaviour
         // Default response
         if (value == 0)
         {
-            npcBehaviour.ChangeLines(0, 4);
+            behaviour.ChangeLines(0, 4);
             Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 1;
         }
         // If spoken once already
         else if (value == 1)
         {
-            npcBehaviour.ChangeLines(6, 7);
+            behaviour.ChangeLines(6, 7);
         }
         // State is increased to 3 right after giving berries
         else if (value == 2)
         {
             // Setup correct lines and start talking to the deer
-            npcBehaviour.ChangeLines(9, 11);
+            behaviour.ChangeLines(9, 11);
             ActivateTextAtLine.current.TalkToNPC(false);
 
             // Add death cap to player's inventory
             Inventory.current.AddItemToInventory(Item.Type.DEATH_CAP);
-
-            // Set state to 3
-            Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 3;
         }
         // Last state after 
         else if (value >= 3)
         {
-            npcBehaviour.ChangeLines(13, 13);
+            behaviour.ChangeLines(20, 20);
         }
     }
 
-    public void InteractWithBear(CharacterBehaviour npcBehaviour, bool givingDeathCap = false, bool givingBerries = false)
+    IEnumerator ChangeDeerAnimation(CharacterBehaviour behaviour)
+    {
+        // Start the fading
+        CameraEffects.current.FadeToBlackAndBack();
+
+        // Wait until the screen is black
+        while (CameraEffects.current.opacity < 1.0f)
+        {
+            yield return null;
+        }
+
+        // Set the deer's state to 3 and setup the new animation
+        Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 3;
+        behaviour.GetComponent<Animator>().SetBool("hasBerries", true);
+    }
+
+    public void InteractWithBear(CharacterBehaviour behaviour, bool givingDeathCap = false, bool givingBerries = false)
     {
         int value = 0;
 
@@ -205,31 +209,31 @@ public class EventManager : MonoBehaviour
         // If giving berries
         if (value == -1)
         {
-            npcBehaviour.ChangeLines(7, 8);
+            behaviour.ChangeLines(7, 8);
             ActivateTextAtLine.current.TalkToNPC(false);
         }
         // Default response
         else if (value == 0)
         {
-            npcBehaviour.ChangeLines(0, 3);
+            behaviour.ChangeLines(0, 3);
             Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 1;
         }
         // If spoken once already
         else if (value == 1)
         {
-            npcBehaviour.ChangeLines(5, 5);
+            behaviour.ChangeLines(5, 5);
         }
         // If giving death cap
         else if (value == 2)
         {
-            npcBehaviour.ChangeLines(7, 8);
+            behaviour.ChangeLines(7, 8);
             ActivateTextAtLine.current.TalkToNPC(false);
             Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
         }
         // If NPC is dead
         else if (value >= 3)
         {
-            npcBehaviour.ChangeLines(7, 8);
+            behaviour.ChangeLines(7, 8);
         }
     }
 
@@ -351,6 +355,19 @@ public class EventManager : MonoBehaviour
                     behaviour.waitTimer = 1.5f;
                     CameraEffects.current.fadeToBlack = false;
                     PlayerController.current.hud.SetHud(false);
+                }
+            }
+            else if (behaviour.npcType == CharacterBehaviour.Type.DEER)
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] == 2)
+                {
+                    // Fade the screen to black and back,
+                    // while changing the deer's animation in between the fades
+                    StartCoroutine(ChangeDeerAnimation(behaviour));
+
+                    // Setup correct lines and start talking to the deer
+                    behaviour.ChangeLines(13, 18);
+                    ActivateTextAtLine.current.TalkToNPC(false);
                 }
             }
         }

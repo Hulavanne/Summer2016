@@ -71,6 +71,7 @@ public class SoundEffectsManager : MonoBehaviour
             source.clip = clips[Random.Range(0, clips.Length)];
             source.Play();
 
+            // Wait for the clip to finish
             yield return new WaitForSeconds(source.clip.length);
         }
     }

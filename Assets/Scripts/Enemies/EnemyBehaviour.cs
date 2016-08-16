@@ -155,7 +155,7 @@ public class EnemyBehaviour : MonoBehaviour
             isTouchingPlayer = true;
         }
 
-        if (col.tag == "PlayerBoundary")
+        if (col.tag == "PlayerBoundary" || col.tag == "EnemyBoundary")
         {
             movementDirection *= -1;
             turningTime = -2.0f;

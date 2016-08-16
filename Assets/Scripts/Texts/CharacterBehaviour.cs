@@ -45,6 +45,21 @@ public class CharacterBehaviour : MonoBehaviour
         inventory = player.GetComponentInChildren<Inventory>();
     }
 
+    void Start()
+    {
+        if (npcType == Type.DEER)
+        {
+            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2)
+                {
+                    // Setup the new animation
+                    transform.GetComponent<Animator>().SetBool("hasBerries", true);
+                }
+            }
+        }
+    }
+
     void Update()
     {
         if (npcType == Type.DEER)
@@ -53,9 +68,6 @@ public class CharacterBehaviour : MonoBehaviour
             {
                 if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2)
                 {
-                    // Setup new animation
-                    transform.GetComponent<Animator>().SetBool("hasBerries", true);
-
                     // Activate the enemy in the forest
                     foreach (EnemyBehaviour enemy in LevelManager.current.enemiesList)
                     {
@@ -64,13 +76,12 @@ public class CharacterBehaviour : MonoBehaviour
                             enemy.gameObject.SetActive(true);
                         }
                     }
-                }
-                if ((Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
-                    Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] == 4)
-                {
-                    Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 4;
-                    gameObject.SetActive(false);
-                    //GameObject.Find(name).SetActive(false);
+
+                    if (PlayerController.current.switchingLevel || Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 4)
+                    {
+                        Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 4;
+                        gameObject.SetActive(false);
+                    }
                 }
             }
         }

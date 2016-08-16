@@ -134,19 +134,6 @@ public class LevelManager : MonoBehaviour
 		{
 			SetLighting();
 		}
-
-        // Keeps the current level active, deactivates all others
-        foreach (GameObject level in levelsList)
-        {
-            if (level.GetComponent<Level>().levelName != currentLevel)
-            {
-                level.SetActive(false);
-            }
-            else
-            {
-                level.SetActive(true);
-            }
-        }
 	}
 
     public void SetLighting()
@@ -219,20 +206,33 @@ public class LevelManager : MonoBehaviour
         // Play the music track of the level
         AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
 
-        foreach (EnemyBehaviour enemyBehav in enemiesList)
+        foreach (EnemyBehaviour behaviour in enemiesList)
         {
-            if (enemyBehav.thisEnemyLevel == Levels.CAVE_CREVICE)
+            if (behaviour.thisEnemyLevel == Levels.CAVE_CREVICE)
             {
-                if (player.transform.position.x > enemyBehav.transform.position.x)
+                if (player.transform.position.x > behaviour.transform.position.x)
                 {
-                    enemyBehav.initialMovementDirection = -1;
-                    enemyBehav.movementDirection = -1;
+                    behaviour.initialMovementDirection = -1;
+                    behaviour.movementDirection = -1;
                 }
                 else
                 {
-                    enemyBehav.initialMovementDirection = 1;
-                    enemyBehav.movementDirection = 1;
+                    behaviour.initialMovementDirection = 1;
+                    behaviour.movementDirection = 1;
                 }
+            }
+        }
+
+        // Keeps the current level active, deactivates all others
+        foreach (GameObject level in levelsList)
+        {
+            if (level.GetComponent<Level>().levelName != currentLevel)
+            {
+                level.SetActive(false);
+            }
+            else
+            {
+                level.SetActive(true);
             }
         }
     }

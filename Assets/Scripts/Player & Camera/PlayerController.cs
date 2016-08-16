@@ -92,9 +92,11 @@ public class PlayerController : MonoBehaviour {
             AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
             AudioManager.current.musicSource.loop = false;
 
+            Debug.ClearDeveloperConsole();
             foreach (AudioSource source in AudioManager.current.effectsSources)
             {
                 source.Stop();
+                Debug.Log(source.gameObject);
             }
 
             MenuController.gamePaused = true;

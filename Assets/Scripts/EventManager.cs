@@ -163,7 +163,7 @@ public class EventManager : MonoBehaviour
         {
             npcBehaviour.ChangeLines(6, 7);
         }
-        // State is upped to 3 right after giving berries
+        // State is increased to 3 right after giving berries
         else if (value == 2)
         {
             // Setup correct lines and start talking to the deer

@@ -57,8 +57,8 @@ public class AudioManager : MonoBehaviour
         {
             GameManager.sceneLoadOperation = null;
 
-            effectsSources = FindEffectsSources();
             StopAllCoroutines();
+            effectsSources = FindEffectsSources();
 
             if (SceneManager.GetActiveScene().name == "MainMenu")
             {
@@ -231,15 +231,6 @@ public class AudioManager : MonoBehaviour
 		SetMasterVolume(masterVolume);
 		SetSoundEffectsVolume(soundEffectsVolume);
 		SetMusicVolume(musicVolume);
-
-
-        foreach (AudioSource source in effectsSources)
-        {
-            if (source != musicSource)
-            {
-                //Debug.Log(source + " | " + source.volume);
-            }
-        }
 	}
 
 	public void SaveAudioSettings()
@@ -285,7 +276,6 @@ public class AudioManager : MonoBehaviour
 		// Update volumes
         foreach (AudioSource source in effectsSources)
         {
-            Debug.Log(source);
             source.volume = soundEffectsVolume * masterVolume;
         }
 	}

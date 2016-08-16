@@ -132,6 +132,22 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        if (thisEnemyLevel == LevelManager.Levels.FOREST_ENEMY)
+        {
+            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2)
+                {
+                    return;
+                }
+            }
+
+            gameObject.SetActive(false);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.transform.parent.tag == "Player")

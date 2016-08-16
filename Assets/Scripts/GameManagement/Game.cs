@@ -28,7 +28,6 @@ public class Game
 		levelIndex = 0;
         spawnPosition = new KeyValuePair<float, float>(0.0f, 0.0f);
 
-        //eventFlags = new List<bool>();
         triggeredEvents = new Dictionary<CharacterBehaviour.Type, int>();
         itemsDataScene = new List<ItemData>();
         itemsDataInventory = new List<ItemData>();

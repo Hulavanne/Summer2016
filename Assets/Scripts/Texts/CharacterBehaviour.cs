@@ -55,6 +55,15 @@ public class CharacterBehaviour : MonoBehaviour
                 {
                     // Setup new animation
                     transform.GetComponent<Animator>().SetBool("hasBerries", true);
+
+                    // Activate the enemy in the forest
+                    foreach (EnemyBehaviour enemy in LevelManager.current.enemiesList)
+                    {
+                        if (enemy.thisEnemyLevel == LevelManager.Levels.FOREST_ENEMY)
+                        {
+                            enemy.gameObject.SetActive(true);
+                        }
+                    }
                 }
                 if ((Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_DEER) ||
                     Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] == 4)

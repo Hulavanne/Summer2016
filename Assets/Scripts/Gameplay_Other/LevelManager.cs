@@ -28,8 +28,10 @@ public class LevelManager : MonoBehaviour
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
+
 	public List<GameObject> levelsList = new List<GameObject>();
-    public List<GameObject> savepointsList = new List<GameObject>();
+    public List<Savepoint> savepointsList = new List<Savepoint>();
+    public List<EnemyBehaviour> enemiesList = new List<EnemyBehaviour>();
 
     public GameObject currentDoor;
     public GameObject nextDoor;
@@ -66,19 +68,14 @@ public class LevelManager : MonoBehaviour
 		#endif
 
 		Transform levelsParent = GameObject.Find("Levels").transform;
-        GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
 
 		for (int i = 0; i < levelsParent.childCount; ++i)
 		{
 			levelsList.Add(levelsParent.GetChild(i).gameObject);
         }
-        for (int i = 0; i < npcs.Count(); ++i)
-        {
-            if (npcs[i].GetComponent<Savepoint>() != null)
-            {
-                savepointsList.Add(npcs[i]);
-            }
-        }
+
+        savepointsList = GameObject.FindObjectsOfType<Savepoint>().ToList();
+        enemiesList = GameObject.FindObjectsOfType<EnemyBehaviour>().ToList();
         
         cameraComponent = Camera.main;
         cameraScript = cameraComponent.GetComponent<CameraEffects>();
@@ -216,13 +213,17 @@ public class LevelManager : MonoBehaviour
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
         player.isFacingRight = player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight;
 
-        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
-        {
-            EnemyBehaviour enemyBehav = enemy.GetComponent<EnemyBehaviour>();
+        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.fadeToBlack = false;
 
+        // Play the music track of the level
+        AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
+
+        foreach (EnemyBehaviour enemyBehav in enemiesList)
+        {
             if (enemyBehav.thisEnemyLevel == Levels.CAVE_CREVICE)
             {
-                if (player.transform.position.x > enemy.transform.position.x)
+                if (player.transform.position.x > enemyBehav.transform.position.x)
                 {
                     enemyBehav.initialMovementDirection = -1;
                     enemyBehav.movementDirection = -1;
@@ -234,12 +235,6 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
-
-        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
-        CameraEffects.current.fadeToBlack = false;
-
-        // Play the music track of the level
-        AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
     }
 
 	public void LoadSavedLevel()

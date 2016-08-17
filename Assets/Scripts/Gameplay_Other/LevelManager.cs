@@ -134,7 +134,7 @@ public class LevelManager : MonoBehaviour
         else
         {
             // Destroy intro dialogue
-            Destroy(GameObject.FindObjectOfType<IsIntro>().gameObject);
+            GameObject.FindObjectOfType<IsIntro>().DestroyIntro();
         }
 	}
 

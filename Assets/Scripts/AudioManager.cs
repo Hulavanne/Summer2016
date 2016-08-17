@@ -218,14 +218,14 @@ public class AudioManager : MonoBehaviour
 
 	public void LoadAudioSettings()
 	{
+        // Get the saved values
 		audioMuted = System.Convert.ToBoolean(PlayerPrefs.GetInt("AudioMuted", 0));
 		masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
 		soundEffectsVolume = PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
 		musicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
 
 		// Update mute audio
-		effectsSource.mute = audioMuted;
-		musicSource.mute = audioMuted;
+        UpdateMute();
 
 		// Update volumes
 		SetMasterVolume(masterVolume);
@@ -246,11 +246,20 @@ public class AudioManager : MonoBehaviour
 	public void ToggleMute()
 	{
 		audioMuted = !audioMuted;
-
-		// Update mute audio
-		effectsSource.mute = audioMuted;
-		musicSource.mute = audioMuted;
+        UpdateMute();
 	}
+
+    public void UpdateMute()
+    {
+        // Update mute audio
+        effectsSource.mute = audioMuted;
+        musicSource.mute = audioMuted;
+
+        foreach (AudioSource source in effectsSources)
+        {
+            source.mute = audioMuted;
+        }
+    }
 
 	public void SetMasterVolume(float newValue)
 	{
@@ -279,4 +288,20 @@ public class AudioManager : MonoBehaviour
             source.volume = soundEffectsVolume * masterVolume;
         }
 	}
+
+    public void PauseSoundEffects()
+    {
+        foreach (AudioSource source in effectsSources)
+        {
+            source.Pause();
+        }
+    }
+
+    public void ResumeSoundEffects()
+    {
+        foreach (AudioSource source in effectsSources)
+        {
+            source.UnPause();
+        }
+    }
 }

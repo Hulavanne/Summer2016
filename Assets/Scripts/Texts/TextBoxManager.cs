@@ -208,14 +208,33 @@ public class TextBoxManager : MonoBehaviour
             DisableTextBox();
             currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
         }
+
+        CharacterBehaviour behaviour = currentNPC.GetComponent<CharacterBehaviour>();
+        CharacterBehaviour.Type npcType = behaviour.npcType;
+
         // Door puzzle interaction
-        if (currentNPC.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
+        if (npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
         {
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
-
             DisableTextBox();
+
+            // Activate the puzzle
             DoorPuzzle.current.Activate(true);
+        }
+        // Door puzzle interaction
+        else if (npcType == CharacterBehaviour.Type.LILIES)
+        {
+            hasClickedYesNoButton = false;
+            hasClickedOptButton = false;
+            DisableTextBox();
+
+            // Setup the next line
+            behaviour.ChangeLines(2, 2);
+            ActivateTextAtLine.current.TalkToNPC(false);
+
+            // Fade screen to black and back, while adding berries to the inventory
+            StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
         }
     }
 

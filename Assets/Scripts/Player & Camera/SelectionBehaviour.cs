@@ -26,7 +26,6 @@ public class SelectionBehaviour : MonoBehaviour {
 
         mousePos = new Vector3(mainCamera.ScreenToWorldPoint(Input.mousePosition).x,
             mainCamera.ScreenToWorldPoint(Input.mousePosition).y, 0);
-        Debug.Log(mousePos);
 
         if (mousePos.x > transform.position.x - 1 &&
             mousePos.x < transform.position.x + 1 &&

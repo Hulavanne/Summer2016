@@ -58,6 +58,16 @@ public class CharacterBehaviour : MonoBehaviour
                 }
             }
         }
+        else if (npcType == Type.BEAR)
+        {
+            if (Game.current != null && Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.BEAR))
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] >= 2)
+                {
+                    gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
     void Update()
@@ -84,33 +94,6 @@ public class CharacterBehaviour : MonoBehaviour
                     }
                 }
             }
-        }
-        else if (npcType == Type.BEAR)
-        {
-            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.BEAR))
-            {
-                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] >= 2)
-                {
-                    transform.FindChild("PlayerBoundary").gameObject.SetActive(false);
-                }
-            }
-        }
-        else if (npcType == Type.LILIES)
-        {
-        /*
-            if (Game.current.triggeredEvents.ContainsKey(EventManager.Events.CHANGE_LILIES_STATE))
-            {
-                Debug.Log("working1");
-                if ((Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] >= 2 && LevelManager.current.currentLevel != LevelManager.Levels.FOREST_LILIES) ||
-                    Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] == 4)
-                {
-                    Debug.Log("working2");
-                    Game.current.triggeredEvents[EventManager.Events.CHANGE_LILIES_STATE] = 4;
-                    gameObject.SetActive(false);
-                    //GameObject.Find(name).SetActive(false);
-                }
-            }
-        */
         }
     }
 

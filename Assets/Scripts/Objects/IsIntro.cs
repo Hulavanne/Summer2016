@@ -5,26 +5,19 @@ public class IsIntro : MonoBehaviour
 {
     public bool introPlaying;
 
-    CharacterBehaviour npcBehaviour;
-    bool destroyIntro = false;
+    CharacterBehaviour behaviour;
 
     void Awake()
     {
-        npcBehaviour = transform.GetComponent<CharacterBehaviour>();
-        npcBehaviour.isAutomatic = true;
+        behaviour = transform.GetComponent<CharacterBehaviour>();
+        behaviour.isAutomatic = true;
     }
 
     void Update()
     {
-        if (npcBehaviour.waitTimer <= 0.0f && npcBehaviour.isAutomatic && !introPlaying && LevelManager.current.currentLevel == 0)
+        if (behaviour.waitTimer <= 0.0f && behaviour.isAutomatic && !introPlaying && LevelManager.current.currentLevel == 0)
         {
             gameObject.GetComponent<IsIntro>().ContinueIntro();
-        }
-        if (destroyIntro)
-        {
-            PlayerController.current.canMove = true;
-            PlayerController.current.DeactivateSelection();
-            Destroy(gameObject);
         }
     }
 
@@ -32,17 +25,24 @@ public class IsIntro : MonoBehaviour
     {
         introPlaying = true;
         CameraEffects.current.FadeToBlack(true, false);
-        npcBehaviour.isAutomatic = true;
+        behaviour.isAutomatic = true;
 
         PlayerController.current.overlappingNpc = gameObject;
-        npcBehaviour.PlayerSelfDialogue();
+        behaviour.PlayerSelfDialogue();
     }
 
     public void ContinueIntro()
     {
-        npcBehaviour.isAutomatic = false;
+        behaviour.isAutomatic = false;
 
         PlayerController.current.overlappingNpc = gameObject;
-        npcBehaviour.PlayerSelfDialogue();
+        behaviour.PlayerSelfDialogue();
+    }
+
+    public void DestroyIntro()
+    {
+        // Remove the intro's CharacterBehaviour from the npcBehaviours list and destroy this object
+        EventManager.current.npcBehaviours.Remove(behaviour);
+        Destroy(gameObject);
     }
 }

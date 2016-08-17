@@ -248,14 +248,20 @@ public class MenuController : MonoBehaviour
 
     public void PauseGame()
     {
+        AudioManager.current.PauseSoundEffects();
         MenuController.gamePaused = true;
         Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
-        Time.timeScale = 1;
+        if (AudioManager.current != null)
+        {
+            AudioManager.current.ResumeSoundEffects();
+        }
+
         MenuController.gamePaused = false;
+        Time.timeScale = 1;
     }
 
 	//---------------------LOAD MENU---------------------
@@ -287,8 +293,7 @@ public class MenuController : MonoBehaviour
 			titleText.text = pickSaveSlotString;
 
 			// Pause the game
-			MenuController.gamePaused = true;
-			Time.timeScale = 0;
+            PauseGame();
 		}
 		// If loading a game:
 		else
@@ -469,7 +474,7 @@ public class MenuController : MonoBehaviour
 
 		SavingAndLoading.SaveGames();
 
-		// Resume game
+		// Close load menu and resume the game
 		CloseLoadMenu();
 
 		// Display "Game Saved" message
@@ -494,8 +499,7 @@ public class MenuController : MonoBehaviour
 
         if (PlayerController.current != null && !PlayerController.current.isGameOver)
         {
-            Time.timeScale = 1;
-            gamePaused = false;
+            ResumeGame();
         }
 
 		menu.SetActive(true);

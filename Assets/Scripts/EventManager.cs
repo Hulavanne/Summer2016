@@ -18,6 +18,16 @@ public class EventManager : MonoBehaviour
         eventTriggers = GameObject.FindObjectsOfType<EventTrigger>().ToList();
         npcBehaviours = GameObject.FindObjectsOfType<CharacterBehaviour>().ToList();
         doorBehaviours = GameObject.FindObjectsOfType<DoorBehaviour>().ToList();
+
+        // Remove the player's CharacterBehaviour from the npcBehaviours list
+        foreach (CharacterBehaviour behaviour in npcBehaviours)
+        {
+            if (behaviour.transform.parent.tag == "Player")
+            {
+                npcBehaviours.Remove(behaviour);
+                break;
+            }
+        }
 	}
 
     void Start()
@@ -26,9 +36,11 @@ public class EventManager : MonoBehaviour
         {
             if (!Game.current.newGame)
             {
-                foreach (CharacterBehaviour.Type triggeredEvent in Game.current.triggeredEvents.Keys)
+                CharacterBehaviour.Type[] eventTypes = Game.current.triggeredEvents.Keys.ToArray();
+
+                for (int i = 0; i < eventTypes.Count(); ++i)
                 {
-                    TriggerEvent(triggeredEvent);
+                    TriggerEvent(eventTypes[i]);
                 }
             }
         }
@@ -40,9 +52,9 @@ public class EventManager : MonoBehaviour
         {
             OpenKitchenDoor();
         }
-        if (eventType == CharacterBehaviour.Type.DOOR_PUZZLE)
+        else if (eventType == CharacterBehaviour.Type.DOOR_PUZZLE)
         {
-            OpenDoorPuzzle();
+            InteractWithDoorPuzzle();
         }
     }
 
@@ -171,22 +183,6 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    IEnumerator ChangeDeerAnimation(CharacterBehaviour behaviour)
-    {
-        // Start the fading
-        CameraEffects.current.FadeToBlackAndBack();
-
-        // Wait until the screen is black
-        while (CameraEffects.current.opacity < 1.0f)
-        {
-            yield return null;
-        }
-
-        // Set the deer's state to 3 and setup the new animation
-        Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 3;
-        behaviour.GetComponent<Animator>().SetBool("hasBerries", true);
-    }
-
     public void InteractWithBear(CharacterBehaviour behaviour, bool givingDeathCap = false, bool givingBerries = false)
     {
         int value = 0;
@@ -226,34 +222,19 @@ public class EventManager : MonoBehaviour
         // If giving death cap
         else if (value == 2)
         {
-            behaviour.ChangeLines(7, 8);
+            behaviour.ChangeLines(10, 10);
             ActivateTextAtLine.current.TalkToNPC(false);
-            Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
-        }
-        // If NPC is dead
-        else if (value >= 3)
-        {
-            behaviour.ChangeLines(7, 8);
         }
     }
 
     public void InteractWithLilies()
     {
-        int value = 0;
-
         // Add event to triggeredEvents, if it isn't already there
         Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.LILIES);
-        value = Game.current.triggeredEvents[CharacterBehaviour.Type.LILIES];
 
-        if (value == 0)
+        if (Game.current.triggeredEvents[CharacterBehaviour.Type.LILIES] == 1)
         {
-            Game.current.triggeredEvents[CharacterBehaviour.Type.LILIES] = 1;
-            Inventory.current.AddItemToInventory(Item.Type.BERRIES);
-        }
-        else
-        {
-            Debug.Log(PlayerController.current.overlappingNpc);
-            PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().ChangeLines(1, 1);
+            PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().ChangeLines(4, 4);
         }
     }
 
@@ -292,27 +273,37 @@ public class EventManager : MonoBehaviour
         PlayerController.current.DeactivateSelection();
     }
 
-    public void OpenDoorPuzzle()
+    public void InteractWithDoorPuzzle(bool openDoor = false)
     {
         // Add event to triggeredEvents, if it isn't already there
         Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.DOOR_PUZZLE);
 
-        // Deactivate the puzzle NPC
-        foreach (CharacterBehaviour behaviour in npcBehaviours)
+        if (openDoor || Game.current.triggeredEvents[CharacterBehaviour.Type.DOOR_PUZZLE] == 1)
         {
-            if (behaviour.npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
-            {
-                behaviour.gameObject.SetActive(false);
-            }
-        }
+            Game.current.triggeredEvents[CharacterBehaviour.Type.DOOR_PUZZLE] = 1;
 
-        // Enable the door's collider
-        foreach (DoorBehaviour behaviour in doorBehaviours)
-        {
-            if (behaviour.thisDoorLevel == LevelManager.Levels.CAVE_PUZZLE)
+            // Deactivate the puzzle NPC
+            foreach (CharacterBehaviour behaviour in npcBehaviours)
             {
-                behaviour.GetComponent<BoxCollider2D>().enabled = true;
+                if (behaviour.npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
+                {
+                    behaviour.gameObject.SetActive(false);
+                }
             }
+
+            // Enable the door's collider
+            foreach (DoorBehaviour behaviour in doorBehaviours)
+            {
+                if (behaviour.thisDoorLevel == LevelManager.Levels.CAVE_PUZZLE)
+                {
+                    behaviour.GetComponent<BoxCollider2D>().enabled = true;
+                }
+            }
+
+            // Deactivate the puzzle
+            DoorPuzzle puzzle = FindObjectOfType<DoorPuzzle>();
+            puzzle.enabled = false;
+            puzzle.gameObject.SetActive(false);
         }
 
         // Activate the enemy in the crevice
@@ -320,14 +311,9 @@ public class EventManager : MonoBehaviour
         {
             if (behaviour.thisEnemyLevel == LevelManager.Levels.CAVE_CREVICE)
             {
-                gameObject.SetActive(true);
+                behaviour.gameObject.SetActive(true);
             }
         }
-
-        // Deactivate the puzzle
-        DoorPuzzle puzzle = FindObjectOfType<DoorPuzzle>();
-        puzzle.enabled = false;
-        puzzle.gameObject.SetActive(false);
     }
 
     // This gets called after speaking with an NPC
@@ -357,31 +343,85 @@ public class EventManager : MonoBehaviour
 
             if (behaviour.npcType == CharacterBehaviour.Type.INTRO)
             {
-                if (npc.GetComponent<IsIntro>().introPlaying)
+                IsIntro intro = npc.GetComponent<IsIntro>();
+
+                if (intro.introPlaying)
                 {
-                    npc.GetComponent<IsIntro>().introPlaying = false;
+                    intro.introPlaying = false;
                     behaviour.ChangeLines(3, 4);
                     behaviour.waitTimer = 1.5f;
                     CameraEffects.current.fadeToBlack = false;
                     PlayerController.current.hud.SetHud(false);
+                }
+                else
+                {
+                    intro.DestroyIntro();
                 }
             }
             else if (behaviour.npcType == CharacterBehaviour.Type.DEER)
             {
                 if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] == 2)
                 {
-                    // Fade the screen to black and back,
-                    // while changing the deer's animation in between the fades
-                    StartCoroutine(ChangeDeerAnimation(behaviour));
-
                     // Setup correct lines and start talking to the deer
                     behaviour.ChangeLines(13, 18);
                     ActivateTextAtLine.current.TalkToNPC(false);
+
+                    // Fade the screen to black and back,
+                    // while changing the deer's animation in between the fades
+                    StartCoroutine(ScreenFadeEvent(behaviour));
                 }
+            }
+            else if (behaviour.npcType == CharacterBehaviour.Type.BEAR)
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] == 2)
+                {
+                    // Setup correct lines and start talking to the bear
+                    behaviour.ChangeLines(12, 12);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+
+                    // Fade the screen to black and back,
+                    // while deactivating the bear in between the fades
+                    StartCoroutine(ScreenFadeEvent(behaviour));
+                }
+            }
+            else if (behaviour.npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
+            {
+                InteractWithDoorPuzzle();
             }
         }
 
         TextBoxManager.current.hasClickedYesButton = false;
         TextBoxManager.current.hasClickedNoButton = false;
+    }
+
+    public IEnumerator ScreenFadeEvent(CharacterBehaviour behaviour)
+    {
+        // Start the fading
+        CameraEffects.current.FadeToBlackAndBack();
+
+        // Wait until the screen is black
+        while (CameraEffects.current.opacity < 1.0f)
+        {
+            yield return null;
+        }
+
+        if (behaviour.npcType == CharacterBehaviour.Type.DEER)
+        {
+            // Set the deer's state to 3 and setup the new animation
+            Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] = 3;
+            behaviour.GetComponent<Animator>().SetBool("hasBerries", true);
+        }
+        else if (behaviour.npcType == CharacterBehaviour.Type.LILIES)
+        {
+            // Set the state of the lilies to 1 and berries to the inventory
+            Game.current.triggeredEvents[CharacterBehaviour.Type.LILIES] = 1;
+            Inventory.current.AddItemToInventory(Item.Type.BERRIES);
+        }
+        else if (behaviour.npcType == CharacterBehaviour.Type.BEAR)
+        {
+            // Set the bear's state to 3 and deactivate it
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
+            behaviour.gameObject.SetActive(false);
+        }
     }
 }

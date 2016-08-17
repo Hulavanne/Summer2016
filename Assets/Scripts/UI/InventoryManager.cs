@@ -79,7 +79,7 @@ public class InventoryManager : MonoBehaviour
         {
             if (string.IsNullOrEmpty(sceneItems[i].itemData.id))
             {
-                Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
+                //Debug.Log("No saved data found for " + sceneItems[i] + ", list index " + i);
                 sceneItems[i].itemData = new ItemData(sceneItems[i].GetComponent<UniqueId>().uniqueId, sceneItems[i].charges);
             }
         }

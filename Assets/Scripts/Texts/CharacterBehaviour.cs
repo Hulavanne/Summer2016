@@ -49,7 +49,7 @@ public class CharacterBehaviour : MonoBehaviour
     {
         if (npcType == Type.DEER)
         {
-            if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
+            if (Game.current != null && Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
             {
                 if (Game.current.triggeredEvents[CharacterBehaviour.Type.DEER] >= 2)
                 {

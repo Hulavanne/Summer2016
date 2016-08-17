@@ -93,10 +93,15 @@ public class LevelManager : MonoBehaviour
             }
             else
             {
-                // For starting a new game from somewhere else than level 1
+                // For starting a new game from somewhere else than the starting level
                 if (currentLevel != Levels.CIERAN_BEDROOM)
                 {
                     TestStart();
+                }
+                else
+                {
+                    // Play the music track of the level
+                    AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
                 }
             }
         }
@@ -106,10 +111,15 @@ public class LevelManager : MonoBehaviour
             Game.current = game;
             Game.currentIndex = -1;
 
-            // For starting a new game from somewhere else than level 1
+            // For starting a new game from somewhere else than the starting level
             if (currentLevel != Levels.CIERAN_BEDROOM)
             {
                 TestStart();
+            }
+            else
+            {
+                // Play the music track of the level
+                AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
             }
         }
 

@@ -315,6 +315,15 @@ public class EventManager : MonoBehaviour
             }
         }
 
+        // Activate the enemy in the crevice
+        foreach (EnemyBehaviour behaviour in LevelManager.current.enemiesList)
+        {
+            if (behaviour.thisEnemyLevel == LevelManager.Levels.CAVE_CREVICE)
+            {
+                gameObject.SetActive(true);
+            }
+        }
+
         // Deactivate the puzzle
         DoorPuzzle puzzle = FindObjectOfType<DoorPuzzle>();
         puzzle.enabled = false;

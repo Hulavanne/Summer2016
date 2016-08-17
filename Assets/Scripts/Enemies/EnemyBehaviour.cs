@@ -134,6 +134,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     void LateUpdate()
     {
+        // If the player hasn't yet given berries to the deer,
+        // disable the enemy in the forest
         if (thisEnemyLevel == LevelManager.Levels.FOREST_ENEMY)
         {
             if (Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DEER))
@@ -145,6 +147,15 @@ public class EnemyBehaviour : MonoBehaviour
             }
 
             gameObject.SetActive(false);
+        }
+        // If the player hasn't yet inspected the door puzzle,
+        // disable the enemy in the crevice
+        else if (thisEnemyLevel == LevelManager.Levels.CAVE_CREVICE)
+        {
+            if (!Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.DOOR_PUZZLE))
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 

@@ -86,7 +86,7 @@ public class MenuController : MonoBehaviour
         if (transform.FindChild("PauseScreen") != null)
         {
             pauseOverlay = transform.FindChild("PauseScreen").gameObject;
-            transform.GetComponentInChildren<InventoryManager>().Setup();
+            pauseOverlay.GetComponentInChildren<InventoryManager>().Setup();
             pauseOverlay.SetActive(false);
         }
 	}

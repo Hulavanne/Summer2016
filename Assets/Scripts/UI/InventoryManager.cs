@@ -17,10 +17,13 @@ public class InventoryManager : MonoBehaviour
     List<List<Item>> itemsInSlides = new List<List<Item>>();
     public List<ItemData> savedData = new List<ItemData>();
 
+    void Awake()
+    {
+        current = this;
+    }
+
     public void Setup()
 	{
-        current = this;
-
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
         itemSlideMenu = transform.GetComponent<ItemSlideMenu>();
 

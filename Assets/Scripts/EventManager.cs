@@ -423,5 +423,14 @@ public class EventManager : MonoBehaviour
             Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
             behaviour.gameObject.SetActive(false);
         }
+        else if (behaviour.npcType == CharacterBehaviour.Type.MORTAR_AND_PESTLE)
+        {
+            // Add event to triggeredEvents, if it isn't already there
+            Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.MORTAR_AND_PESTLE);
+
+            // Add mortar and pestle to the inventory and deactivate the object
+            Inventory.current.AddItemToInventory(Item.Type.MORTAR_AND_PESTLE);
+            behaviour.gameObject.SetActive(false);
+        }
     }
 }

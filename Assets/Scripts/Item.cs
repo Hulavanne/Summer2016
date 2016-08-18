@@ -19,7 +19,8 @@ public class Item : MonoBehaviour
         GLOVES,
         NIGHTSHADE,
         BERRIES,
-        DEATH_CAP
+        DEATH_CAP,
+        MORTAR_AND_PESTLE
     };
     public Type itemType = Type.NONE;
 

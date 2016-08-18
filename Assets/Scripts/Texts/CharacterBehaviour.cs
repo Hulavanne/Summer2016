@@ -70,6 +70,13 @@ public class CharacterBehaviour : MonoBehaviour
                 }
             }
         }
+        else if (npcType == Type.MORTAR_AND_PESTLE)
+        {
+            if (Game.current != null && Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.MORTAR_AND_PESTLE))
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     void Update()

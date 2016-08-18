@@ -236,6 +236,20 @@ public class TextBoxManager : MonoBehaviour
             // Fade screen to black and back, while adding berries to the inventory
             StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
         }
+        // Mortar and pestle interaction
+        else if (npcType == CharacterBehaviour.Type.MORTAR_AND_PESTLE)
+        {
+            hasClickedYesNoButton = false;
+            hasClickedOptButton = false;
+            DisableTextBox();
+
+            // Setup the next line
+            behaviour.ChangeLines(2, 2);
+            ActivateTextAtLine.current.TalkToNPC(false);
+
+            // Fade screen to black and back, while adding mortar and pestle to the inventory and deactivating the object
+            StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
+        }
     }
 
     public void OnNoClick()

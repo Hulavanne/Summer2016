@@ -20,7 +20,9 @@ public class CharacterBehaviour : MonoBehaviour
         DEER,
         BEAR,
         LILIES,
-        DOOR_PUZZLE
+        MURAL,
+        DOOR_PUZZLE,
+        MORTAR_AND_PESTLE
     };
     public Type npcType = Type.PASSIVE;
     public List<Item.Type> requiredItemTypes = new List<Item.Type>();

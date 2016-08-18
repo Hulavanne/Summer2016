@@ -2,8 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class HideBehaviour : MonoBehaviour {
-    
+public class HideBehaviour : MonoBehaviour
+{
+    public bool playSoundEffect;
     public GameObject QuestionMark;
     public bool isHiding;
     public Animator anim;

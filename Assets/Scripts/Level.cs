@@ -6,12 +6,12 @@ public class Level : MonoBehaviour
 {
     public LevelManager.Levels levelName;
 
-    public enum Floor
+    public enum Ground
     {
-        WOOD,
+        SOLID,
         LEAVES
     }
-    public Floor floorType;
+    public Ground groundType;
 
     public AudioClip levelMusic;
 	public bool fixedCamera = false;

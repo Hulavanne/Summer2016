@@ -152,19 +152,34 @@ public class PlayerController : MonoBehaviour {
     {
         if (moving)
         {
+            moving = false;
+
             Level currentLevel = LevelManager.current.levelsList[(int)LevelManager.current.currentLevel].GetComponent<Level>();
+            AudioClip[] footstepSounds = SoundEffectsManager.current.walkingSoundsSolid;
+
+            // If walking
+            if (!playerAnim.GetBool("isRunning"))
+            {
+                if (currentLevel.groundType == Level.Ground.LEAVES)
+                {
+                    footstepSounds = SoundEffectsManager.current.walkingSoundsLeaves;
+                }
+            }
+            // If running
+            else
+            {
+                if (currentLevel.groundType == Level.Ground.SOLID)
+                {
+                    footstepSounds = SoundEffectsManager.current.runningSoundsSolid;
+                }
+                else if (currentLevel.groundType == Level.Ground.LEAVES)
+                {
+                    footstepSounds = SoundEffectsManager.current.runningSoundsLeaves;
+                }
+            }
 
             // Loop footstep sounds that vary depending on the floor type
-            if (currentLevel.floorType == Level.Floor.WOOD)
-            {
-                SoundEffectsManager.current.StartRandomSoundEffectsLoop(SoundEffectsManager.current.footstepSoundsFloor, SoundEffectsManager.current.footstepsSource);
-            }
-            else if (currentLevel.floorType == Level.Floor.LEAVES)
-            {
-                SoundEffectsManager.current.StartRandomSoundEffectsLoop(SoundEffectsManager.current.footstepSoundsLeaves, SoundEffectsManager.current.footstepsSource);
-            }
-
-            moving = false;
+            SoundEffectsManager.current.StartRandomSoundEffectsLoop(footstepSounds, SoundEffectsManager.current.footstepsSource);
         }
         else
         {
@@ -178,12 +193,10 @@ public class PlayerController : MonoBehaviour {
         {
             currentDoor = other.gameObject; // get current door
         }
-
         else if (other.tag == "HideObject")
         {
             currentHideObject = other.gameObject; // get current hide object
         }
-        
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject; // get the gameobject of npc
@@ -205,7 +218,6 @@ public class PlayerController : MonoBehaviour {
                 return;
             }
         }
-        
         else if (other.tag == "PlayerBoundary")
         {
             boundary = other.gameObject;
@@ -299,15 +311,23 @@ public class PlayerController : MonoBehaviour {
                     {
                         // Sets the timer and waits for it to reach 0 (while playing animation). After that, unhides.
                         PlayerUnhide(false);
+
                         // Play sound effect
-                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
+                        if (currentHideObject.GetComponent<HideBehaviour>().playSoundEffect)
+                        {
+                            SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
+                        }
                     }
                     else if (canHide)
                     {
                         // Hides and plays animation right after
                         PlayerHide();
+
                         // Play sound effect
-                        SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
+                        if (currentHideObject.GetComponent<HideBehaviour>().playSoundEffect)
+                        {
+                            SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.leafRustleSound, SoundEffectsManager.current.actionSource);
+                        }
                     }
                 }
 

@@ -6,8 +6,10 @@ public class SoundEffectsManager : MonoBehaviour
     public static SoundEffectsManager current;
 
     // Sound effect clips
-    public AudioClip[] footstepSoundsFloor;
-    public AudioClip[] footstepSoundsLeaves;
+    public AudioClip[] walkingSoundsSolid;
+    public AudioClip[] walkingSoundsLeaves;
+    public AudioClip[] runningSoundsSolid;
+    public AudioClip[] runningSoundsLeaves;
     public AudioClip doorCreakSound;
     public AudioClip leafRustleSound;
     public AudioClip cavernDoorSound;
@@ -22,7 +24,7 @@ public class SoundEffectsManager : MonoBehaviour
     {
         current = this;
 
-        footstepsSource = AddAudio(gameObject, footstepSoundsFloor[0], false, false, 1.0f);
+        footstepsSource = AddAudio(gameObject, walkingSoundsSolid[0], false, false, 1.0f);
         actionSource = AddAudio(gameObject, doorCreakSound, false, false, 1.0f);
 	}
 

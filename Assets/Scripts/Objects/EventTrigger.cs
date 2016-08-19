@@ -3,7 +3,6 @@ using System.Collections;
 
 public class EventTrigger : MonoBehaviour
 {
-    //public EventManager.Events eventAction = EventManager.Events.OPEN_KITCHEN_DOOR;
     public CharacterBehaviour.Type eventType = CharacterBehaviour.Type.PASSIVE;
 
     void OnTriggerStay2D(Collider2D col)
@@ -11,6 +10,7 @@ public class EventTrigger : MonoBehaviour
         if (col.transform.parent.tag == "Player")
         {
             EventManager.current.TriggerEvent(eventType);
+            gameObject.SetActive(false);
         }
     }
 }

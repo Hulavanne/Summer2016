@@ -20,10 +20,7 @@ public class InventoryManager : MonoBehaviour
     void Awake()
     {
         current = this;
-    }
 
-    public void Setup()
-	{
         inventory = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Inventory>();
         itemSlideMenu = transform.GetComponent<ItemSlideMenu>();
 

@@ -116,30 +116,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /*public IEnumerator LoadSceneAfterMusicFade()
-    {
-        yield return StartCoroutine(AudioManager.current.FadeMusic(true, 0.5f, false));
-
-        // If loading the main scene
-        if (MenuController.currentScene == "MainScene")
-        {
-            // If current game exists, load its variables into the game manager
-            if (Game.current != null)
-            {
-                LoadCurrentGameVariables();
-            }
-        }
-        // If returning to the main menu
-        else if (MenuController.currentScene == "MainMenu")
-        {
-            // Switching to the correct track
-            AudioManager.current.SwitchMusic(AudioManager.current.menuMusic);
-        }
-
-        // Load scene and set sceneLoadOperation
-        sceneLoadOperation = SceneManager.LoadSceneAsync(MenuController.currentScene);
-    }*/
-
 	public void LoadCurrentGameVariables()
 	{
 		Game game = Game.current;

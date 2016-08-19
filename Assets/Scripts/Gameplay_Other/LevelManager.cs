@@ -30,7 +30,7 @@ public class LevelManager : MonoBehaviour
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;
 
-	public List<GameObject> levelsList = new List<GameObject>();
+    public List<Level> levelsList = new List<Level>();
     public List<Savepoint> savepointsList = new List<Savepoint>();
     public List<EnemyBehaviour> enemiesList = new List<EnemyBehaviour>();
 
@@ -72,11 +72,17 @@ public class LevelManager : MonoBehaviour
 
 		for (int i = 0; i < levelsParent.childCount; ++i)
 		{
-			levelsList.Add(levelsParent.GetChild(i).gameObject);
+            levelsList.Add(levelsParent.GetChild(i).GetComponent<Level>());
         }
 
         savepointsList = GameObject.FindObjectsOfType<Savepoint>().ToList();
         enemiesList = GameObject.FindObjectsOfType<EnemyBehaviour>().ToList();
+
+        // Deactivate all enemies
+        foreach (EnemyBehaviour behaviour in enemiesList)
+        {
+            behaviour.gameObject.SetActive(false);
+        }
         
         cameraComponent = Camera.main;
         cameraScript = cameraComponent.GetComponent<CameraEffects>();
@@ -211,7 +217,7 @@ public class LevelManager : MonoBehaviour
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
         player.isFacingRight = player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight;
 
-        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel].gameObject);
         CameraEffects.current.fadeToBlack = false;
 
         // Play the music track of the level
@@ -235,15 +241,15 @@ public class LevelManager : MonoBehaviour
         }
 
         // Keeps the current level active, deactivates all others
-        foreach (GameObject level in levelsList)
+        foreach (Level level in levelsList)
         {
             if (level.GetComponent<Level>().levelName != currentLevel)
             {
-                level.SetActive(false);
+                level.gameObject.SetActive(false);
             }
             else
             {
-                level.SetActive(true);
+                level.gameObject.SetActive(true);
             }
         }
     }
@@ -256,7 +262,7 @@ public class LevelManager : MonoBehaviour
 		lightAmount = levelScript.levelLightAmount;
 
         player.transform.position = new Vector3(Game.current.spawnPosition.Key, Game.current.spawnPosition.Value, player.transform.position.z);
-		CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel].gameObject);
 	}
 
 	public void TestStart()
@@ -267,7 +273,7 @@ public class LevelManager : MonoBehaviour
 		float startingPositionX = levelScript.transform.position.x;
 		player.transform.position = new Vector3(startingPositionX, player.transform.position.y, player.transform.position.z);
 
-		CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel]);
+        CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel].gameObject);
 
         // Play the music track of the level
         AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);

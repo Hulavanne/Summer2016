@@ -22,7 +22,8 @@ public class CharacterBehaviour : MonoBehaviour
         LILIES,
         MURAL,
         DOOR_PUZZLE,
-        MORTAR_AND_PESTLE
+        MORTAR_AND_PESTLE,
+        ENEMY_CHASE
     };
     public Type npcType = Type.PASSIVE;
     public List<Item.Type> requiredItemTypes = new List<Item.Type>();

@@ -20,7 +20,8 @@ public class EnemyBehaviour : MonoBehaviour
     public Vector3 initPos;
     public bool goToPlayerPos;
     public bool isTouchingPlayer;
-    public float areaOfVision = 6.0f; // distance radius to start chasing
+    public float areaOfVision;
+    float vision; // distance radius to start chasing
 
     //amounts
     public float movementSpeed = 1.0f; // normal patrolling movement speed
@@ -36,7 +37,8 @@ public class EnemyBehaviour : MonoBehaviour
     public float waitTime;
     public float chasingTime;
     public float unhidePlayerTime = 0.0f; // enemy will remove the player if it knows it just hid (is in Suspicious mode too).
-    public float startChaseTime = 0.0f;
+    public float startChaseTime = 2.0f;
+    float startChaseTimer = 0.0f;
 
     public LevelManager.Levels thisEnemyLevel;
 
@@ -89,19 +91,19 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case EnemyBehav.PATROLLING:
                 {
-                    areaOfVision = 10.0f;
+                    vision = areaOfVision * 1.0f;
                     ChangeBreathingSound(patrolSound);
                     break;
                 }
             case EnemyBehav.SUSPICIOUS:
                 {
-                    areaOfVision = 12.0f;
+                    vision = areaOfVision * 1.2f;
                     ChangeBreathingSound(patrolSound);
                     break;
                 }
             case EnemyBehav.CHASING:
                 {
-                    areaOfVision = 14.0f;
+                    vision = areaOfVision * 1.4f;
                     ChangeBreathingSound(chasingSound);
                     break;
                 }
@@ -113,7 +115,7 @@ public class EnemyBehaviour : MonoBehaviour
             currentEnemy = EnemyBehav.SUSPICIOUS;
         }
 
-        if ((distanceBetweenPlayer > areaOfVision || distanceBetweenPlayer < -areaOfVision)
+        if ((distanceBetweenPlayer > vision || distanceBetweenPlayer < -vision)
             && !player.isHidden)
         {
             currentEnemy = EnemyBehav.SUSPICIOUS;
@@ -132,7 +134,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    /*void LateUpdate()
     {
         // If the player hasn't yet given berries to the deer,
         // disable the enemy in the forest
@@ -157,7 +159,7 @@ public class EnemyBehaviour : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
-    }
+    }*/
 
     void OnTriggerEnter2D(Collider2D col)
     {
@@ -215,6 +217,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     void EnemyMove()
     {
+        if (thisEnemyLevel != LevelManager.current.currentLevel)
+        {
+            transform.position = initPos;
+            movementDirection = initialMovementDirection;
+            return;
+        }
         if (TextBoxManager.current.isTalkingToNPC)
         {
             return;
@@ -361,7 +369,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     void CheckDistance()
     {
-        if ((distanceBetweenPlayer > areaOfVision) || (distanceBetweenPlayer < -areaOfVision))
+        if ((distanceBetweenPlayer > vision) || (distanceBetweenPlayer < -vision))
         {
             currentEnemy = EnemyBehav.PATROLLING;
         }
@@ -369,11 +377,12 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if (!player.isHidden)
             {
-                startChaseTime += Time.deltaTime;
-                if (startChaseTime > 2.0f)
+                startChaseTimer += Time.deltaTime;
+
+                if (startChaseTimer >= startChaseTime)
                 {
                     currentEnemy = EnemyBehav.CHASING;
-                    startChaseTime = 0;
+                    startChaseTimer = 0;
                 }
             }
             else if (player.isHidden && currentEnemy != EnemyBehav.PATROLLING)

@@ -70,29 +70,32 @@ public class MenuController : MonoBehaviour
         {
             confirmationOverlay = GameObject.Find("ConfirmationOverlay");
         }
-
-        if (transform.FindChild("GUI") != null)
-        {
-            gui = transform.FindChild("GUI").gameObject;
-            floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
-            gameOverScreen = gui.transform.FindChild("GameOver").gameObject;
-
-            foreach (Transform child in gameOverScreen.transform)
-            {
-                child.gameObject.SetActive(false);
-            }
-            gameOverScreen.SetActive(false);
-        }
-        if (transform.FindChild("PauseScreen") != null)
-        {
-            pauseOverlay = transform.FindChild("PauseScreen").gameObject;
-            pauseOverlay.GetComponentInChildren<InventoryManager>().Setup();
-            pauseOverlay.SetActive(false);
-        }
 	}
 
 	void Start()
 	{
+        if (transform.name == "InGameUI")
+        {
+            if (transform.FindChild("GUI") != null)
+            {
+                gui = transform.FindChild("GUI").gameObject;
+                floatingMessage = gui.transform.FindChild("FloatingMessageText").gameObject;
+                gameOverScreen = gui.transform.FindChild("GameOver").gameObject;
+
+                foreach (Transform child in gameOverScreen.transform)
+                {
+                    child.gameObject.SetActive(false);
+                }
+                gameOverScreen.SetActive(false);
+            }
+            if (transform.FindChild("PauseScreen") != null)
+            {
+                pauseOverlay = transform.FindChild("PauseScreen").gameObject;
+                //pauseOverlay.GetComponentInChildren<InventoryManager>().Setup();
+                pauseOverlay.SetActive(false);
+            }
+        }
+
         if (transform.name != "MainMenuUI" && transform.name != "InGameUI")
         {
             transform.gameObject.SetActive(false);

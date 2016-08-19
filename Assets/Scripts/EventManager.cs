@@ -56,6 +56,18 @@ public class EventManager : MonoBehaviour
         {
             InteractWithDoorPuzzle();
         }
+        else if (eventType == CharacterBehaviour.Type.ENEMY_CHASE)
+        {
+            foreach (EnemyBehaviour behaviour in LevelManager.current.enemiesList)
+            {
+                if (behaviour.thisEnemyLevel == LevelManager.current.currentLevel)
+                {
+                    behaviour.gameObject.SetActive(true);
+                    //behaviour.movementDirection = 
+                    break;
+                }
+            }
+        }
     }
 
     public void OpenKitchenDoor()

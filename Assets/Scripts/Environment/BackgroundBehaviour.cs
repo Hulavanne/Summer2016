@@ -19,6 +19,7 @@ public class BackgroundBehaviour : MonoBehaviour
     public SpriteRenderer sprite1, sprite2;
     public GameObject sprite1G, sprite2G;
     public float initialPos;
+    public bool doesNotFollow;
 
     void Start()
     {
@@ -61,34 +62,35 @@ public class BackgroundBehaviour : MonoBehaviour
                 transform.position = new Vector3(thisLevelPos.transform.position.x, thisLevelPos.transform.position.y, thisLevelPos.transform.position.z);
                 playerStart = false;
             }
-            if (!movesAlone)
-            { // checks camera position, preset offset, distance from start, and executes a funciton out of those values
-                distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
-                totalOffset = mainCamera.transform.position.x + distanceFromStart;
-                transform.position = new Vector3((mainCamera.transform.position.x + (distanceFromStart * 0.5f)), transform.position.y, transform.position.z);
-            }
-            else
-            {   // first gets a moveAlone value, and then adds it to a function that mixes those from above with it
-                distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
-                totalOffset = mainCamera.transform.position.x + distanceFromStart;
-                
-                transform.position = new Vector3(((mainCamera.transform.position.x - (distanceFromStart * 0.75f)
-                    + distanceFromStart) * backgroundSpeed) + moveAloneSpeed,
-                    transform.position.y, transform.position.z);
-                moveAloneSpeed += 0.35f * Time.deltaTime;
 
-                if (sprite1 != null && sprite2 != null)
-                {
-                    if (sprite1.transform.position.x > (initialPos + 2 * distanceBetweenSprites))
-                    { // resets position if it reaches too far out of the initial place
-                        sprite1.transform.position = new Vector3(initialPos,
-                            transform.position.y, transform.position.z);
-                    }
-                    if (sprite2.transform.position.x > (initialPos + 2 * distanceBetweenSprites))
-                    {
-                        sprite2.transform.position = new Vector3(initialPos,
-                            transform.position.y, transform.position.z);
-                    }
+            if (doesNotFollow)
+            {
+                sprite1.transform.position += new Vector3(moveAloneSpeed * Time.deltaTime, 0, 0);
+                sprite2.transform.position += new Vector3(moveAloneSpeed * Time.deltaTime, 0, 0);   
+
+                PositionCheck();
+            }
+
+            else
+            {
+
+                if (!movesAlone)
+                { // checks camera position, preset offset, distance from start, and executes a funciton out of those values
+                    distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
+                    totalOffset = mainCamera.transform.position.x + distanceFromStart;
+                    transform.position = new Vector3((mainCamera.transform.position.x + (distanceFromStart * 0.5f)), transform.position.y, transform.position.z);
+                }
+                else
+                {   // first gets a moveAlone value, and then adds it to a function that mixes those from above with it
+                    distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
+                    totalOffset = mainCamera.transform.position.x + distanceFromStart;
+
+                    transform.position = new Vector3(((mainCamera.transform.position.x - (distanceFromStart * 0.75f)
+                        + distanceFromStart) * backgroundSpeed) + moveAloneSpeed,
+                        transform.position.y, transform.position.z);
+                    moveAloneSpeed += 0.35f * Time.deltaTime;
+
+                    PositionCheck();
                 }
             }
         }
@@ -100,6 +102,23 @@ public class BackgroundBehaviour : MonoBehaviour
             {
                 sprite1.enabled = false;
                 sprite2.enabled = false;
+            }
+        }
+    }
+
+    void PositionCheck()
+    {
+        if (sprite1 != null && sprite2 != null)
+        {
+            if (sprite1.transform.position.x > (initialPos + 2 * distanceBetweenSprites))
+            { // resets position if it reaches too far out of the initial place
+                sprite1.transform.position = new Vector3(initialPos,
+                    transform.position.y, transform.position.z);
+            }
+            if (sprite2.transform.position.x > (initialPos + 2 * distanceBetweenSprites))
+            {
+                sprite2.transform.position = new Vector3(initialPos,
+                    transform.position.y, transform.position.z);
             }
         }
     }

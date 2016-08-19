@@ -57,6 +57,12 @@ public class TouchInput : MonoBehaviour
         {
             if (Input.GetMouseButton(0))
             {
+                if (SelectionBehaviour.current.hasSelected)
+                {
+                    PlayerController.current.PlayerAnimStop();
+                    return;
+                }
+
                 isPressing = true;
 
                 if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
@@ -147,6 +153,7 @@ public class TouchInput : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            SelectionBehaviour.current.hasSelected = false;
             TextBoxManager.current.clickException = false;
             player.PlayerAnimStop();
             if (runValue == 2)

@@ -28,3 +28,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Assets/Graphics/Sprites/Animations/PlayerRun.anim
+*.anim

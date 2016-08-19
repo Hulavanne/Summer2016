@@ -395,6 +395,12 @@ public class PlayerController : MonoBehaviour {
 
     public void Move(int direction)
     {
+        if (SelectionBehaviour.current.hasSelected)
+        {
+            PlayerAnimStop();
+            return;
+        }
+
         if (TextBoxManager.current.clickException)
         {
             touchRun.runValue = 0;

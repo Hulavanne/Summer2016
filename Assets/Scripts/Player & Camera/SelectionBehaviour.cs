@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SelectionBehaviour : MonoBehaviour {
     public Camera mainCamera;
+    public static SelectionBehaviour current;
+    public bool hasSelected;
 
     public Sprite selectionDoor;
     public Sprite selectionHideObject;
@@ -15,6 +17,7 @@ public class SelectionBehaviour : MonoBehaviour {
     public MenuController menu;
 
     void Awake () {
+        current = this;
         player = transform.parent.transform.GetComponent<PlayerController>();
         thisRenderer = GetComponent<SpriteRenderer>();
         mainCamera = Camera.main;
@@ -34,6 +37,7 @@ public class SelectionBehaviour : MonoBehaviour {
         {
             menu.ActionButton();
             menu.PlayButtonSoundEffect();
+            hasSelected = true;
         }
     }
 

@@ -291,17 +291,17 @@ public class AudioManager : MonoBehaviour
 
     public void PauseSoundEffects()
     {
-        foreach (AudioSource source in effectsSources)
+        /*foreach (AudioSource source in effectsSources)
         {
             source.Pause();
-        }
+        }*/
     }
 
     public void ResumeSoundEffects()
     {
-        foreach (AudioSource source in effectsSources)
+        /*foreach (AudioSource source in effectsSources)
         {
             source.UnPause();
-        }
+        }*/
     }
 }

@@ -26,7 +26,7 @@ public class NavigationTest : MonoBehaviour
 	void Update ()
 	{
 		// Check if the screen is touched / clicked   
-		if ((Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary)) || (Input.GetMouseButton (0)))
+		/*if ((Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Began || Input.GetTouch(0).phase == TouchPhase.Stationary)) || (Input.GetMouseButton (0)))
 		{
 			// Declare a variable of RaycastHit struct
 			RaycastHit hit;
@@ -62,6 +62,6 @@ public class NavigationTest : MonoBehaviour
 		else if (Input.GetKeyDown (KeyCode.E))
 		{
 			//agent.SetDestination(target3.position);
-		}
+		}*/
 	}
 }

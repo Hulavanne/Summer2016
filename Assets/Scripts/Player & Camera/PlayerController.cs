@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour {
     public bool isUnhiding = false; // animation for unhiding
     public bool isFacingRight;
     public bool isRunning;
+    bool wasRunning;
 
     bool isNextRight;
     bool canCameraFollow;
@@ -168,6 +169,12 @@ public class PlayerController : MonoBehaviour {
             // If running
             else
             {
+                if (wasRunning)
+                {
+                    SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource);
+                    wasRunning = false;
+                }
+
                 if (currentLevel.groundType == Level.Ground.SOLID)
                 {
                     footstepSounds = SoundEffectsManager.current.runningSoundsSolid;
@@ -200,17 +207,21 @@ public class PlayerController : MonoBehaviour {
         else if (other.tag == "NPC")
         {
             overlappingNpc = other.gameObject; // get the gameobject of npc
-            CharacterBehaviour npcBehaviour = null; // reset the npcbehaviour script
+            isOverlappingNPC = true;
 
             if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                npcBehaviour = overlappingNpc.GetComponent<CharacterBehaviour>();
-                npcBehaviour.SetItemsUsability(true);
+                CharacterBehaviour behaviour = overlappingNpc.GetComponent<CharacterBehaviour>();
+                behaviour.SetItemsUsability(true);
+
+                if (behaviour.isAutomatic)
+                {
+                    return;
+                }
             }
 
-            isOverlappingNPC = true;
-            ActivateSelection(Selection.NPC);
             PlayerAnimStop();
+            ActivateSelection(Selection.NPC);
 
             if (ActivateTextAtLine.current.requireButtonPress)
             {
@@ -264,19 +275,23 @@ public class PlayerController : MonoBehaviour {
     }
 
     void OnTriggerExit2D(Collider2D other)
-    { // resets most of variables
-        currentDoor = null;
-
-        if (other.transform.tag == "NPC")
+    {
+        if (other.tag == "NPC")
         {
+            overlappingNpc = other.gameObject; // get the gameobject of npc
+            isOverlappingNPC = true;
+
             if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
             {
-                overlappingNpc.GetComponent<CharacterBehaviour>().SetItemsUsability(false);
-            }
+                CharacterBehaviour behaviour = overlappingNpc.GetComponent<CharacterBehaviour>();
+                behaviour.SetItemsUsability(true);
 
-            overlappingNpc = null;
-            isOverlappingNPC = false;
-            DeactivateSelection();
+                if (behaviour.isAutomatic)
+                {
+                    PlayerAnimStop();
+                    ActivateTextAtLine.current.TalkToNPC();
+                }
+            }
         }
     }
 
@@ -428,6 +443,7 @@ public class PlayerController : MonoBehaviour {
             {
                 playerAnim.SetBool("isRunning", true);
                 transform.position += new Vector3(movementDirection * runningSpeed * Time.deltaTime, 0, 0);
+                wasRunning = true;
             }
             else
             {
@@ -454,7 +470,6 @@ public class PlayerController : MonoBehaviour {
                 isNextRight = false;
             }
         }
-
         else
         {
             if (isNextRight) // checks if the object (hideobject) is to the player's left or right

@@ -197,6 +197,7 @@ public class EventManager : MonoBehaviour
 
     public void InteractWithBear(CharacterBehaviour behaviour, bool givingDeathCap = false, bool givingBerries = false)
     {
+        //Debug.Log("asd1");
         int value = 0;
 
         // Add event to triggeredEvents, if it isn't already there

@@ -81,6 +81,5 @@ public class SoundEffectsManager : MonoBehaviour
     public void StopLoop(AudioSource source)
     {
         source.loop = false;
-        Debug.Log("sadsad");
     }
 }

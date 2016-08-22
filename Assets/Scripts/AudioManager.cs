@@ -46,6 +46,9 @@ public class AudioManager : MonoBehaviour
 		musicSource = transform.GetComponentsInChildren<AudioSource>()[1];
         effectsSources = FindEffectsSources();
 
+        effectsSource.ignoreListenerPause = true;
+        musicSource.ignoreListenerPause = true;
+
 		// Load audio values
 		LoadAudioSettings();
 	}
@@ -72,6 +75,13 @@ public class AudioManager : MonoBehaviour
 
             // Load audio values
             LoadAudioSettings();
+        }
+
+        if (effectsSources != FindEffectsSources())
+        {
+            effectsSources = FindEffectsSources();
+            SetSoundEffectsVolume(soundEffectsVolume);
+            UpdateMute();
         }
     }
 
@@ -288,20 +298,4 @@ public class AudioManager : MonoBehaviour
             source.volume = soundEffectsVolume * masterVolume;
         }
 	}
-
-    public void PauseSoundEffects()
-    {
-        /*foreach (AudioSource source in effectsSources)
-        {
-            source.Pause();
-        }*/
-    }
-
-    public void ResumeSoundEffects()
-    {
-        /*foreach (AudioSource source in effectsSources)
-        {
-            source.UnPause();
-        }*/
-    }
 }

@@ -93,13 +93,7 @@ public class PlayerController : MonoBehaviour {
             AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
             AudioManager.current.musicSource.loop = false;
 
-            foreach (AudioSource source in AudioManager.current.effectsSources)
-            {
-                source.Stop();
-            }
-
-            MenuController.gamePaused = true;
-            Time.timeScale = 0;
+            GameObject.Find("InGameUI").GetComponent<MenuController>().PauseGame();
 
             this.enabled = false;
             return;
@@ -264,20 +258,6 @@ public class PlayerController : MonoBehaviour {
     {
         if (other.tag == "NPC")
         {
-            overlappingNpc = other.gameObject;
-            CharacterBehaviour npcBehaviour;
-
-            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
-            {
-                npcBehaviour = overlappingNpc.GetComponent<CharacterBehaviour>(); // gets current npcbehav
-            }
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.tag == "NPC")
-        {
             overlappingNpc = other.gameObject; // get the gameobject of npc
             isOverlappingNPC = true;
 
@@ -292,6 +272,24 @@ public class PlayerController : MonoBehaviour {
                     ActivateTextAtLine.current.TalkToNPC();
                 }
             }
+        }
+    }
+
+    // resets most of variables
+    void OnTriggerExit2D(Collider2D other)
+    { 
+        currentDoor = null;
+
+        if (other.tag == "NPC")
+        {
+            if (overlappingNpc.GetComponent<CharacterBehaviour>() != null)
+            {
+                overlappingNpc.GetComponent<CharacterBehaviour>().SetItemsUsability(false);
+            }
+
+            overlappingNpc = null;
+            isOverlappingNPC = false;
+            DeactivateSelection();
         }
     }
 

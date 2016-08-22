@@ -144,8 +144,7 @@ public class MenuController : MonoBehaviour
         currentState = State.MAIN_MENU_OR_CLOSED;
 
         // Make sure the game isn't paused
-        Time.timeScale = 1.0f;
-        gamePaused = false;
+        ResumeGame();
 
         // Set currentScene, that will be used in GameManager to move on from the loading scene
         // and then go to the loading scene
@@ -251,18 +250,14 @@ public class MenuController : MonoBehaviour
 
     public void PauseGame()
     {
-        AudioManager.current.PauseSoundEffects();
+        AudioListener.pause = true;
         MenuController.gamePaused = true;
         Time.timeScale = 0;
     }
 
     public void ResumeGame()
     {
-        if (AudioManager.current != null)
-        {
-            AudioManager.current.ResumeSoundEffects();
-        }
-
+        AudioListener.pause = false;
         MenuController.gamePaused = false;
         Time.timeScale = 1;
     }

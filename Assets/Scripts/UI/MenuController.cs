@@ -369,10 +369,31 @@ public class MenuController : MonoBehaviour
 
 	public string GetSaveInfo(int savedGamesIndex)
 	{
-		// Format the date into yyyy-mm-dd and exclude the time
+        // Convert the index of the saved level to a string
+        int levelIndex = SavingAndLoading.savedGames[savedGamesIndex].levelIndex;
+        string levelName = "Unknown";
+
+        if (levelIndex <= 3)
+        {
+            levelName = "House";
+        }
+        else if (levelIndex >= 4 && levelIndex <= 9)
+        {
+            levelName = "Forest";
+        }
+        else if (levelIndex >= 10 && levelIndex <= 13)
+        {
+            levelName = "Cave";
+        }
+        else if (levelIndex >= 14 && levelIndex <= 15)
+        {
+            levelName = "Strange Forest";
+        }
+
+		// Format the date into yyyy-mm-dd, excluding the time
 		string formattedDateTime = string.Format("{0:yyyy.MM.dd}", SavingAndLoading.savedGames[savedGamesIndex].dateTime);
 
-		return SavingAndLoading.savedGames[savedGamesIndex].levelIndex + "\n" +
+        return levelName + "\n" +
 			formattedDateTime + "\n" +
 			SavingAndLoading.savedGames[savedGamesIndex].hours + " h " +
 			SavingAndLoading.savedGames[savedGamesIndex].minutes + " min";

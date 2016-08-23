@@ -55,6 +55,14 @@ public class AudioManager : MonoBehaviour
 
     void Update()
     {
+        if (effectsSources != FindEffectsSources())
+        {
+            effectsSources = FindEffectsSources();
+            SetSoundEffectsVolume(soundEffectsVolume);
+        }
+
+        UpdateMute();
+
         // Executed during the first frame of a non-loading scene
         if (GameManager.sceneLoadOperation != null && GameManager.sceneLoadOperation.isDone && SceneManager.GetActiveScene().name != "LoadingScene")
         {
@@ -75,13 +83,6 @@ public class AudioManager : MonoBehaviour
 
             // Load audio values
             LoadAudioSettings();
-        }
-
-        if (effectsSources != FindEffectsSources())
-        {
-            effectsSources = FindEffectsSources();
-            SetSoundEffectsVolume(soundEffectsVolume);
-            UpdateMute();
         }
     }
 
@@ -144,8 +145,8 @@ public class AudioManager : MonoBehaviour
             // Play the new track
             nextTrack = track;
             musicSource.clip = nextTrack;
-            musicSource.Play();
             musicSource.loop = true;
+            musicSource.Play();
         }
     }
 
@@ -261,13 +262,29 @@ public class AudioManager : MonoBehaviour
 
     public void UpdateMute()
     {
-        // Update mute audio
-        effectsSource.mute = audioMuted;
-        musicSource.mute = audioMuted;
+        // Update sound effects mute
+        if (effectsSource.volume == 0 || soundEffectsVolume == 0 || masterVolume == 0)
+        {
+            effectsSource.mute = true;
+        }
+        else
+        {
+            effectsSource.mute = audioMuted;
+        }
 
         foreach (AudioSource source in effectsSources)
         {
-            source.mute = audioMuted;
+            source.mute = effectsSource.mute;
+        }
+
+        // Update music mute
+        if (musicSource.volume == 0 || musicVolume == 0 || masterVolume == 0)
+        {
+            musicSource.mute = true;
+        }
+        else
+        {
+            musicSource.mute = audioMuted;
         }
     }
 

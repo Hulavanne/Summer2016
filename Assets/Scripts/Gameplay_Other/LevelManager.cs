@@ -108,7 +108,7 @@ public class LevelManager : MonoBehaviour
                 else
                 {
                     // Play the music track of the level
-                    AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
+                    //AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
                 }
             }
         }
@@ -126,7 +126,7 @@ public class LevelManager : MonoBehaviour
             else
             {
                 // Play the music track of the level
-                AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
+                //AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
             }
         }
 
@@ -143,6 +143,9 @@ public class LevelManager : MonoBehaviour
             // Destroy intro dialogue
             GameObject.FindObjectOfType<IsIntro>().DestroyIntro();
         }
+
+        // Play the music track of the level
+        AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
 	}
 
 	void Update()

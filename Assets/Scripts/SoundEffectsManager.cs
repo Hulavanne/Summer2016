@@ -26,6 +26,9 @@ public class SoundEffectsManager : MonoBehaviour
 
         footstepsSource = AddAudio(gameObject, walkingSoundsSolid[0], false, false, 1.0f);
         actionSource = AddAudio(gameObject, doorCreakSound, false, false, 1.0f);
+
+        footstepsSource.mute = true;
+        actionSource.mute = true;
 	}
 
     public static AudioSource AddAudio(GameObject sourceParent, AudioClip clip, bool loop, bool playAwake, float vol)

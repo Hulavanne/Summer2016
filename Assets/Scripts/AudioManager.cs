@@ -24,7 +24,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource effectsSource;
     [HideInInspector]
     public AudioSource musicSource;
-    //[HideInInspector]
+    [HideInInspector]
     public List<AudioSource> effectsSources = new List<AudioSource>();
 
 	void Awake()
@@ -51,6 +51,12 @@ public class AudioManager : MonoBehaviour
 
 		// Load audio values
 		LoadAudioSettings();
+
+        // Playing the menu music
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            SwitchMusic(menuMusic);
+        }
 	}
 
     void Update()

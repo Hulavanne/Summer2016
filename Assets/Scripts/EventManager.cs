@@ -406,6 +406,21 @@ public class EventManager : MonoBehaviour
         TextBoxManager.current.hasClickedNoButton = false;
     }
 
+    public void LevelEnteringEvent(LevelManager.Levels enteredLevel)
+    {
+        if (enteredLevel == LevelManager.Levels.WEIRD_FOREST_BELLADONNA)
+        {
+            /*CharacterBehaviour behaviour = PlayerController.current.GetComponent<CharacterBehaviour>();
+
+            behaviour.ChangeLines(0, 0);
+            behaviour.PlayerSelfDialogue();
+
+            PlayerController.current.overlappingNpc = null;
+            PlayerController.current.isOverlappingNPC = false;
+            PlayerController.current.DeactivateSelection();*/
+        }
+    }
+
     public IEnumerator ScreenFadeEvent(CharacterBehaviour behaviour)
     {
         // Start the fading

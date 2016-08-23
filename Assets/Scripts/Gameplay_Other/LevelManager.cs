@@ -105,11 +105,6 @@ public class LevelManager : MonoBehaviour
                 {
                     TestStart();
                 }
-                else
-                {
-                    // Play the music track of the level
-                    //AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
-                }
             }
         }
         else
@@ -122,11 +117,6 @@ public class LevelManager : MonoBehaviour
             if (currentLevel != Levels.CIERAN_BEDROOM)
             {
                 TestStart();
-            }
-            else
-            {
-                // Play the music track of the level
-                //AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
             }
         }
 
@@ -146,6 +136,9 @@ public class LevelManager : MonoBehaviour
 
         // Play the music track of the level
         AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
+
+        // Deactivate the levels the player is not in
+        DeactivateOtherLevels();
 	}
 
 	void Update()
@@ -158,14 +151,19 @@ public class LevelManager : MonoBehaviour
 
     public void SetLighting()
     {
-        if (lightAmount > 1) lightAmount = 1;
-        if (lightAmount < -1) lightAmount = -1;
+        if (lightAmount > 1)
+        {
+            lightAmount = 1;
+        }
+        if (lightAmount < -1)
+        {
+            lightAmount = -1;
+        }
         if (lightAmount > 0) // turn white
         {
             lightPlaneRenderer.SetAlpha(lightAmount);
             darknessPlaneRenderer.SetAlpha(0.0f);
         }
-
         else if (lightAmount < 0) // turn black
         {
             
@@ -243,18 +241,8 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // Keeps the current level active, deactivates all others
-        foreach (Level level in levelsList)
-        {
-            if (level.GetComponent<Level>().levelName != currentLevel)
-            {
-                level.gameObject.SetActive(false);
-            }
-            else
-            {
-                level.gameObject.SetActive(true);
-            }
-        }
+        DeactivateOtherLevels();
+        EventManager.current.LevelEnteringEvent(currentLevel);
     }
 
 	public void LoadSavedLevel()
@@ -277,8 +265,21 @@ public class LevelManager : MonoBehaviour
 		player.transform.position = new Vector3(startingPositionX, player.transform.position.y, player.transform.position.z);
 
         CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel].gameObject);
-
-        // Play the music track of the level
-        AudioManager.current.SwitchMusic(levelsList[(int)currentLevel].GetComponent<Level>().levelMusic);
 	}
+
+    public void DeactivateOtherLevels()
+    {
+        // Keeps the current level active, deactivates all others
+        foreach (Level level in levelsList)
+        {
+            if (level.GetComponent<Level>().levelName != currentLevel)
+            {
+                level.gameObject.SetActive(false);
+            }
+            else
+            {
+                level.gameObject.SetActive(true);
+            }
+        }
+    }
 }

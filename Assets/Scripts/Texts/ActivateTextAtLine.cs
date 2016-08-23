@@ -77,15 +77,11 @@ public class ActivateTextAtLine : MonoBehaviour
                         EventManager.current.InteractWithLilies();
                     }
                 }
-            }
-            else
-            {
-                npcBehaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
-            }
 
-            PlayerController.current.DeactivateSelection();
-            ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
-                npcBehaviour.textStartLine, npcBehaviour.textEndLine);
+                PlayerController.current.DeactivateSelection();
+                ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
+                    npcBehaviour.textStartLine, npcBehaviour.textEndLine);
+            }
         }
     }
 

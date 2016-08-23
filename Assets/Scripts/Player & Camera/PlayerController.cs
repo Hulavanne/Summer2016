@@ -269,6 +269,7 @@ public class PlayerController : MonoBehaviour {
                 if (behaviour.isAutomatic)
                 {
                     PlayerAnimStop();
+                    canTalkToNPC = true;
                     ActivateTextAtLine.current.TalkToNPC();
                 }
             }

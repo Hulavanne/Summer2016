@@ -149,6 +149,8 @@ public class CharacterBehaviour : MonoBehaviour
 
     public void PlayerSelfDialogue()
     {
+        //PlayerController.current.overlappingNpc = gameObject;
+
         PlayerController.current.canMove = false;
         PlayerController.current.isOverlappingNPC = true;
         PlayerController.current.canTalkToNPC = true;

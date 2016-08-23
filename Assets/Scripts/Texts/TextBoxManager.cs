@@ -348,7 +348,15 @@ public class TextBoxManager : MonoBehaviour
         if (PlayerController.current != null)
         {
             PlayerController.current.canMove = true;
-            PlayerController.current.hud.SetHud(true);
+
+            if (!IntroTutorial.isTutorialActive)
+            {
+                PlayerController.current.hud.SetHud(false);
+            }
+            else
+            {
+                PlayerController.current.hud.SetHud(true);
+            }
 
             if (endDialogue)
             {

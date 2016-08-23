@@ -11,6 +11,11 @@ public class TouchInput : MonoBehaviour
     public bool hasSelected;
     public bool wasRunning;
 
+    public float upEdge = 1.5f;
+    public float downEdge = 4.0f;
+    public float leftEdge = 1.5f;
+    public float rightEdge = 1.5f;
+
     public int runValue = 0;
     public float runTouchDelay = 0;
     public float runTouchDelayMax = 5.0f;
@@ -37,6 +42,26 @@ public class TouchInput : MonoBehaviour
     
     void Update()
     {
+        Debug.DrawLine(new Vector3(player.hud.questionMark.transform.position.x + rightEdge,
+            player.hud.questionMark.transform.position.y + upEdge, 0),
+            new Vector3(player.hud.questionMark.transform.position.x + rightEdge,
+                player.hud.questionMark.transform.position.y - downEdge, 0), Color.red);
+
+        Debug.DrawLine(new Vector3(player.hud.questionMark.transform.position.x + rightEdge,
+            player.hud.questionMark.transform.position.y + upEdge, 0),
+            new Vector3(player.hud.questionMark.transform.position.x - leftEdge,
+                player.hud.questionMark.transform.position.y + upEdge, 0), Color.red);
+        
+        Debug.DrawLine(new Vector3(player.hud.questionMark.transform.position.x - leftEdge,
+            player.hud.questionMark.transform.position.y + upEdge, 0),
+            new Vector3(player.hud.questionMark.transform.position.x - leftEdge,
+                player.hud.questionMark.transform.position.y - downEdge, 0), Color.red);
+        
+        Debug.DrawLine(new Vector3(player.hud.questionMark.transform.position.x - leftEdge,
+            player.hud.questionMark.transform.position.y - downEdge, 0),
+            new Vector3(player.hud.questionMark.transform.position.x + rightEdge,
+                player.hud.questionMark.transform.position.y - downEdge, 0), Color.red);
+        
         if (MenuController.gamePaused)
         {
             return;
@@ -345,15 +370,20 @@ public class TouchInput : MonoBehaviour
 
     void DetectTouch()
     {
+        if (MenuController.gamePaused || TextBoxManager.current.isActive)
+        {
+            return;
+        }
+
         for (var i = 0; i < Input.touchCount; ++i)
         {
             Touch touch = Input.GetTouch(i);
             if (touch.phase == TouchPhase.Began)
             {
-                if (touch.position.x > player.hud.questionMark.transform.position.x - 1 &&
-                touch.position.x < player.hud.questionMark.transform.position.x + 1 &&
-                touch.position.y > player.hud.questionMark.transform.position.y - 1 &&
-                touch.position.y < player.hud.questionMark.transform.position.y + 1)
+                if (touch.position.x > player.hud.questionMark.transform.position.x - leftEdge &&
+                    touch.position.x < player.hud.questionMark.transform.position.x + rightEdge &&
+                    touch.position.y > player.hud.questionMark.transform.position.y - downEdge &&
+                    touch.position.y < player.hud.questionMark.transform.position.y + upEdge)
                 {
                     selectionTouchException = true;
                     menu.ActionButton();
@@ -361,25 +391,6 @@ public class TouchInput : MonoBehaviour
                     hasSelected = true;
                 }
             }
-        }
-
-        if (MenuController.gamePaused || TextBoxManager.current.isActive)
-        {
-            return;
-        }
-
-        mousePos = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
-            Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-
-        if (mousePos.x > player.hud.questionMark.transform.position.x - 1 &&
-            mousePos.x < player.hud.questionMark.transform.position.x + 1 &&
-            mousePos.y > player.hud.questionMark.transform.position.y - 1 &&
-            mousePos.y < player.hud.questionMark.transform.position.y + 1)
-        {
-            selectionTouchException = true;
-            menu.ActionButton();
-            menu.PlayButtonSoundEffect();
-            hasSelected = true;
         }
     }
 
@@ -393,10 +404,10 @@ public class TouchInput : MonoBehaviour
         mousePos = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
             Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
         
-        if (mousePos.x > player.hud.questionMark.transform.position.x - 1 &&
-            mousePos.x < player.hud.questionMark.transform.position.x + 1 &&
-            mousePos.y > player.hud.questionMark.transform.position.y - 1 &&
-            mousePos.y < player.hud.questionMark.transform.position.y + 1)
+        if (mousePos.x > player.hud.questionMark.transform.position.x - leftEdge &&
+            mousePos.x < player.hud.questionMark.transform.position.x + rightEdge &&
+            mousePos.y > player.hud.questionMark.transform.position.y - downEdge &&
+            mousePos.y < player.hud.questionMark.transform.position.y + upEdge)
         {
             selectionTouchException = true;
             menu.ActionButton();

@@ -43,6 +43,7 @@ public class IsIntro : MonoBehaviour
     {
         // Remove the intro's CharacterBehaviour from the npcBehaviours list and destroy this object
         EventManager.current.npcBehaviours.Remove(behaviour);
+        GameObject.Find("GUI").transform.FindChild("Tutorial2").gameObject.SetActive(true);
         Destroy(gameObject);
     }
 }

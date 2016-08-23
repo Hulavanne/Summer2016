@@ -93,30 +93,38 @@ public class TextBoxManager : MonoBehaviour
             SetCurrentYesNoButtons(); // sets active or not active
             SetCurrentOptButtons(); // sets active or not active
 
-            if ((Input.GetMouseButtonDown(0)  && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
+            if ((Input.GetMouseButtonDown(0) && !showCurrentYesNoButtons && !showCurrentOptButtons) ||
                 hasClickedYesNoButton || hasClickedOptButton)
             {
-                // executes every click without buttons, or every successful button press
-                //player.talkToNPC = false;
-                hasClickedYesNoButton = false;
-                hasClickedOptButton = false;
-
-                if (!isTyping)
+                if (PlayerController.current.touchRun.selectionTouchException)
                 {
-                    currentLine++;
-
-                    if (currentLine > endAtLine)
-                    {
-                        DisableTextBox();
-                    }
-                    else
-                    {
-                        StartCoroutine(TextScroll(textLines[currentLine]));
-                    }
+                    PlayerController.current.touchRun.selectionTouchException = false;
                 }
-                else if (isTyping && !cancelTyping)
+
+                else
                 {
-                    cancelTyping = true;
+                    // executes every click without buttons, or every successful button press
+                    //player.talkToNPC = false;
+                    hasClickedYesNoButton = false;
+                    hasClickedOptButton = false;
+
+                    if (!isTyping)
+                    {
+                        currentLine++;
+
+                        if (currentLine > endAtLine)
+                        {
+                            DisableTextBox();
+                        }
+                        else
+                        {
+                            StartCoroutine(TextScroll(textLines[currentLine]));
+                        }
+                    }
+                    else if (isTyping && !cancelTyping)
+                    {
+                        cancelTyping = true;
+                    }
                 }
             }
         }

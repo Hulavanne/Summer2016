@@ -6,11 +6,16 @@ using UnityEngine.UI;
 public class TouchInput : MonoBehaviour
 {
 	public PlayerController player;
-    
+    public Vector2 mousePos;
+    public MenuController menu;
+    public bool hasSelected;
+    public bool wasRunning;
+
     public int runValue = 0;
     public float runTouchDelay = 0;
     public float runTouchDelayMax = 5.0f;
-    
+
+    public bool selectionTouchException;
     public bool isPressing;
     public bool isTouchingRight;
     bool isTouching;
@@ -26,7 +31,8 @@ public class TouchInput : MonoBehaviour
 
 	void Awake()
 	{
-		player = transform.GetComponent<PlayerController>();
+        menu = GameObject.Find("InGameUI").GetComponent<MenuController>();
+        player = transform.GetComponent<PlayerController>();
 	}
     
     void Update()
@@ -57,7 +63,12 @@ public class TouchInput : MonoBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                if (SelectionBehaviour.current.hasSelected)
+                if (Input.GetMouseButtonDown(0))
+                {
+                    DetectMouse();
+                }
+
+                if (hasSelected)
                 {
                     PlayerController.current.PlayerAnimStop();
                     return;
@@ -78,7 +89,7 @@ public class TouchInput : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                if (runValue == 0) // checks for the first touch input with ButtonDown event
+                if (runValue == 0) // checks 55for the first touch input with ButtonDown event
                 {
                     if ((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2))
                     {
@@ -106,9 +117,17 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             { // does nothing if touches left after touching right
-                                runValue = 1;
-                                runTouchDelay = runTouchDelayMax;
-                                isTouchingRight = true;
+                                if (wasRunning)
+                                {
+                                    runValue++;
+                                    wasRunning = false;
+                                }
+                                else
+                                {
+                                    runValue = 1;
+                                    runTouchDelay = runTouchDelayMax;
+                                    isTouchingRight = true;
+                                }
                             }
                         }
                         else
@@ -121,9 +140,17 @@ public class TouchInput : MonoBehaviour
                             }
                             else
                             { // does nothing if touches right after touching left
-                                runValue = 1;
-                                runTouchDelay = runTouchDelayMax;
-                                isTouchingRight = false;
+                                if (wasRunning)
+                                {
+                                    runValue++;
+                                    wasRunning = false;
+                                }
+                                else
+                                {
+                                    runValue = 1;
+                                    runTouchDelay = runTouchDelayMax;
+                                    isTouchingRight = true;
+                                }
                             }
                         }
                     }
@@ -131,13 +158,13 @@ public class TouchInput : MonoBehaviour
                 else // runValue is equal to 2
                 {
                     if (((Input.mousePosition.x >= 0) && (Input.mousePosition.x < Screen.width / 2)))
-                    { // keeps running
+                    {
                         runValue++;
                         runTouchDelay = 0;
                         isTouchingRight = false;
                     }
                     else
-                    { // keeps running
+                    {
                         runValue = 1;
                         runTouchDelay = runTouchDelayMax;
                         isTouchingRight = true;
@@ -153,13 +180,14 @@ public class TouchInput : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            SelectionBehaviour.current.hasSelected = false;
+            hasSelected = false;
             TextBoxManager.current.clickException = false;
             player.PlayerAnimStop();
             if (runValue == 2)
             {
                 runTouchDelay = runTouchDelayMax;
-                runValue = 1; // if at any point the player releases the touch while the value is 2, it resets to 0
+                runValue = 1;
+                wasRunning = true;
             }
         }
 
@@ -182,6 +210,17 @@ public class TouchInput : MonoBehaviour
             {
                 if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
                 {
+                    if (touch.phase == TouchPhase.Began)
+                {
+                    DetectTouch();
+                }
+
+                if (hasSelected)
+                {
+                    PlayerController.current.PlayerAnimStop();
+                    return;
+                }
+
                     isPressing = true;
 
                     if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))
@@ -272,7 +311,7 @@ public class TouchInput : MonoBehaviour
                     if (runValue == 2)
                     {
                         runTouchDelay = runTouchDelayMax;
-                        runValue = 1; // if at any point the player releases the touch while the value is 2, it resets to 0    
+                        runValue = 1; 
                     }
                 }
             }
@@ -301,6 +340,68 @@ public class TouchInput : MonoBehaviour
         {
             runValue = 0;
             player.PlayerAnimStop();
+        }
+    }
+
+    void DetectTouch()
+    {
+        for (var i = 0; i < Input.touchCount; ++i)
+        {
+            Touch touch = Input.GetTouch(i);
+            if (touch.phase == TouchPhase.Began)
+            {
+                if (touch.position.x > player.hud.questionMark.transform.position.x - 1 &&
+                touch.position.x < player.hud.questionMark.transform.position.x + 1 &&
+                touch.position.y > player.hud.questionMark.transform.position.y - 1 &&
+                touch.position.y < player.hud.questionMark.transform.position.y + 1)
+                {
+                    selectionTouchException = true;
+                    menu.ActionButton();
+                    menu.PlayButtonSoundEffect();
+                    hasSelected = true;
+                }
+            }
+        }
+
+        if (MenuController.gamePaused || TextBoxManager.current.isActive)
+        {
+            return;
+        }
+
+        mousePos = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
+            Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+
+        if (mousePos.x > player.hud.questionMark.transform.position.x - 1 &&
+            mousePos.x < player.hud.questionMark.transform.position.x + 1 &&
+            mousePos.y > player.hud.questionMark.transform.position.y - 1 &&
+            mousePos.y < player.hud.questionMark.transform.position.y + 1)
+        {
+            selectionTouchException = true;
+            menu.ActionButton();
+            menu.PlayButtonSoundEffect();
+            hasSelected = true;
+        }
+    }
+
+    void DetectMouse()
+    {
+        if (MenuController.gamePaused || TextBoxManager.current.isActive)
+        {   
+            return;
+        }
+        
+        mousePos = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,
+            Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+        
+        if (mousePos.x > player.hud.questionMark.transform.position.x - 1 &&
+            mousePos.x < player.hud.questionMark.transform.position.x + 1 &&
+            mousePos.y > player.hud.questionMark.transform.position.y - 1 &&
+            mousePos.y < player.hud.questionMark.transform.position.y + 1)
+        {
+            selectionTouchException = true;
+            menu.ActionButton();
+            menu.PlayButtonSoundEffect();
+            hasSelected = true;
         }
     }
 

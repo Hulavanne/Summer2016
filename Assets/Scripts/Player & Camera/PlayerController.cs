@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		#endregion
 	}
-
+    
     void LateUpdate()
     {
         if (moving)
@@ -408,7 +408,13 @@ public class PlayerController : MonoBehaviour {
 
     public void Move(int direction)
     {
-        if (SelectionBehaviour.current.hasSelected)
+        if (touchRun.selectionTouchException)
+        {
+            touchRun.selectionTouchException = false;
+            return;
+        }
+
+        if (touchRun.hasSelected)
         {
             PlayerAnimStop();
             return;

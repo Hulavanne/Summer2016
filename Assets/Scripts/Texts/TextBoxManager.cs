@@ -351,12 +351,10 @@ public class TextBoxManager : MonoBehaviour
 
             if (IntroTutorial.isTutorialActive)
             {
-                Debug.Log("false1");
                 PlayerController.current.hud.SetHud(false);
             }
             else
             {
-                Debug.Log("true2");
                 PlayerController.current.hud.SetHud(true);
             }
 

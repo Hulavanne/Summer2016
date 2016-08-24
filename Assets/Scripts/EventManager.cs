@@ -412,19 +412,22 @@ public class EventManager : MonoBehaviour
         {
             if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.TUTORIAL))
             {
-                
+                // Activate the second frame of the tutorial here
             }
         }
         else if (enteredLevel == LevelManager.Levels.WEIRD_FOREST_BELLADONNA)
         {
-            /*CharacterBehaviour behaviour = PlayerController.current.GetComponent<CharacterBehaviour>();
+            if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.ENEMY_CHASE))
+            {
+                CharacterBehaviour behaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
 
-            behaviour.ChangeLines(0, 0);
-            behaviour.PlayerSelfDialogue();
+                behaviour.ChangeLines(12, 13);
+                behaviour.PlayerSelfDialogue();
 
-            PlayerController.current.overlappingNpc = null;
-            PlayerController.current.isOverlappingNPC = false;
-            PlayerController.current.DeactivateSelection();*/
+                PlayerController.current.overlappingNpc = null;
+                PlayerController.current.isOverlappingNPC = false;
+                PlayerController.current.DeactivateSelection();
+            }
         }
     }
 

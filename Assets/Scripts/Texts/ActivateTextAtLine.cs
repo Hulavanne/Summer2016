@@ -38,7 +38,7 @@ public class ActivateTextAtLine : MonoBehaviour
     public bool requireButtonPress;
     public bool waitForPress;
 
-    public CharacterBehaviour npcBehaviour;
+    public CharacterBehaviour behaviour;
 
     public bool destroyWhenActivated;
 
@@ -56,32 +56,36 @@ public class ActivateTextAtLine : MonoBehaviour
         {
             if (PlayerController.current.overlappingNpc != null)
             {
-                npcBehaviour = PlayerController.current.overlappingNpc.GetComponentInChildren<CharacterBehaviour>();
+                behaviour = PlayerController.current.overlappingNpc.GetComponentInChildren<CharacterBehaviour>();
 
                 if (interact)
                 {
-                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BELLADONNA)
+                    if (behaviour.npcType == CharacterBehaviour.Type.BELLADONNA)
                     {
-                        EventManager.current.InteractWithBelladonna(npcBehaviour);
+                        EventManager.current.InteractWithBelladonna(behaviour);
                     }
-                    if (npcBehaviour.npcType == CharacterBehaviour.Type.DEER)
+                    if (behaviour.npcType == CharacterBehaviour.Type.DEER)
                     {
-                        EventManager.current.InteractWithDeer(npcBehaviour);
+                        EventManager.current.InteractWithDeer(behaviour);
                     }
-                    if (npcBehaviour.npcType == CharacterBehaviour.Type.BEAR)
+                    if (behaviour.npcType == CharacterBehaviour.Type.BEAR)
                     {
-                        EventManager.current.InteractWithBear(npcBehaviour);
+                        EventManager.current.InteractWithBear(behaviour);
                     }
-                    if (npcBehaviour.npcType == CharacterBehaviour.Type.LILIES)
+                    if (behaviour.npcType == CharacterBehaviour.Type.LILIES)
                     {
                         EventManager.current.InteractWithLilies();
                     }
                 }
-
-                PlayerController.current.DeactivateSelection();
-                ReloadTextRefScript(npcBehaviour.text, npcBehaviour.buttonsYesNo, npcBehaviour.buttonsOpt,
-                    npcBehaviour.textStartLine, npcBehaviour.textEndLine);
             }
+            else
+            {
+                behaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
+            }
+
+            PlayerController.current.DeactivateSelection();
+            ReloadTextRefScript(behaviour.text, behaviour.buttonsYesNo, behaviour.buttonsOpt,
+                behaviour.textStartLine, behaviour.textEndLine);
         }
     }
 

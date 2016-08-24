@@ -8,21 +8,15 @@ public class CharacterBehaviour : MonoBehaviour
     {
         PASSIVE,
         INTRO,
-        BED,
-        SHELF,
-        BOX,
-        FRONT_DOOR,
+        TUTORIAL,
         KITCHEN,
-        PARENTS_BED,
-        PARENTS_CLOSET,
-        OUTHOUSE,
+        FRONT_DOOR,
         BELLADONNA,
         DEER,
         BEAR,
         LILIES,
-        MURAL,
         DOOR_PUZZLE,
-        MORTAR_AND_PESTLE,
+        MONEY_BOX,
         ENEMY_CHASE
     };
     public Type npcType = Type.PASSIVE;
@@ -71,9 +65,9 @@ public class CharacterBehaviour : MonoBehaviour
                 }
             }
         }
-        else if (npcType == Type.MORTAR_AND_PESTLE)
+        else if (npcType == Type.MONEY_BOX)
         {
-            if (Game.current != null && Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.MORTAR_AND_PESTLE))
+            if (Game.current != null && Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.MONEY_BOX))
             {
                 gameObject.SetActive(false);
             }

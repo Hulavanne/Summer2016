@@ -53,7 +53,7 @@ public class IntroTutorial : MonoBehaviour
                 {
                     isTutorialActive = false;
                     PlayerController.current.hud.SetHud(true);
-                    PlayerController.current.canMove = false;
+                    PlayerController.current.canMove = true;
                     child.gameObject.SetActive(false);
                 }
             }

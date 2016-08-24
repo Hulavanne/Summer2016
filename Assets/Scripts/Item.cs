@@ -20,7 +20,7 @@ public class Item : MonoBehaviour
         NIGHTSHADE,
         BERRIES,
         DEATH_CAP,
-        MORTAR_AND_PESTLE
+        MONEY_BOX
     };
     public Type itemType = Type.NONE;
 

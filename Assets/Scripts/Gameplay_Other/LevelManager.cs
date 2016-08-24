@@ -26,6 +26,8 @@ public class LevelManager : MonoBehaviour
         CAVE_AFTER_PUZZLE = 13,
         WEIRD_FOREST_AFTER_CAVE = 14,
         WEIRD_FOREST_BELLADONNA = 15,
+        WEIRD_FOREST_OPENING = 16,
+        WEIRD_YARD = 17,
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;

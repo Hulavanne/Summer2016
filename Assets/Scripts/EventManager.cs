@@ -408,7 +408,14 @@ public class EventManager : MonoBehaviour
 
     public void LevelEnteringEvent(LevelManager.Levels enteredLevel)
     {
-        if (enteredLevel == LevelManager.Levels.WEIRD_FOREST_BELLADONNA)
+        if (enteredLevel == LevelManager.Levels.KITCHEN)
+        {
+            if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.TUTORIAL))
+            {
+                
+            }
+        }
+        else if (enteredLevel == LevelManager.Levels.WEIRD_FOREST_BELLADONNA)
         {
             /*CharacterBehaviour behaviour = PlayerController.current.GetComponent<CharacterBehaviour>();
 
@@ -450,13 +457,13 @@ public class EventManager : MonoBehaviour
             Game.current.triggeredEvents[CharacterBehaviour.Type.BEAR] = 3;
             behaviour.gameObject.SetActive(false);
         }
-        else if (behaviour.npcType == CharacterBehaviour.Type.MORTAR_AND_PESTLE)
+        else if (behaviour.npcType == CharacterBehaviour.Type.MONEY_BOX)
         {
             // Add event to triggeredEvents, if it isn't already there
-            Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.MORTAR_AND_PESTLE);
+            Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.MONEY_BOX);
 
             // Add mortar and pestle to the inventory and deactivate the object
-            Inventory.current.AddItemToInventory(Item.Type.MORTAR_AND_PESTLE);
+            Inventory.current.AddItemToInventory(Item.Type.MONEY_BOX);
             behaviour.gameObject.SetActive(false);
         }
     }

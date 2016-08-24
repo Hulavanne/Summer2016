@@ -245,7 +245,7 @@ public class TextBoxManager : MonoBehaviour
             StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
         }
         // Mortar and pestle interaction
-        else if (npcType == CharacterBehaviour.Type.MORTAR_AND_PESTLE)
+        else if (npcType == CharacterBehaviour.Type.MONEY_BOX)
         {
             hasClickedYesNoButton = false;
             hasClickedOptButton = false;
@@ -349,12 +349,14 @@ public class TextBoxManager : MonoBehaviour
         {
             PlayerController.current.canMove = true;
 
-            if (!IntroTutorial.isTutorialActive)
+            if (IntroTutorial.isTutorialActive)
             {
+                Debug.Log("false1");
                 PlayerController.current.hud.SetHud(false);
             }
             else
             {
+                Debug.Log("true2");
                 PlayerController.current.hud.SetHud(true);
             }
 

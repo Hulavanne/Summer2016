@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour {
     public bool isUnhiding = false; // animation for unhiding
     public bool isFacingRight;
     public bool isRunning;
-    bool wasRunning;
+    bool wasWalking;
 
     bool isNextRight;
     bool canCameraFollow;
@@ -163,10 +163,10 @@ public class PlayerController : MonoBehaviour {
             // If running
             else
             {
-                if (wasRunning)
+                if (wasWalking)
                 {
                     SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource);
-                    wasRunning = false;
+                    wasWalking = false;
                 }
 
                 if (currentLevel.groundType == Level.Ground.SOLID)
@@ -448,7 +448,7 @@ public class PlayerController : MonoBehaviour {
             {
                 playerAnim.SetBool("isRunning", true);
                 transform.position += new Vector3(movementDirection * runningSpeed * Time.deltaTime, 0, 0);
-                wasRunning = true;
+                wasWalking = true;
             }
             else
             {

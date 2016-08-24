@@ -26,6 +26,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource;
     [HideInInspector]
     public List<AudioSource> effectsSources = new List<AudioSource>();
+    [HideInInspector]
+    public List<bool> loopingEffectsSources = new List<bool>();
 
 	void Awake()
 	{
@@ -101,6 +103,16 @@ public class AudioManager : MonoBehaviour
             if (source != musicSource)
             {
                 sources.Add(source);
+            }
+        }
+
+        if (loopingEffectsSources.Count != sources.Count)
+        {
+            loopingEffectsSources.Clear();
+
+            foreach (AudioSource source in sources)
+            {
+                loopingEffectsSources.Add(false);
             }
         }
 

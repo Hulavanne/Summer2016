@@ -16,8 +16,9 @@ public class CharacterBehaviour : MonoBehaviour
         BEAR,
         LILIES,
         DOOR_PUZZLE,
-        MONEY_BOX,
         ENEMY_CHASE,
+        CHEST,
+        MONEY_BOX,
         SLOPE,
         WELL,
         EXIT,
@@ -126,7 +127,7 @@ public class CharacterBehaviour : MonoBehaviour
                 EventManager.current.InteractWithBear(this, false, true);
             }
         }
-        else if (npcType == Type.MONEY_BOX)
+        else if (npcType == Type.CHEST)
         {
             EventManager.current.InteractWithChest(this, true);
         }

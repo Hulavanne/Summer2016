@@ -76,11 +76,15 @@ public class Item : MonoBehaviour
                 EventManager.current.EatBerries(0);
                 return true;
             }
-            else if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.BEAR ||
-                PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.MONEY_BOX)
+            else if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.BEAR)
             {
                 chargesToRemove = 0;
             }
+        }
+        // Exception for when using gloves on the chest
+        if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.CHEST)
+        {
+            itemData.charges = charges = 1;
         }
 
         if (!usable)

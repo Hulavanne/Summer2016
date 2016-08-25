@@ -352,16 +352,16 @@ public class EventManager : MonoBehaviour
         int value = 0;
 
         // Add event to triggeredEvents, if it isn't already there
-        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.MONEY_BOX);
+        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.CHEST);
 
         // If player is using gloves
-        if (usingGloves)
+        if (usingGloves && Game.current.triggeredEvents[CharacterBehaviour.Type.CHEST] < 1)
         {
             // Set state to 1
-            Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] = 1;
+            Game.current.triggeredEvents[CharacterBehaviour.Type.CHEST] = 1;
         }
 
-        value = Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA];
+        value = Game.current.triggeredEvents[CharacterBehaviour.Type.CHEST];
 
         // Default response
         if (value == 0)
@@ -375,16 +375,15 @@ public class EventManager : MonoBehaviour
             behaviour.ChangeLines(3, 4);
             ActivateTextAtLine.current.TalkToNPC(false);
 
-            // Add nightshade to player's inventory
+            // Add the money box to player's inventory and remove the gloves
             Inventory.current.AddItemToInventory(Item.Type.MONEY_BOX);
 
             // Set state
-            Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] = 2;
+            Game.current.triggeredEvents[CharacterBehaviour.Type.CHEST] = 2;
         }
         // After getting the money box
         else if (value == 2)
         {
-            // Setup correct lines and start talking
             behaviour.ChangeLines(6, 6);
         }
     }

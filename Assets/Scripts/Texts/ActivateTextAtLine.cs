@@ -76,7 +76,7 @@ public class ActivateTextAtLine : MonoBehaviour
                     {
                         EventManager.current.InteractWithLilies();
                     }
-                    else if (behaviour.npcType == CharacterBehaviour.Type.MONEY_BOX)
+                    else if (behaviour.npcType == CharacterBehaviour.Type.CHEST)
                     {
                         EventManager.current.InteractWithChest(behaviour);
                     }

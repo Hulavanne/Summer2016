@@ -9,92 +9,95 @@ public class IntroTutorial : MonoBehaviour
     public GameObject child;
 
     float opacity1, opacity2;
-    int state;
-    bool childDestroyed;
+    public bool childDestroyed, doesShow1, doesShow2, showing;
 
     void Awake()
     {
-        child = transform.GetChild(0).gameObject;
         tuto1Img = transform.GetChild(0).GetComponent<CanvasRenderer>();
-        tuto2Img = transform.GetChild(0).transform.GetChild(0).GetComponent<CanvasRenderer>();
+        tuto2Img = transform.GetChild(1).GetComponent<CanvasRenderer>();
     }
 
 	void Update ()
     {
-        if (child.activeSelf)
+        if (doesShow1)
         {
-            isTutorialActive = true;
+            showing = true;
+            PlayerController.current.hud.SetHud(false);
+            PlayerController.current.canMove = false;
+            opacity1 += 1.0f * Time.deltaTime;
+            tuto1Img.SetAlpha(opacity1);
+        }
 
-            if (state == 0)
+        else if (doesShow2)
+        {
+            showing = true;
+            PlayerController.current.hud.SetHud(false);
+            PlayerController.current.canMove = false;
+            opacity2 += 1.0f * Time.deltaTime;
+            tuto2Img.SetAlpha(opacity2);
+        }
+
+        else
+        {
+            if (showing)
             {
-                PlayerController.current.hud.SetHud(false);
-                PlayerController.current.canMove = false;
-                opacity2 += 1.0f * Time.deltaTime;
-                tuto1Img.SetAlpha(opacity2);
-                tuto2Img.SetAlpha(opacity1);
+                PlayerController.current.hud.SetHud(true);
+                PlayerController.current.canMove = true;
+                showing = false;
             }
-            else if (state == 1)
+
+            opacity1 -= 1.0f * Time.deltaTime;
+            tuto1Img.SetAlpha(opacity1);
+            opacity2 -= 1.0f * Time.deltaTime;
+            tuto2Img.SetAlpha(opacity2);
+        }
+
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.touches[0];
+
+            if (touch.phase == TouchPhase.Began)
             {
-                opacity1 += 1.0f * Time.deltaTime;
-                tuto1Img.SetAlpha(opacity2);
-                tuto2Img.SetAlpha(opacity1);
-                if (opacity1 >= 1.0f)
+                if (doesShow1 || doesShow2)
                 {
-                    opacity2 -= 1.0f * Time.deltaTime;
+                    doesShow1 = false;
+                    doesShow2 = false;
                 }
             }
-            else if (state == 2)
-            {
-                opacity1 -= 1.0f * Time.deltaTime;
-                tuto1Img.SetAlpha(opacity1);
-                tuto2Img.SetAlpha(opacity1);
+        }
 
-                if (opacity1 <= 0.0f)
-                {
-                    isTutorialActive = false;
-                    PlayerController.current.hud.SetHud(true);
-                    PlayerController.current.canMove = true;
-                    child.gameObject.SetActive(false);
-                }
-            }
+        if (opacity1 < 0)
+        {
+            opacity1 = 0;
+        }
+        else if (opacity1 > 1)
+        {
+            opacity1 = 1;
+        }
+        else if (opacity2 < 0)
+        {
+            opacity2 = 0;
+        }
+        else if (opacity2 > 1)
+        {
+            opacity2 = 1;
+        }
 
-            if (opacity1 < 0)
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (doesShow1 || doesShow2)
             {
-                opacity1 = 0;
-            }
-            else if (opacity1 > 1)
-            {
-                opacity1 = 1;
-            }
-            else if (opacity2 < 0)
-            {
-                opacity2 = 0;
-            }
-            else if (opacity2 > 1)
-            {
-                opacity2 = 1;
-            }
-
-            //Touch touch = Input.GetTouch(0);
-
-            if (Input.GetMouseButtonDown(0) /* || touch.phase == TouchPhase.Began */)
-            {
-                if (!childDestroyed)
-                {
-                    state = 1;
-                    childDestroyed = true;
-                }
-                else
-                {
-                    state = 2;
-                }
+                doesShow1 = false;
+                doesShow2 = false;
             }
         }
     }
 
     public void ResetValues()
     {
-        state = 0;
+        doesShow1 = false;
+        doesShow2 = false;
         tuto1Img.SetAlpha(0.0f);
         tuto2Img.SetAlpha(0.0f);
         opacity1 = 0.0f;

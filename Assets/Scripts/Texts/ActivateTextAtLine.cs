@@ -64,17 +64,25 @@ public class ActivateTextAtLine : MonoBehaviour
                     {
                         EventManager.current.InteractWithBelladonna(behaviour);
                     }
-                    if (behaviour.npcType == CharacterBehaviour.Type.DEER)
+                    else if (behaviour.npcType == CharacterBehaviour.Type.DEER)
                     {
                         EventManager.current.InteractWithDeer(behaviour);
                     }
-                    if (behaviour.npcType == CharacterBehaviour.Type.BEAR)
+                    else if (behaviour.npcType == CharacterBehaviour.Type.BEAR)
                     {
                         EventManager.current.InteractWithBear(behaviour);
                     }
-                    if (behaviour.npcType == CharacterBehaviour.Type.LILIES)
+                    else if (behaviour.npcType == CharacterBehaviour.Type.LILIES)
                     {
                         EventManager.current.InteractWithLilies();
+                    }
+                    else if (behaviour.npcType == CharacterBehaviour.Type.EXIT)
+                    {
+                        EventManager.current.InteractWithExit(behaviour);
+                    }
+                    else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE)
+                    {
+                        EventManager.current.InteractWithCandle(behaviour);
                     }
                 }
             }

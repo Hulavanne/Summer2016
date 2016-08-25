@@ -28,6 +28,10 @@ public class LevelManager : MonoBehaviour
         WEIRD_FOREST_BELLADONNA = 15,
         WEIRD_FOREST_OPENING = 16,
         WEIRD_YARD = 17,
+        HELL_KITCHEN = 18,
+        HELL_BEDROOM = 19,
+        HELL_WELL = 20,
+        HELL_CANDLE = 21
     };
 
 	public Levels currentLevel = Levels.CIERAN_BEDROOM;

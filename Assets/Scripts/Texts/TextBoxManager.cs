@@ -209,12 +209,8 @@ public class TextBoxManager : MonoBehaviour
         // Savepoint interaction
         if (currentNPC.GetComponent<Savepoint>() != null)
         {
-            //player.talkToNPC = false;
-            hasClickedYesNoButton = false;
-            hasClickedOptButton = false;
-
-            DisableTextBox();
             currentNPC.GetComponent<Savepoint>().OpenSaveMenu();
+            return;
         }
 
         CharacterBehaviour behaviour = currentNPC.GetComponent<CharacterBehaviour>();
@@ -223,20 +219,12 @@ public class TextBoxManager : MonoBehaviour
         // Door puzzle interaction
         if (npcType == CharacterBehaviour.Type.DOOR_PUZZLE)
         {
-            hasClickedYesNoButton = false;
-            hasClickedOptButton = false;
-            DisableTextBox();
-
             // Activate the puzzle
             DoorPuzzle.current.Activate(true);
         }
         // Door puzzle interaction
         else if (npcType == CharacterBehaviour.Type.LILIES)
         {
-            hasClickedYesNoButton = false;
-            hasClickedOptButton = false;
-            DisableTextBox();
-
             // Setup the next line
             behaviour.ChangeLines(2, 2);
             ActivateTextAtLine.current.TalkToNPC(false);
@@ -244,13 +232,9 @@ public class TextBoxManager : MonoBehaviour
             // Fade screen to black and back, while adding berries to the inventory
             StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
         }
-        // Mortar and pestle interaction
+        // Money box interaction
         else if (npcType == CharacterBehaviour.Type.MONEY_BOX)
         {
-            hasClickedYesNoButton = false;
-            hasClickedOptButton = false;
-            DisableTextBox();
-
             // Setup the next line
             behaviour.ChangeLines(2, 2);
             ActivateTextAtLine.current.TalkToNPC(false);
@@ -258,6 +242,20 @@ public class TextBoxManager : MonoBehaviour
             // Fade screen to black and back, while adding mortar and pestle to the inventory and deactivating the object
             StartCoroutine(EventManager.current.ScreenFadeEvent(behaviour));
         }
+        else if (npcType == CharacterBehaviour.Type.SLOPE)
+        {
+            currentNPC.SetActive(false);
+            currentNPC = null;
+            EventManager.current.UseSlope();
+        }
+        else
+        {
+            return;
+        }
+
+        hasClickedYesNoButton = false;
+        hasClickedOptButton = false;
+        DisableTextBox();
     }
 
     public void OnNoClick()

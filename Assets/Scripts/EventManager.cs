@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,13 @@ public class EventManager : MonoBehaviour
     public List<EventTrigger> eventTriggers = new List<EventTrigger>();
     public List<CharacterBehaviour> npcBehaviours = new List<CharacterBehaviour>();
     public List<DoorBehaviour> doorBehaviours = new List<DoorBehaviour>();
+
+    public enum Ending
+    {
+        NORMAL,
+        TRUE
+    }
+    public static Ending ending = Ending.NORMAL;
 
 	void Awake()
     {
@@ -252,25 +260,31 @@ public class EventManager : MonoBehaviour
 
     public void EatBerries(int phase)
     {
-        CharacterBehaviour behaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
+        Debug.Log("dededed");
+        int startLine = 0;
+        int endLine = 0;
 
         if (phase == -1)
         {
-            behaviour.ChangeLines(10, 10);
+            startLine = 10;
+            endLine = 10;
         }
         else if (phase == 0)
         {
-            behaviour.ChangeLines(0, 0);
+            startLine = 0;
+            endLine = 0;
         }
         else if (phase == 1)
         {
-            behaviour.ChangeLines(3, 4);
+            startLine = 3;
+            endLine = 4;
             TextBoxManager.current.hasClickedYesNoButton = false;
         }
         else if (phase == 2)
         {
             CameraEffects.current.fadeToBlack = true;
-            behaviour.ChangeLines(6, 7);
+            startLine = 6;
+            endLine = 7;
         }
         else if (phase == 3)
         {
@@ -278,11 +292,7 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        behaviour.PlayerSelfDialogue();
-
-        PlayerController.current.overlappingNpc = null;
-        PlayerController.current.isOverlappingNPC = false;
-        PlayerController.current.DeactivateSelection();
+        SelfDialogue(startLine, endLine);
     }
 
     public void InteractWithDoorPuzzle(bool openDoor = false)
@@ -324,6 +334,121 @@ public class EventManager : MonoBehaviour
             if (behaviour.thisEnemyLevel == LevelManager.Levels.CAVE_CREVICE)
             {
                 behaviour.gameObject.SetActive(true);
+            }
+        }
+        // Activate the rock infront of the cave entrance
+        foreach (Level level in LevelManager.current.levelsList)
+        {
+            if (level.levelName == LevelManager.Levels.CAVE_ENTRANCE)
+            {
+                level.transform.FindChild("Objects").GetChild(0).gameObject.SetActive(true);
+                break;
+            }
+        }
+    }
+
+    public void UseSlope()
+    {
+        // Enable the slope door's collider
+        foreach (DoorBehaviour behaviour in doorBehaviours)
+        {
+            if (behaviour.thisDoorLevel == LevelManager.Levels.HELL_BEDROOM)
+            {
+                behaviour.GetComponent<BoxCollider2D>().enabled = true;
+            }
+        }
+    }
+
+    public void InteractWithWell(CharacterBehaviour behaviour, Item.Type itemType)
+    {
+        // Add event to triggeredEvents, if it isn't already there
+        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.WELL);
+
+        if (itemType == Item.Type.NIGHTSHADE)
+        {
+            // If nothing has yet been given to the well
+            if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 0)
+            {
+                // Mark the nightshade's leaves as given
+                Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] = 1;
+            }
+            // If the money box has already been given to the well
+            else if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 2)
+            {
+                // Mark them both as given
+                Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] = 3;
+            }
+            // Change in the correct line
+            behaviour.ChangeLines(2, 2);
+        }
+        else if (itemType == Item.Type.MONEY_BOX)
+        {
+            // If nothing has yet been given to the well
+            if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 0)
+            {
+                // Mark the money box as given
+                Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] = 2;
+            }
+            // If the nightshade's leaves have already been given to the well
+            else if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 1)
+            {
+                // Mark them both as given
+                Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] = 3;
+            }
+            // Change in the correct line
+            behaviour.ChangeLines(4, 4);
+        }
+
+        // Talk to the well
+        ActivateTextAtLine.current.TalkToNPC(false);
+    }
+
+    public void InteractWithExit(CharacterBehaviour behaviour)
+    {
+        int value = 0;
+
+        // Add event to triggeredEvents, if it isn't already there
+        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.EXIT);
+
+        value = Game.current.triggeredEvents[CharacterBehaviour.Type.EXIT];
+
+        if (value == 0)
+        {
+            Game.current.triggeredEvents[CharacterBehaviour.Type.EXIT] = 1;
+
+            if (ending == Ending.NORMAL)
+            {
+                behaviour.ChangeLines(0, 2);
+            }
+            else if (ending == Ending.TRUE)
+            {
+                behaviour.ChangeLines(0, 2);
+            }
+        }
+        else if (value == 1)
+        {
+            behaviour.ChangeLines(4, 4);
+        }
+    }
+
+    public void InteractWithCandle(CharacterBehaviour behaviour)
+    {
+        if (!Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.EXIT))
+        {
+            behaviour.ChangeLines(0, 0);
+        }
+        else
+        {
+            // Add event to triggeredEvents, if it isn't already there
+            Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.CANDLE);
+
+            if (ending == Ending.NORMAL)
+            {
+                behaviour.ChangeLines(2, 2);
+            }
+            else if (ending == Ending.TRUE)
+            {
+                behaviour.ChangeLines(9, 9);
             }
         }
     }
@@ -400,6 +525,52 @@ public class EventManager : MonoBehaviour
             {
                 InteractWithDoorPuzzle();
             }
+            else if (behaviour.npcType == CharacterBehaviour.Type.EXIT)
+            {
+                Level.lightSpriteRenderer.enabled = true;
+            }
+            else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE)
+            {
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 0)
+                {
+                    behaviour.ChangeLines(3, 3);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[1];
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 1;
+                }
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 1)
+                {
+                    behaviour.ChangeLines(4, 4);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[2];
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 2;
+                }
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 2)
+                {
+                    behaviour.ChangeLines(5, 5);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[3];
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 3;
+                }
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 3)
+                {
+                    behaviour.ChangeLines(6, 6);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[4];
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 4;
+                }
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 4)
+                {
+                    behaviour.ChangeLines(7, 7);
+                    ActivateTextAtLine.current.TalkToNPC(false);
+                    Level.lightSpriteRenderer.transform.GetChild(0).gameObject.SetActive(true);
+                    Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 5;
+                }
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 5)
+                {
+                    PlayerController.current.isGameOver = true;
+                }
+            }
         }
 
         TextBoxManager.current.hasClickedYesButton = false;
@@ -419,16 +590,60 @@ public class EventManager : MonoBehaviour
         {
             if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.ENEMY_CHASE))
             {
-                CharacterBehaviour behaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
-
-                behaviour.ChangeLines(12, 13);
-                behaviour.PlayerSelfDialogue();
-
-                PlayerController.current.overlappingNpc = null;
-                PlayerController.current.isOverlappingNPC = false;
-                PlayerController.current.DeactivateSelection();
+                SelfDialogue(12, 13);
             }
         }
+        else if (enteredLevel == LevelManager.Levels.HELL_WELL)
+        {
+            if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.SLOPE))
+            {
+                SelfDialogue(15, 15);
+            }
+        }
+        else if (enteredLevel == LevelManager.Levels.HELL_CANDLE)
+        {
+            // Ending with nothing in the well
+            if (!Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.WELL))
+            {
+                ending = Ending.NORMAL;
+            }
+            else
+            {
+                // Ending with just nightshade in the well
+                if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 1)
+                {
+                    ending = Ending.NORMAL;
+                }
+                // Ending with just the money box in the well
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 2)
+                {
+                    ending = Ending.NORMAL;
+                }
+                // Ending with both the items in the well
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.WELL] == 3)
+                {
+                    ending = Ending.TRUE;
+                }
+                else
+                {
+                    ending = Ending.NORMAL;
+                }
+
+                return;
+            }
+        }
+    }
+
+    public void SelfDialogue(int startLine, int endLine)
+    {
+        PlayerController.current.overlappingNpc = null;
+        CharacterBehaviour behaviour = PlayerController.current.GetComponentInChildren<CharacterBehaviour>();
+
+        behaviour.ChangeLines(startLine, endLine);
+        behaviour.PlayerSelfDialogue();
+
+        PlayerController.current.isOverlappingNPC = false;
+        PlayerController.current.DeactivateSelection();
     }
 
     public IEnumerator ScreenFadeEvent(CharacterBehaviour behaviour)

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class Level : MonoBehaviour
 {
+    public static Level lastLevel;
+    public static SpriteRenderer lightSpriteRenderer;
+
     public LevelManager.Levels levelName;
 
     public enum Ground
@@ -17,6 +20,7 @@ public class Level : MonoBehaviour
 	public bool fixedCamera = false;
     public bool setCameraManually = false;
 	public float levelLightAmount;
+    public List<Sprite> lightsForLastLevel = new List<Sprite>();
 
     GameObject boundaries;
     GameObject playerBoundaries;
@@ -57,5 +61,29 @@ public class Level : MonoBehaviour
                 }
             }
         }
+
+        if (levelName == LevelManager.Levels.HELL_CANDLE)
+        {
+            lastLevel = this;
+            lightSpriteRenderer = transform.FindChild("Foreground").GetChild(0).GetComponent<SpriteRenderer>();
+            lightSpriteRenderer.enabled = false;
+        }
 	}
+
+    public void SwitchLighting()
+    {
+        // Updating the lighting in the last level
+        if (levelName == LevelManager.Levels.HELL_CANDLE &&
+            LevelManager.current.currentLevel == LevelManager.Levels.HELL_CANDLE)
+        {
+            if (EventManager.ending == EventManager.Ending.NORMAL)
+            {
+                
+            }
+            else if (EventManager.ending == EventManager.Ending.TRUE)
+            {
+
+            }
+        }
+    }
 }

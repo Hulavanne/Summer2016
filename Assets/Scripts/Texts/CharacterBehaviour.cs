@@ -17,7 +17,11 @@ public class CharacterBehaviour : MonoBehaviour
         LILIES,
         DOOR_PUZZLE,
         MONEY_BOX,
-        ENEMY_CHASE
+        ENEMY_CHASE,
+        SLOPE,
+        WELL,
+        EXIT,
+        CANDLE
     };
     public Type npcType = Type.PASSIVE;
     public List<Item.Type> requiredItemTypes = new List<Item.Type>();
@@ -121,6 +125,10 @@ public class CharacterBehaviour : MonoBehaviour
             {
                 EventManager.current.InteractWithBear(this, false, true);
             }
+        }
+        else if (npcType == Type.WELL)
+        {
+            EventManager.current.InteractWithWell(this, itemType);
         }
     }
 

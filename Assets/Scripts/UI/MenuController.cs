@@ -35,8 +35,6 @@ public class MenuController : MonoBehaviour
     GameObject confirmationOverlay;
 
 	string gameScene = "MainScene";
-	string pickSaveSlotString = "Pick a Save Slot";
-	string loadGameString = "Load Game";
     string quitConfirmationString = "Are you sure you want to exit to the main menu?";
     string saveConfirmationString = "Are you sure you want to overwrite the existing save file?";
 
@@ -278,7 +276,7 @@ public class MenuController : MonoBehaviour
         // Set state
         currentState = State.LOAD_MENU;
 
-		Text titleText = loadMenu.transform.FindChild("Title").GetComponent<Text>();
+        Image titleImage = loadMenu.transform.FindChild("Title").GetComponent<Image>();
 
 		// If selecting a game to be loaded this insures that all empty slots are set to non-interactable,
 		// but if saving a game this doesn't do anything
@@ -287,8 +285,8 @@ public class MenuController : MonoBehaviour
 		// If saving a game:
 		if (MenuController.savingGame)
 		{
-			// Set the title text
-			titleText.text = pickSaveSlotString;
+			// Disable the title text
+            titleImage.enabled = false;
 
 			// Pause the game
             PauseGame();
@@ -296,8 +294,8 @@ public class MenuController : MonoBehaviour
 		// If loading a game:
 		else
 		{
-			// Set the title text and index modifier
-			titleText.text = loadGameString;
+			// Enable the title text and index modifier
+            titleImage.enabled = true;
 			indexModifier = -1;
 		}
 

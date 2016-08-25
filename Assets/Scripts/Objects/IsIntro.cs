@@ -43,8 +43,8 @@ public class IsIntro : MonoBehaviour
     {
         // Remove the intro's CharacterBehaviour from the npcBehaviours list and destroy this object
         EventManager.current.npcBehaviours.Remove(behaviour);
-        GameObject.Find("TutorialOverlay").transform.GetChild(0).gameObject.SetActive(true);
-        GameObject.Find("TutorialOverlay").gameObject.GetComponent<IntroTutorial>().ResetValues();
+        PlayerController.current.hud.SetHud(false);
+        IntroTutorial.doesShow1 = true;
         Destroy(gameObject);
     }
 }

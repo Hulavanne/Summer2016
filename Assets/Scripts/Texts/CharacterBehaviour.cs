@@ -126,6 +126,10 @@ public class CharacterBehaviour : MonoBehaviour
                 EventManager.current.InteractWithBear(this, false, true);
             }
         }
+        else if (npcType == Type.MONEY_BOX)
+        {
+            EventManager.current.InteractWithChest(this, true);
+        }
         else if (npcType == Type.WELL)
         {
             EventManager.current.InteractWithWell(this, itemType);

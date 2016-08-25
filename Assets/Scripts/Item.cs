@@ -76,7 +76,8 @@ public class Item : MonoBehaviour
                 EventManager.current.EatBerries(0);
                 return true;
             }
-            else if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.BEAR)
+            else if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.BEAR ||
+                PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.MONEY_BOX)
             {
                 chargesToRemove = 0;
             }

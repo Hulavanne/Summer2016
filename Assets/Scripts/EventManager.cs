@@ -125,7 +125,7 @@ public class EventManager : MonoBehaviour
         // If player is using gloves
         if (usingGloves && Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] < 1)
         {
-            // Set state to 2
+            // Set state to 1
             Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] = 1;
         }
         else if (usingGloves && Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] >= 1)
@@ -347,6 +347,48 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void InteractWithChest(CharacterBehaviour behaviour, bool usingGloves = false)
+    {
+        int value = 0;
+
+        // Add event to triggeredEvents, if it isn't already there
+        Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.MONEY_BOX);
+
+        // If player is using gloves
+        if (usingGloves)
+        {
+            // Set state to 1
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] = 1;
+        }
+
+        value = Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA];
+
+        // Default response
+        if (value == 0)
+        {
+            behaviour.ChangeLines(0, 1);
+        }
+        // If using gloves
+        else if (value == 1)
+        {
+            // Setup correct lines and start talking
+            behaviour.ChangeLines(3, 4);
+            ActivateTextAtLine.current.TalkToNPC(false);
+
+            // Add nightshade to player's inventory
+            Inventory.current.AddItemToInventory(Item.Type.MONEY_BOX);
+
+            // Set state
+            Game.current.triggeredEvents[CharacterBehaviour.Type.BELLADONNA] = 2;
+        }
+        // After getting the money box
+        else if (value == 2)
+        {
+            // Setup correct lines and start talking
+            behaviour.ChangeLines(6, 6);
+        }
+    }
+
     public void UseSlope()
     {
         // Enable the slope door's collider
@@ -422,7 +464,7 @@ public class EventManager : MonoBehaviour
             }
             else if (ending == Ending.TRUE)
             {
-                behaviour.ChangeLines(0, 2);
+                behaviour.ChangeLines(6, 16);
             }
         }
         else if (value == 1)
@@ -525,9 +567,16 @@ public class EventManager : MonoBehaviour
             {
                 InteractWithDoorPuzzle();
             }
+            else if (behaviour.npcType == CharacterBehaviour.Type.WELL)
+            {
+                behaviour.ChangeLines(0, 0);
+            }
             else if (behaviour.npcType == CharacterBehaviour.Type.EXIT)
             {
-                Level.lightSpriteRenderer.enabled = true;
+                if (ending == Ending.TRUE)
+                {
+                    PlayerController.current.isGameOver = true;
+                }
             }
             else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE)
             {
@@ -583,7 +632,7 @@ public class EventManager : MonoBehaviour
         {
             if (Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.TUTORIAL))
             {
-                // Activate the second frame of the tutorial here
+                IntroTutorial.doesShow2 = true;
             }
         }
         else if (enteredLevel == LevelManager.Levels.WEIRD_FOREST_BELLADONNA)

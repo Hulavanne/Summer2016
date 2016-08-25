@@ -9,7 +9,8 @@ public class IntroTutorial : MonoBehaviour
     public GameObject child;
 
     float opacity1, opacity2;
-    public bool childDestroyed, doesShow1, doesShow2, showing;
+    public bool childDestroyed, showing;
+    public static bool doesShow1, doesShow2;
 
     void Awake()
     {

@@ -39,7 +39,6 @@ public class Level : MonoBehaviour
                 playerBoundaries = boundaries.transform.FindChild("PlayerBoundary").gameObject;
             }
 
-
             // Camera boundaries
             if (!setCameraManually)
             {
@@ -66,7 +65,7 @@ public class Level : MonoBehaviour
         {
             lastLevel = this;
             lightSpriteRenderer = transform.FindChild("Foreground").GetChild(0).GetComponent<SpriteRenderer>();
-            lightSpriteRenderer.enabled = false;
+            //lightSpriteRenderer.enabled = false;
         }
 	}
 

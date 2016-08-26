@@ -3,29 +3,8 @@ using System.Collections;
 
 public class ForegroundBehaviour : MonoBehaviour
 {
-    /*
-
-    public float speed = 1;
-    public PlayerController playerControl;
-    public LevelManager.Levels thisLevelValue;
-    public GameObject mainCamera;
-    public float distance;
-    public bool startLevel = true;
-    public SpriteRenderer sprite1;
-    public SpriteRenderer sprite2;
-    public float distanceFromCentre;
-    public float initPos;
-    public float distanceToInitPos;
-    public bool isOutOfStartLevel;
-
-    public Transform boundary1;
-    public Transform boundary2;
-
-    public float boundaryAverage;
-
-    */
-
-    public float bckgLeft, bckgRight, bckgExtent;
+    public float bckgLeft, bckgRight, bckgExtent, offset1, offset2;
+    public bool doesMove;
     public Camera mainCamera;
     public float cameraPos, levelPos, initPos1, initPos2, initPos1Y, initPos2Y;
     public GameObject levelObj;
@@ -72,8 +51,19 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void UpdateSpritePosition()
     {
-        spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)), initPos1Y, 0);
-        spr2.transform.position = new Vector3((initPos2 + (levelPos - cameraPos)), initPos2Y, 0);
+        offset1 += 1 * Time.deltaTime;
+        offset2 += 1 * Time.deltaTime;
+
+        if (doesMove)
+        {
+            spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)) + offset1, initPos1Y, 0);
+            spr2.transform.position = new Vector3((initPos2 + (levelPos - cameraPos)) + offset2, initPos2Y, 0);
+        }
+        else
+        {
+            spr1.transform.position = new Vector3((initPos1 + (levelPos - cameraPos)), initPos1Y, 0);
+            spr2.transform.position = new Vector3((initPos2 + (levelPos - cameraPos)), initPos2Y, 0);
+        }
     }
 
     void CheckSpritePosition()
@@ -81,18 +71,22 @@ public class ForegroundBehaviour : MonoBehaviour
         if (spr1.transform.position.x > (bckgRight + bckgExtent / 2))
         {
             spr1.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
+            //offset1 = 0;
         }
         if (spr2.transform.position.x > (bckgRight + bckgExtent / 2))
         {
             spr2.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
+            //offset2 = 0;
         }
         if (spr1.transform.position.x < (bckgRight + bckgExtent / 2))
         {
             spr1.transform.position += new Vector3(bckgExtent * 2, 0, 0);
+            //offset1 = 0;
         }
         if (spr2.transform.position.x < (bckgRight + bckgExtent / 2))
         {
             spr2.transform.position += new Vector3(bckgExtent * 2, 0, 0);
+            //offset2 = 0;
         }
     }
 
@@ -103,7 +97,6 @@ public class ForegroundBehaviour : MonoBehaviour
         {
             if (obj.GetComponent<Level>().levelName == thisLevel)
             {
-                //Debug.Log(obj.GetComponent<Level>().levelName + " " + thisLevel);
                 levelObj = obj;
                 success = true;
             }

@@ -28,7 +28,6 @@ public class IntroTutorial : MonoBehaviour
             opacity1 += 1.0f * Time.deltaTime;
             tuto1Img.SetAlpha(opacity1);
         }
-
         else if (doesShow2)
         {
             showing = true;
@@ -37,7 +36,6 @@ public class IntroTutorial : MonoBehaviour
             opacity2 += 1.0f * Time.deltaTime;
             tuto2Img.SetAlpha(opacity2);
         }
-
         else
         {
             if (showing)
@@ -52,7 +50,6 @@ public class IntroTutorial : MonoBehaviour
             opacity2 -= 1.0f * Time.deltaTime;
             tuto2Img.SetAlpha(opacity2);
         }
-
 
         if (Input.touchCount > 0)
         {

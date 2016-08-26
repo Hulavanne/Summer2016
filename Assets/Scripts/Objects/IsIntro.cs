@@ -43,8 +43,14 @@ public class IsIntro : MonoBehaviour
     {
         // Remove the intro's CharacterBehaviour from the npcBehaviours list and destroy this object
         EventManager.current.npcBehaviours.Remove(behaviour);
-        PlayerController.current.hud.SetHud(false);
-        IntroTutorial.doesShow1 = true;
+
+        // If game starts in Cieran's room
+        if (LevelManager.current.currentLevel == LevelManager.Levels.CIERAN_BEDROOM)
+        {
+            PlayerController.current.hud.SetHud(false);
+            IntroTutorial.doesShow1 = true;
+        }
+
         Destroy(gameObject);
     }
 }

@@ -581,7 +581,8 @@ public class EventManager : MonoBehaviour
                     PlayerController.current.isGameOver = true;
                 }
             }
-            else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE)
+            else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE &&
+                     Game.current.triggeredEvents.ContainsKey(CharacterBehaviour.Type.CANDLE))
             {
                 if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 0)
                 {

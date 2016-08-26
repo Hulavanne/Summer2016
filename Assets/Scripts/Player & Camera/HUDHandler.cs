@@ -18,6 +18,8 @@ public class HUDHandler : MonoBehaviour {
     public GameObject pauseButtonObj;
     public GameObject actionButtonObj;
 
+    CanvasRenderer gameEndingText;
+
     void Awake ()
     {
         staminaBarObj = GameObject.Find("StaminaBar");
@@ -33,6 +35,8 @@ public class HUDHandler : MonoBehaviour {
         reloadSaveButton = gameOverObj.transform.FindChild("ReloadSave").gameObject;
         backToMenuButton = gameOverObj.transform.FindChild("BackToMenu").gameObject;
         staminaBar = gui.transform.FindChild("StaminaBar").GetComponent<Slider>();
+
+        gameEndingText = gameOverObj.transform.FindChild("EndingText").GetComponent<CanvasRenderer>();
     }
 
     public void SetHud(bool option)
@@ -43,8 +47,14 @@ public class HUDHandler : MonoBehaviour {
         actionButtonObj.SetActive(option);
     }
 
-    public IEnumerator GameOverSplash()
+    public IEnumerator GameOverSplash(bool gameEnding)
     {
+        if (gameEnding && EventManager.ending == EventManager.Ending.TRUE)
+        {
+            string endText = "And he lived happily ever after…";
+            gameOverImg.GetComponent<Text>().text = endText;
+        }
+
         // Splashes black screen, fades gameover frame and after that displays buttons.
         gameOverObj.SetActive(true);
         gameOverImg.SetActive(true);
@@ -59,11 +69,37 @@ public class HUDHandler : MonoBehaviour {
         opacity = 1.0f;
         gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
 
-        if (canShowGameOverButtons)
+        if (!gameEnding)
         {
-            canShowGameOverButtons = false;
-            reloadSaveButton.SetActive(true);
-            backToMenuButton.SetActive(true);
+            if (canShowGameOverButtons)
+            {
+                canShowGameOverButtons = false;
+                reloadSaveButton.SetActive(true);
+                backToMenuButton.SetActive(true);
+            }
         }
+        else
+        {
+            if (EventManager.ending == EventManager.Ending.TRUE)
+            {
+                StartCoroutine(GameEndingSplash());
+            }
+        }
+    }
+
+    public IEnumerator GameEndingSplash()
+    {
+        opacity = 0.0f;
+        gameEndingText.gameObject.SetActive(true);
+
+        while (opacity < 1.0f)
+        {
+            opacity += 0.015f;
+            gameEndingText.SetAlpha(opacity);
+            yield return null;
+        }
+
+        opacity = 1.0f;
+        gameEndingText.SetAlpha(opacity);
     }
 }

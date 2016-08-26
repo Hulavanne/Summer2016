@@ -8,8 +8,10 @@ public class SoundEffectsManager : MonoBehaviour
     // Sound effect clips
     public AudioClip[] walkingSoundsSolid;
     public AudioClip[] walkingSoundsLeaves;
+    public AudioClip[] walkingSoundsSlush;
     public AudioClip[] runningSoundsSolid;
     public AudioClip[] runningSoundsLeaves;
+    public AudioClip[] runningSoundsSlush;
     public AudioClip doorCreakSound;
     public AudioClip leafRustleSound;
     public AudioClip cavernDoorSound;

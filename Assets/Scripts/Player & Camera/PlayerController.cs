@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour {
     public bool isOverlappingHideObject;
     public bool isOverlappingNPC;
     public bool isGameOver = false;
+    public bool hasGameEnded = false;
     public bool isHidden;
 
     [HideInInspector]
@@ -87,12 +88,19 @@ public class PlayerController : MonoBehaviour {
     {
         if (isGameOver)
         {
-            StartCoroutine(hud.GameOverSplash());
+            if (hasGameEnded)
+            {
+                StartCoroutine(hud.GameOverSplash(true));
+            }
+            else
+            {
+                StartCoroutine(hud.GameOverSplash(false));
+
+                AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
+                AudioManager.current.musicSource.loop = false;
+            }
+
             CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
-
-            AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
-            AudioManager.current.musicSource.loop = false;
-
             GameObject.Find("InGameUI").GetComponent<MenuController>().PauseGame();
 
             this.enabled = false;
@@ -159,6 +167,10 @@ public class PlayerController : MonoBehaviour {
                 {
                     footstepSounds = SoundEffectsManager.current.walkingSoundsLeaves;
                 }
+                else if (currentLevel.groundType == Level.Ground.SLUSH)
+                {
+                    footstepSounds = SoundEffectsManager.current.walkingSoundsSlush;
+                }
             }
             // If running
             else
@@ -176,6 +188,10 @@ public class PlayerController : MonoBehaviour {
                 else if (currentLevel.groundType == Level.Ground.LEAVES)
                 {
                     footstepSounds = SoundEffectsManager.current.runningSoundsLeaves;
+                }
+                else if (currentLevel.groundType == Level.Ground.SLUSH)
+                {
+                    footstepSounds = SoundEffectsManager.current.runningSoundsSlush;
                 }
             }
 

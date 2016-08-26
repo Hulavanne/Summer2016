@@ -579,6 +579,7 @@ public class EventManager : MonoBehaviour
                 else if (ending == Ending.TRUE)
                 {
                     PlayerController.current.isGameOver = true;
+                    PlayerController.current.hasGameEnded = true;
                 }
             }
             else if (behaviour.npcType == CharacterBehaviour.Type.CANDLE &&
@@ -622,6 +623,7 @@ public class EventManager : MonoBehaviour
                 else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 5)
                 {
                     PlayerController.current.isGameOver = true;
+                    PlayerController.current.hasGameEnded = true;
                 }
             }
         }

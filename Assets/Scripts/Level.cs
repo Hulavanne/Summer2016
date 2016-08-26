@@ -12,7 +12,8 @@ public class Level : MonoBehaviour
     public enum Ground
     {
         SOLID,
-        LEAVES
+        LEAVES,
+        SLUSH
     }
     public Ground groundType;
 

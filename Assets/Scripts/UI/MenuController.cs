@@ -202,6 +202,26 @@ public class MenuController : MonoBehaviour
 		creditsOverlay.SetActive(false);
 	}
 
+    public void SwitchCredits(Button switchButton)
+    {
+        GameObject devsTextObject = creditsOverlay.transform.FindChild("CreditsDevsText").gameObject;
+        GameObject audioTextObject = creditsOverlay.transform.FindChild("CreditsAudioText").gameObject;
+        Text switchButtonText = switchButton.transform.GetChild(0).GetComponent<Text>();
+
+        if (devsTextObject.activeSelf)
+        {
+            devsTextObject.SetActive(false);
+            audioTextObject.SetActive(true);
+            switchButtonText.text = "Dev Team";
+        }
+        else
+        {
+            devsTextObject.SetActive(true);
+            audioTextObject.SetActive(false);
+            switchButtonText.text = "Audio Credits";
+        }
+    }
+
 	public void PlayButtonSoundEffect()
 	{
         AudioManager.current.PlayRandomSoundEffect(buttonSoundEffect);

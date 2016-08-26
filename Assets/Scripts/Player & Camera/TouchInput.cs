@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TouchInput : MonoBehaviour
 {
+    GameObject selection;
 	public PlayerController player;
     public Vector2 mousePos;
     public MenuController menu;
@@ -36,6 +37,7 @@ public class TouchInput : MonoBehaviour
 
 	void Awake()
 	{
+        selection = GameObject.Find("Player").transform.FindChild("QuestionMark").gameObject;
         menu = GameObject.Find("InGameUI").GetComponent<MenuController>();
         player = transform.GetComponent<PlayerController>();
 	}
@@ -385,10 +387,13 @@ public class TouchInput : MonoBehaviour
                     touch.position.y > player.hud.questionMark.transform.position.y - downEdge &&
                     touch.position.y < player.hud.questionMark.transform.position.y + upEdge)
                 {
-                    selectionTouchException = true;
-                    menu.ActionButton();
-                    menu.PlayButtonSoundEffect();
-                    hasSelected = true;
+                    if (selection.activeSelf)
+                    {
+                        selectionTouchException = true;
+                        menu.ActionButton();
+                        menu.PlayButtonSoundEffect();
+                        hasSelected = true;
+                    }
                 }
             }
         }
@@ -409,10 +414,13 @@ public class TouchInput : MonoBehaviour
             mousePos.y > player.hud.questionMark.transform.position.y - downEdge &&
             mousePos.y < player.hud.questionMark.transform.position.y + upEdge)
         {
-            selectionTouchException = true;
-            menu.ActionButton();
-            menu.PlayButtonSoundEffect();
-            hasSelected = true;
+            if (selection.activeSelf)
+            {
+                selectionTouchException = true;
+                menu.ActionButton();
+                menu.PlayButtonSoundEffect();
+                hasSelected = true;
+            }
         }
     }
 

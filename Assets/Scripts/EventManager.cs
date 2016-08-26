@@ -463,7 +463,7 @@ public class EventManager : MonoBehaviour
             }
             else if (ending == Ending.TRUE)
             {
-                behaviour.ChangeLines(6, 16);
+                behaviour.ChangeLines(6, 15);
             }
         }
         else if (value == 1)

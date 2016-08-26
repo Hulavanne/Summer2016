@@ -1,9 +1,13 @@
 fileFormatVersion: 2
 guid: ad203d6fdb1a5fb438a2d9e428dcf039
-timeCreated: 1472134675
+timeCreated: 1472210966
 licenseType: Pro
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: candle_flicker_0
+    21300002: candle_flicker_1
+    21300004: candle_flicker_2
+    21300006: candle_flicker_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -27,7 +31,7 @@ TextureImporter:
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 2048
+  maxTextureSize: 1024
   textureSettings:
     filterMode: -1
     aniso: 16
@@ -38,7 +42,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -49,7 +53,121 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: candle_flicker_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 122, y: 80}
+        - {x: 111, y: 114}
+        - {x: 69, y: 110}
+        - {x: 56, y: 128}
+        - {x: -39, y: 128}
+        - {x: -94, y: 95}
+        - {x: -123, y: 47}
+        - {x: -128, y: 17}
+        - {x: -128, y: -19}
+        - {x: -127, y: -28}
+        - {x: -103, y: -57}
+        - {x: -98, y: -90}
+        - {x: -59, y: -106}
+        - {x: 24, y: -106}
+        - {x: 67, y: -97}
+        - {x: 106, y: -60}
+        - {x: 122, y: 20}
+    - name: candle_flicker_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 98, y: 105}
+        - {x: 68, y: 106}
+        - {x: 61, y: 105}
+        - {x: 59, y: 103}
+        - {x: 46, y: 111}
+        - {x: 42, y: 110}
+        - {x: 31, y: 117}
+        - {x: 18, y: 122}
+        - {x: -44, y: 122}
+        - {x: -120, y: 67}
+        - {x: -128, y: 42}
+        - {x: -128, y: -56}
+        - {x: -103, y: -101}
+        - {x: -67, y: -126}
+        - {x: -41, y: -128}
+        - {x: 2, y: -128}
+        - {x: 60, y: -117}
+        - {x: 128, y: -57}
+        - {x: 128, y: 39}
+    - name: candle_flicker_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 110, y: -48}
+        - {x: 110, y: 10}
+        - {x: 97, y: 65}
+        - {x: 50, y: 99}
+        - {x: 22, y: 107}
+        - {x: -35, y: 107}
+        - {x: -77, y: 93}
+        - {x: -123, y: 35}
+        - {x: -123, y: -87}
+        - {x: -79, y: -124}
+        - {x: -63, y: -128}
+        - {x: -16, y: -128}
+        - {x: 5, y: -121}
+        - {x: 56, y: -103}
+        - {x: 71, y: -76}
+    - name: candle_flicker_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 98, y: 105}
+        - {x: 68, y: 106}
+        - {x: 61, y: 105}
+        - {x: 59, y: 103}
+        - {x: 46, y: 111}
+        - {x: 42, y: 110}
+        - {x: 31, y: 117}
+        - {x: 18, y: 122}
+        - {x: -44, y: 122}
+        - {x: -120, y: 67}
+        - {x: -128, y: 42}
+        - {x: -128, y: -56}
+        - {x: -103, y: -101}
+        - {x: -67, y: -126}
+        - {x: -41, y: -128}
+        - {x: 2, y: -128}
+        - {x: 60, y: -117}
+        - {x: 128, y: -57}
+        - {x: 128, y: 39}
     outline: []
   spritePackingTag: 
   userData: 

@@ -383,9 +383,9 @@ public class MenuController : MonoBehaviour
         {
             levelName = "Cave";
         }
-        else if (levelIndex >= 14 && levelIndex <= 15)
+        else if (levelIndex >= 14)
         {
-            levelName = "Strange Forest";
+            levelName = "Who Knows Where";
         }
 
 		// Format the date into yyyy-mm-dd, excluding the time

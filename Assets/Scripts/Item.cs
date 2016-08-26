@@ -81,11 +81,6 @@ public class Item : MonoBehaviour
                 chargesToRemove = 0;
             }
         }
-        // Exception for when using gloves on the chest
-        if (PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>().npcType == CharacterBehaviour.Type.CHEST)
-        {
-            itemData.charges = charges = 1;
-        }
 
         if (!usable)
         {
@@ -97,6 +92,12 @@ public class Item : MonoBehaviour
         {
             CharacterBehaviour npcBehaviour = PlayerController.current.overlappingNpc.GetComponent<CharacterBehaviour>();
 
+            // Exception for when using gloves on the chest
+            if (npcBehaviour.npcType == CharacterBehaviour.Type.CHEST)
+            {
+                itemData.charges = charges = 1;
+            }
+            // Triggering the action
             if (npcBehaviour.requiredItemTypes.Contains(itemType))
             {
                 npcBehaviour.TriggerAction(itemType);

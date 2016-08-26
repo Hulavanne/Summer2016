@@ -572,7 +572,11 @@ public class EventManager : MonoBehaviour
             }
             else if (behaviour.npcType == CharacterBehaviour.Type.EXIT)
             {
-                if (ending == Ending.TRUE)
+                if (ending == Ending.NORMAL)
+                {
+                    SoundEffectsManager.AddAudio(SoundEffectsManager.current.gameObject, SoundEffectsManager.current.witchBreathingSound, true, true, 1.0f);
+                }
+                else if (ending == Ending.TRUE)
                 {
                     PlayerController.current.isGameOver = true;
                 }

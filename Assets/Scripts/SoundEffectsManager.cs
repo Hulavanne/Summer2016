@@ -13,6 +13,7 @@ public class SoundEffectsManager : MonoBehaviour
     public AudioClip doorCreakSound;
     public AudioClip leafRustleSound;
     public AudioClip cavernDoorSound;
+    public AudioClip witchBreathingSound;
 
     // Sound effect sources
     [HideInInspector]
@@ -39,6 +40,11 @@ public class SoundEffectsManager : MonoBehaviour
         newAudio.loop = loop;
         newAudio.playOnAwake = playAwake;
         newAudio.volume = vol;
+
+        if (newAudio.playOnAwake)
+        {
+            newAudio.Play();
+        }
 
         return newAudio; 
     }

@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake ()
 	{
-        CameraEffects.current.FadeToBlack(false, false); // begin with black screen, fades to scene
+        CameraEffects.current.FadeToBlack(false, false, false); // begin with black screen, fades to scene
         current = this;
 
         hud = GetComponent<HUDHandler>(); // all hud related components
@@ -90,17 +90,26 @@ public class PlayerController : MonoBehaviour {
         {
             if (hasGameEnded)
             {
+                PlayerController.current.hud.SetHud(false);
                 StartCoroutine(hud.GameOverSplash(true));
+
+                if (EventManager.ending == EventManager.Ending.TRUE)
+                {
+                    CameraEffects.current.darkScreenRenderer.transform.GetComponent<Image>().color = new Color(0.898f, 0.898f, 0.898f);
+                    GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOver").FindChild("Title").GetComponent<Text>().color = new Color(0, 0, 0);
+                }
+
+                CameraEffects.current.fadeToBlack = true; // sets everything to black, then fades GAMEOVER, then buttons show up
             }
             else
             {
                 StartCoroutine(hud.GameOverSplash(false));
+                CameraEffects.current.FadeToBlack(true, true, false); // sets everything to black, then fades GAMEOVER, then buttons show up
 
                 AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
                 AudioManager.current.musicSource.loop = false;
             }
 
-            CameraEffects.current.FadeToBlack(true, true); // sets everything to black, then fades GAMEOVER, then buttons show up
             GameObject.Find("InGameUI").GetComponent<MenuController>().PauseGame();
 
             this.enabled = false;
@@ -177,7 +186,7 @@ public class PlayerController : MonoBehaviour {
             {
                 if (wasWalking)
                 {
-                    SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource);
+                    SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource, false);
                     wasWalking = false;
                 }
 
@@ -200,7 +209,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource);
+            SoundEffectsManager.current.StopLoop(SoundEffectsManager.current.footstepsSource, true);
         }
     }
 

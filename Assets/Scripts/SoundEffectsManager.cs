@@ -121,9 +121,14 @@ public class SoundEffectsManager : MonoBehaviour
         source.Stop();
     }
 
-    public void StopLoop(AudioSource source)
+    public void StopLoop(AudioSource source, bool fullStop)
     {
         // This will make the source stop playing at the end of the current sound effect
         source.loop = false;
+
+        if (fullStop)
+        {
+            source.Stop();
+        }
     }
 }

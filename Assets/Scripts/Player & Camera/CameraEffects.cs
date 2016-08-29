@@ -34,6 +34,7 @@ public class CameraEffects : MonoBehaviour
         
 		darkScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("DarkScreen").gameObject;
 		darkScreenRenderer = darkScreen.GetComponent<CanvasRenderer>();
+
         gameOverScreen = GameObject.Find("InGameUI").transform.FindChild("GUI").FindChild("GameOverScreen").gameObject;
         gameOverScreen.GetComponent<CanvasRenderer>().SetAlpha(0);
         gameOverScreen.SetActive(false);
@@ -180,7 +181,7 @@ public class CameraEffects : MonoBehaviour
         cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
     }
 
-	public void FadeToBlack(bool stayBlack, bool isGameOver)
+    public void FadeToBlack(bool stayBlack, bool isGameOver, bool gameEnding)
 	{
         // If true, stays black screen, if false, fades to scene
         fadeToBlack = stayBlack;
@@ -188,7 +189,9 @@ public class CameraEffects : MonoBehaviour
 
         if (isGameOver)
         {
+            playerController.hud.SetHud(false);
             gameOverScreen.SetActive(true);
+
             darkScreen = gameOverScreen;
             darkScreenRenderer = gameOverScreen.GetComponent<CanvasRenderer>();
         }
@@ -204,7 +207,7 @@ public class CameraEffects : MonoBehaviour
 	{
         if (fadeToBlack && opacity < 1.0f)
 		{
-            opacity += 1.0f * Time.deltaTime; // Note that this "1" is a timer and isn't changing anything
+            opacity += 1.0f * Time.unscaledDeltaTime; // Note that this "1" is a timer and isn't changing anything
 
             if (opacity >= 1.0f)
             {
@@ -219,7 +222,7 @@ public class CameraEffects : MonoBehaviour
 		}
         else if (!fadeToBlack && opacity > 0.0f)
 		{
-            opacity -= 1.0f * Time.deltaTime; // Note that this "1" is a timer and isn't changing anything
+            opacity -= 1.0f * Time.unscaledDeltaTime; // Note that this "1" is a timer and isn't changing anything
 
             if (opacity <= 0.0f)
             {
@@ -237,8 +240,5 @@ public class CameraEffects : MonoBehaviour
         }
 
         darkScreenRenderer.SetAlpha(opacity);
-
-		opacityManager = new Color(0.0f, 0.0f, 0.0f, opacity); // checks opacity every frame
-		// darkScreenRenderer.material.color = opacityManager; // and puts it in the material
 	}
 }

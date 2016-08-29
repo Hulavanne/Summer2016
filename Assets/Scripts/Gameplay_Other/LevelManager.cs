@@ -48,15 +48,9 @@ public class LevelManager : MonoBehaviour
     Camera cameraComponent;
     CameraEffects cameraScript;
 
-    public float lightAmount;
-    
-    public GameObject lightInLevel;
-
     MenuController menuController;
 
     public Color tempColor;
-    public CanvasRenderer lightPlaneRenderer, darknessPlaneRenderer;
-    public Image colorOfLightPlane, colorOfDarkPlane;
 
     public PlayerController player;
     public GameObject playerG;
@@ -64,9 +58,6 @@ public class LevelManager : MonoBehaviour
 
     void Awake()
     {
-        darknessPlaneRenderer = GameObject.Find("DarknessModifier").GetComponent<CanvasRenderer>();
-        lightPlaneRenderer = GameObject.Find("LightModifier").GetComponent<CanvasRenderer>();
-
         current = this;
 
 		// Making sure the game starts from level 1 if playing a build version of the game
@@ -147,46 +138,6 @@ public class LevelManager : MonoBehaviour
         DeactivateOtherLevels();
 	}
 
-	void Update()
-    {
-		if (!player.switchingLevel)
-		{
-			SetLighting();
-		}
-	}
-
-    public void SetLighting()
-    {
-        if (lightAmount > 1)
-        {
-            lightAmount = 1;
-        }
-        if (lightAmount < -1)
-        {
-            lightAmount = -1;
-        }
-        if (lightAmount > 0) // turn white
-        {
-            lightPlaneRenderer.SetAlpha(lightAmount);
-            darknessPlaneRenderer.SetAlpha(0.0f);
-        }
-        else if (lightAmount < 0) // turn black
-        {
-            
-            float newLightAmount;
-            newLightAmount = lightAmount * -1;
-
-            darknessPlaneRenderer.SetAlpha(newLightAmount);
-            lightPlaneRenderer.SetAlpha(0.0f);
-
-        }
-        else
-        {
-            lightPlaneRenderer.SetAlpha(0.0f);
-            darknessPlaneRenderer.SetAlpha(0.0f);
-        }
-    }
-
     public void ReloadLevel()
     {
         SavingAndLoading.LoadSavedGames();
@@ -219,7 +170,6 @@ public class LevelManager : MonoBehaviour
         nextDoorBehav = nextDoor.GetComponent<DoorBehaviour>();
         
         currentLevel = nextDoorBehav.thisDoorLevel;
-		lightAmount = levelsList[(int)currentLevel].GetComponent<Level>().levelLightAmount;
 
         player.transform.position = new Vector3(nextDoor.transform.position.x, player.transform.position.y, player.transform.position.z);
         player.isFacingRight = player.currentDoor.GetComponent<DoorBehaviour>().willFaceRight;
@@ -256,7 +206,6 @@ public class LevelManager : MonoBehaviour
 		currentLevel = (Levels)Game.current.levelIndex;
 
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
-		lightAmount = levelScript.levelLightAmount;
 
         player.transform.position = new Vector3(Game.current.spawnPosition.Key, Game.current.spawnPosition.Value, player.transform.position.z);
         CameraEffects.current.AdjustToLevel(levelsList[(int)currentLevel].gameObject);
@@ -265,7 +214,6 @@ public class LevelManager : MonoBehaviour
 	public void TestStart()
 	{
 		Level levelScript = levelsList[(int)currentLevel].GetComponent<Level>();
-		lightAmount = levelScript.levelLightAmount;
 
 		float startingPositionX = levelScript.transform.position.x;
 		player.transform.position = new Vector3(startingPositionX, player.transform.position.y, player.transform.position.z);

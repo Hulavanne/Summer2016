@@ -463,7 +463,7 @@ public class EventManager : MonoBehaviour
             }
             else if (ending == Ending.TRUE)
             {
-                behaviour.ChangeLines(6, 15);
+                behaviour.ChangeLines(6, 13);
             }
         }
         else if (value == 1)
@@ -482,15 +482,8 @@ public class EventManager : MonoBehaviour
         {
             // Add event to triggeredEvents, if it isn't already there
             Game.current.AddToTriggeredEvents(CharacterBehaviour.Type.CANDLE);
-
-            if (ending == Ending.NORMAL)
-            {
-                behaviour.ChangeLines(2, 2);
-            }
-            else if (ending == Ending.TRUE)
-            {
-                behaviour.ChangeLines(9, 9);
-            }
+            // Setup the correct lines
+            behaviour.ChangeLines(2, 2);
         }
     }
 
@@ -578,6 +571,11 @@ public class EventManager : MonoBehaviour
                 }
                 else if (ending == Ending.TRUE)
                 {
+                    // Play door opening sound
+                    SoundEffectsManager.current.PlaySoundEffect(SoundEffectsManager.current.doorCreakSound, SoundEffectsManager.current.actionSource);
+                    SoundEffectsManager.current.actionSource.ignoreListenerPause = true;
+
+                    // End the game
                     PlayerController.current.isGameOver = true;
                     PlayerController.current.hasGameEnded = true;
                 }
@@ -596,31 +594,32 @@ public class EventManager : MonoBehaviour
                 {
                     behaviour.ChangeLines(4, 4);
                     ActivateTextAtLine.current.TalkToNPC(false);
-                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[2];
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[3];
                     Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 2;
                 }
                 else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 2)
                 {
                     behaviour.ChangeLines(5, 5);
                     ActivateTextAtLine.current.TalkToNPC(false);
-                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[3];
+                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[4];
                     Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 3;
                 }
                 else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 3)
                 {
                     behaviour.ChangeLines(6, 6);
                     ActivateTextAtLine.current.TalkToNPC(false);
-                    Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[4];
+                    //Level.lightSpriteRenderer.sprite = Level.lastLevel.lightsForLastLevel[4];
+                    Level.lightSpriteRenderer.transform.GetChild(0).gameObject.SetActive(true);
                     Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 4;
                 }
-                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 4)
+                /*else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 4)
                 {
                     behaviour.ChangeLines(7, 7);
                     ActivateTextAtLine.current.TalkToNPC(false);
                     Level.lightSpriteRenderer.transform.GetChild(0).gameObject.SetActive(true);
                     Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] = 5;
-                }
-                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 5)
+                }*/
+                else if (Game.current.triggeredEvents[CharacterBehaviour.Type.CANDLE] == 4)
                 {
                     PlayerController.current.isGameOver = true;
                     PlayerController.current.hasGameEnded = true;

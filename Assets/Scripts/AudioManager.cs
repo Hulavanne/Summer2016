@@ -164,7 +164,11 @@ public class AudioManager : MonoBehaviour
             nextTrack = track;
             musicSource.clip = nextTrack;
             musicSource.loop = true;
-            musicSource.Play();
+
+            if (musicSource.enabled)
+            {
+                musicSource.Play();
+            }
         }
     }
 

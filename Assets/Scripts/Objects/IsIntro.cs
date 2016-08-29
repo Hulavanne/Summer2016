@@ -24,7 +24,7 @@ public class IsIntro : MonoBehaviour
     public void StartIntro()
     {
         introPlaying = true;
-        CameraEffects.current.FadeToBlack(true, false);
+        CameraEffects.current.FadeToBlack(true, false, false);
         behaviour.isAutomatic = true;
 
         PlayerController.current.overlappingNpc = gameObject;

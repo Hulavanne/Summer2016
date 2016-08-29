@@ -61,7 +61,7 @@ public class HUDHandler : MonoBehaviour {
 
         while (opacity < 1.0f)
         {
-            opacity += 0.015f;
+            opacity += 0.75f * Time.unscaledDeltaTime;
             gameOverImg.GetComponent<CanvasRenderer>().SetAlpha(opacity);
             yield return null;
         }
@@ -80,7 +80,11 @@ public class HUDHandler : MonoBehaviour {
         }
         else
         {
-            if (EventManager.ending == EventManager.Ending.TRUE)
+            if (EventManager.ending == EventManager.Ending.NORMAL)
+            {
+                StartCoroutine(ReturnToMenuTimer());
+            }
+            else if (EventManager.ending == EventManager.Ending.TRUE)
             {
                 StartCoroutine(GameEndingSplash());
             }
@@ -89,17 +93,33 @@ public class HUDHandler : MonoBehaviour {
 
     public IEnumerator GameEndingSplash()
     {
-        opacity = 0.0f;
+        opacity = -1.0f;
         gameEndingText.gameObject.SetActive(true);
 
         while (opacity < 1.0f)
         {
-            opacity += 0.015f;
+            opacity += 0.75f * Time.unscaledDeltaTime;
             gameEndingText.SetAlpha(opacity);
             yield return null;
         }
 
         opacity = 1.0f;
         gameEndingText.SetAlpha(opacity);
+
+        StartCoroutine(ReturnToMenuTimer());
+    }
+
+    public IEnumerator ReturnToMenuTimer()
+    {
+        float timer = 0.0f;
+        float time = 5.0f;
+
+        while (timer < time)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        GameObject.Find("InGameUI").GetComponent<MenuController>().GoToScene("MainMenu");
     }
 }

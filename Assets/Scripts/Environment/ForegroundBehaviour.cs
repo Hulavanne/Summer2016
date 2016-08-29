@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ForegroundBehaviour : MonoBehaviour
 {
-    public float bckgLeft, bckgRight, bckgExtent, offset1, offset2;
+    public float bckgLeft, bckgRight, bckgExtent, offset1, offset2, speed;
     public bool doesMove;
     public Camera mainCamera;
     public float cameraPos, levelPos, initPos1, initPos2, initPos1Y, initPos2Y;
@@ -51,8 +51,8 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void UpdateSpritePosition()
     {
-        offset1 += 1 * Time.deltaTime;
-        offset2 += 1 * Time.deltaTime;
+        offset1 += speed * Time.deltaTime;
+        offset2 += speed * Time.deltaTime;
 
         if (doesMove)
         {
@@ -68,25 +68,22 @@ public class ForegroundBehaviour : MonoBehaviour
 
     void CheckSpritePosition()
     {
-        if (spr1.transform.position.x > (bckgRight + bckgExtent / 2))
+        if (spr1.transform.position.x >= (bckgRight + (bckgExtent / 2)))
         {
-            spr1.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
-            //offset1 = 0;
+            offset1 -= (bckgExtent * 2);
         }
-        if (spr2.transform.position.x > (bckgRight + bckgExtent / 2))
+        else if (spr1.transform.position.x < (bckgLeft - bckgExtent / 2))
         {
-            spr2.transform.position -= new Vector3(bckgExtent * 2, 0, 0);
-            //offset2 = 0;
+            offset1 += (bckgExtent * 2);
         }
-        if (spr1.transform.position.x < (bckgRight + bckgExtent / 2))
+
+        if (spr2.transform.position.x >= (bckgRight + bckgExtent / 2))
         {
-            spr1.transform.position += new Vector3(bckgExtent * 2, 0, 0);
-            //offset1 = 0;
+            offset2 -= (bckgExtent * 2);
         }
-        if (spr2.transform.position.x < (bckgRight + bckgExtent / 2))
+        else if (spr2.transform.position.x < (bckgLeft - bckgExtent / 2))
         {
-            spr2.transform.position += new Vector3(bckgExtent * 2, 0, 0);
-            //offset2 = 0;
+            offset2 += (bckgExtent * 2);
         }
     }
 
@@ -124,9 +121,11 @@ public class ForegroundBehaviour : MonoBehaviour
         cameraPos = mainCamera.transform.position.x;
         background = transform.parent.gameObject.transform.parent.transform.FindChild("Background").gameObject.
             transform.FindChild("BackStatic").gameObject.GetComponent<SpriteRenderer>();
-        bckgLeft = background.gameObject.transform.position.x - background.sprite.bounds.extents.x;
-        bckgRight = background.gameObject.transform.position.x + background.sprite.bounds.extents.x;
-        bckgExtent = background.sprite.bounds.extents.x * 2; 
+        bckgLeft = transform.parent.transform.parent.transform.FindChild("Boundaries").
+            transform.FindChild("CameraBoundary").transform.position.x;
+        bckgRight = transform.parent.transform.parent.transform.FindChild("Boundaries").
+            transform.FindChild("CameraBoundary").GetChild(0).transform.position.x;
+        bckgExtent = bckgRight - bckgLeft; 
     }
 
     void CheckLevel()

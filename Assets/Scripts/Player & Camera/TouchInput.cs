@@ -239,7 +239,7 @@ public class TouchInput : MonoBehaviour
                 {
                     if (touch.phase == TouchPhase.Began)
                 {
-                    DetectTouch();
+                    DetectTouch(touch);
                 }
 
                 if (hasSelected)
@@ -370,31 +370,24 @@ public class TouchInput : MonoBehaviour
         }
     }
 
-    void DetectTouch()
+    void DetectTouch(Touch touch)
     {
         if (MenuController.gamePaused || TextBoxManager.current.isActive)
         {
             return;
         }
-
-        for (var i = 0; i < Input.touchCount; ++i)
+        
+        if (touch.position.x > player.hud.questionMark.transform.position.x - leftEdge &&
+            touch.position.x < player.hud.questionMark.transform.position.x + rightEdge &&
+            touch.position.y > player.hud.questionMark.transform.position.y - downEdge &&
+            touch.position.y < player.hud.questionMark.transform.position.y + upEdge)
         {
-            Touch touch = Input.GetTouch(i);
-            if (touch.phase == TouchPhase.Began)
+            if (selection.activeSelf)
             {
-                if (touch.position.x > player.hud.questionMark.transform.position.x - leftEdge &&
-                    touch.position.x < player.hud.questionMark.transform.position.x + rightEdge &&
-                    touch.position.y > player.hud.questionMark.transform.position.y - downEdge &&
-                    touch.position.y < player.hud.questionMark.transform.position.y + upEdge)
-                {
-                    if (selection.activeSelf)
-                    {
-                        selectionTouchException = true;
-                        menu.ActionButton();
-                        menu.PlayButtonSoundEffect();
-                        hasSelected = true;
-                    }
-                }
+                selectionTouchException = true;
+                menu.ActionButton();
+                menu.PlayButtonSoundEffect();
+                hasSelected = true;
             }
         }
     }

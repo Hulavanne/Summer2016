@@ -8,7 +8,7 @@ public class BackgroundBehaviour : MonoBehaviour
     public GameObject player;
     public PlayerController playerControl;
     public GameObject mainCamera;
-    public float backgroundSpeed;
+    public float offset;
     public LevelManager.Levels thisLevelValue;
     public bool playerStart = true;
     public bool playerStart1 = true;
@@ -16,6 +16,7 @@ public class BackgroundBehaviour : MonoBehaviour
     public float distanceBetweenSprites;
     public bool movesAlone;
     public float moveAloneSpeed;
+    public float speed = 0.35f;
     public SpriteRenderer sprite1, sprite2;
     public GameObject sprite1G, sprite2G;
     public float initialPos;
@@ -73,7 +74,6 @@ public class BackgroundBehaviour : MonoBehaviour
 
             else
             {
-
                 if (!movesAlone)
                 { // checks camera position, preset offset, distance from start, and executes a funciton out of those values
                     distanceFromStart = thisLevelPos.transform.position.x - mainCamera.transform.position.x;
@@ -86,9 +86,9 @@ public class BackgroundBehaviour : MonoBehaviour
                     totalOffset = mainCamera.transform.position.x + distanceFromStart;
 
                     transform.position = new Vector3(((mainCamera.transform.position.x - (distanceFromStart * 0.75f)
-                        + distanceFromStart) * backgroundSpeed) + moveAloneSpeed,
+                        + distanceFromStart) * offset) + moveAloneSpeed,
                         transform.position.y, transform.position.z);
-                    moveAloneSpeed += 0.35f * Time.deltaTime;
+                    moveAloneSpeed += speed * Time.deltaTime;
 
                     PositionCheck();
                 }

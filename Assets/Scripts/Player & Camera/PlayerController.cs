@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour {
             if (hasGameEnded)
             {
                 PlayerController.current.hud.SetHud(false);
-                StartCoroutine(hud.GameOverSplash(true));
+                StartCoroutine(hud.Delay());
 
                 if (EventManager.ending == EventManager.Ending.TRUE)
                 {

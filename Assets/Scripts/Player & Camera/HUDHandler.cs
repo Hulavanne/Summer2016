@@ -47,6 +47,20 @@ public class HUDHandler : MonoBehaviour {
         actionButtonObj.SetActive(option);
     }
 
+    public IEnumerator Delay()
+    {
+        float timer = 0.0f;
+        float time = 2.5f;
+
+        while (timer < time)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        StartCoroutine(GameOverSplash(true));
+    }
+
     public IEnumerator GameOverSplash(bool gameEnding)
     {
         if (gameEnding && EventManager.ending == EventManager.Ending.TRUE)

@@ -237,16 +237,11 @@ public class TouchInput : MonoBehaviour
             {
                 if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
                 {
-                    if (touch.phase == TouchPhase.Began)
-                {
-                    DetectTouch(touch);
-                }
-
-                if (hasSelected)
-                {
-                    PlayerController.current.PlayerAnimStop();
-                    return;
-                }
+                    if (hasSelected)
+                    {
+                        PlayerController.current.PlayerAnimStop();
+                        return;
+                    }
 
                     isPressing = true;
 
@@ -263,6 +258,8 @@ public class TouchInput : MonoBehaviour
 
                 if (touch.phase == TouchPhase.Began)
                 {
+                    DetectTouch(touch);
+
                     if (runValue == 0)
                     {
                         if ((touch.position.x >= 0) && (touch.position.x < Screen.width / 2))

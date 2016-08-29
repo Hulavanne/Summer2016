@@ -8,12 +8,15 @@ public class IntroTutorial : MonoBehaviour
     public CanvasRenderer tuto1Img, tuto2Img;
     public GameObject child;
 
+    bool exception;
     float opacity1, opacity2;
+    public float timer;
     public bool childDestroyed, showing;
     public static bool doesShow1, doesShow2;
 
     void Awake()
     {
+        exception = true;
         tuto1Img = transform.GetChild(0).GetComponent<CanvasRenderer>();
         tuto2Img = transform.GetChild(1).GetComponent<CanvasRenderer>();
     }
@@ -22,6 +25,7 @@ public class IntroTutorial : MonoBehaviour
     {
         if (doesShow1)
         {
+            timer += 1.0f * Time.deltaTime;
             showing = true;
             PlayerController.current.hud.SetHud(false);
             PlayerController.current.canMove = false;
@@ -57,9 +61,16 @@ public class IntroTutorial : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began)
             {
-                if (doesShow1 || doesShow2)
+                if (doesShow1)
                 {
+                    if (timer <= 2.0f)
+                    {
+                        return;
+                    }
                     doesShow1 = false;
+                }
+                if (doesShow2)
+                {
                     doesShow2 = false;
                 }
             }
@@ -82,11 +93,18 @@ public class IntroTutorial : MonoBehaviour
             opacity2 = 1;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(0))
         {
-            if (doesShow1 || doesShow2)
+            if (doesShow1)
             {
+                if (timer <= 2.0f)
+                {
+                    return;
+                }
                 doesShow1 = false;
+            }
+            if (doesShow2)
+            {
                 doesShow2 = false;
             }
         }

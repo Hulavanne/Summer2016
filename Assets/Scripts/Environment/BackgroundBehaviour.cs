@@ -8,7 +8,7 @@ public class BackgroundBehaviour : MonoBehaviour
     public GameObject player;
     public PlayerController playerControl;
     public GameObject mainCamera;
-    public float offset = 1.0f;
+    public float offset;
     public LevelManager.Levels thisLevelValue;
     public bool playerStart = true;
     public bool playerStart1 = true;

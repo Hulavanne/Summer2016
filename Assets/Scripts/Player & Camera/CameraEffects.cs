@@ -18,7 +18,6 @@ public class CameraEffects : MonoBehaviour
     public float cameraPos = 0.0f, playerPos = 0.0f;
     public float xDistanceToPlayer = 0.0f;
     public GameObject player; // reference so camera follows player
-    public PlayerController playerController;
     public TouchInput touchInput;
 
 	Camera cameraComponent;
@@ -43,7 +42,6 @@ public class CameraEffects : MonoBehaviour
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
-			playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 			touchInput = player.GetComponent<TouchInput>();
         }
 
@@ -68,7 +66,7 @@ public class CameraEffects : MonoBehaviour
 			}
 			else
 			{
-				if (playerController.movementDirection == 1 && collidingBoundary != null)
+				if (PlayerController.current.movementDirection == 1 && collidingBoundary != null)
 				{
 					if (player.transform.position.x >= collidingBoundary.transform.position.x + collidingBoundary.bounds.extents.x + cameraCollider.bounds.extents.x)
 					{
@@ -76,7 +74,7 @@ public class CameraEffects : MonoBehaviour
 						boundaryColliding = false;
 					}
 				}
-				else if (playerController.movementDirection == -1 && collidingBoundary != null)
+                else if (PlayerController.current.movementDirection == -1 && collidingBoundary != null)
 				{
 					if (player.transform.position.x <= collidingBoundary.transform.position.x - collidingBoundary.bounds.extents.x - cameraCollider.bounds.extents.x)
 					{
@@ -181,26 +179,53 @@ public class CameraEffects : MonoBehaviour
         cameraCollider.size = new Vector2(colliderWidth, colliderHeight);
     }
 
+    public void FadeToBlackAndBack()
+    {
+        fadeToBlack = true;
+        fadeBack = true;
+    }
+
     public void FadeToBlack(bool stayBlack, bool isGameOver, bool gameEnding)
-	{
+    {
         // If true, stays black screen, if false, fades to scene
         fadeToBlack = stayBlack;
         opacity = 1.0f;
 
         if (isGameOver)
         {
-            playerController.hud.SetHud(false);
-            gameOverScreen.SetActive(true);
-
-            darkScreen = gameOverScreen;
-            darkScreenRenderer = gameOverScreen.GetComponent<CanvasRenderer>();
+            StartCoroutine(GameOverFade());
         }
     }
 
-    public void FadeToBlackAndBack()
+    IEnumerator GameOverFade()
     {
+        // Stop current music track
+        AudioManager.current.musicSource.Stop();
+
+        float timer = 0.0f;
+        float waitTime = 0.5f;
+
+        while (timer < waitTime)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
         fadeToBlack = true;
-        fadeBack = true;
+        opacity = 0.0f;
+
+        darkScreen = gameOverScreen;
+        darkScreenRenderer = gameOverScreen.GetComponent<CanvasRenderer>();
+        darkScreenRenderer.SetAlpha(opacity);
+
+        PlayerController.current.hud.SetHud(false);
+        gameOverScreen.SetActive(true);
+
+        // Play the game over music
+        AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
+        AudioManager.current.musicSource.loop = false;
+
+        StartCoroutine(PlayerController.current.hud.GameOverSplash(false));
     }
 
 	void UpdateFading()

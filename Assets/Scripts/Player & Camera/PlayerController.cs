@@ -103,11 +103,7 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
-                StartCoroutine(hud.GameOverSplash(false));
                 CameraEffects.current.FadeToBlack(true, true, false); // sets everything to black, then fades GAMEOVER, then buttons show up
-
-                AudioManager.current.SwitchMusic(AudioManager.current.gameOverMusic);
-                AudioManager.current.musicSource.loop = false;
             }
 
             GameObject.Find("InGameUI").GetComponent<MenuController>().PauseGame();

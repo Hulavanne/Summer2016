@@ -126,9 +126,9 @@ public class HUDHandler : MonoBehaviour {
     public IEnumerator ReturnToMenuTimer()
     {
         float timer = 0.0f;
-        float time = 5.0f;
+        float waitTime = 5.0f;
 
-        while (timer < time)
+        while (timer < waitTime)
         {
             timer += Time.unscaledDeltaTime;
             yield return null;

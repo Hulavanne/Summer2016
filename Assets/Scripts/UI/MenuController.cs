@@ -10,6 +10,7 @@ public class MenuController : MonoBehaviour
 	public static bool savingGame = false;
 	public static bool gamePaused = false;
     public static bool confirming = false;
+	public static int saveIndex = 0;
 
     public enum State
     {
@@ -37,8 +38,6 @@ public class MenuController : MonoBehaviour
 	string gameScene = "MainScene";
     string quitConfirmationString = "Are you sure you want to exit to the main menu?";
     string saveConfirmationString = "Are you sure you want to overwrite the existing save file?";
-
-    int index = 0;
     
 	void Awake()
     {
@@ -425,7 +424,7 @@ public class MenuController : MonoBehaviour
             // If the slot already has a save file
             if (saveSlotIndex <= SavingAndLoading.savedGames.Count - 1)
             {
-                index = saveSlotIndex;
+                saveIndex = saveSlotIndex;
                 ActivateConfirmationOverlay();
             }
             else
@@ -473,7 +472,7 @@ public class MenuController : MonoBehaviour
             }
             else if (currentState == State.LOAD_MENU)
             {
-                SaveGame(index);
+                SaveGame(saveIndex);
             }
         }
 
